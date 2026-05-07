@@ -146,31 +146,41 @@ function SidebarInner({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
                 />
             )}
 
-            {/* Mobile Menu Button - Only show when sidebar is closed */}
+            {/* Mobile Menu Tab - Only show when sidebar is closed */}
             {!isMobileOpen && (
                 <button
                     onClick={() => setIsMobileOpen(true)}
                     className="mobile-only mobile-menu-btn"
                     style={{
                         position: 'fixed',
-                        top: '5rem',
-                        left: '1rem',
+                        top: '50%',
+                        left: 0,
+                        transform: 'translateY(-50%)',
                         zIndex: 50,
-                        width: '3rem',
-                        height: '3rem',
+                        width: '2rem',
+                        height: '4rem',
                         backgroundColor: 'var(--color-primary-dark)',
                         border: '2px solid var(--color-gold)',
-                        borderRadius: '0.5rem',
+                        borderLeft: 'none',
+                        borderTopRightRadius: '0.5rem',
+                        borderBottomRightRadius: '0.5rem',
                         color: 'var(--color-gold)',
-                        fontSize: '1.5rem',
+                        fontSize: '1.25rem',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         cursor: 'pointer',
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+                        boxShadow: '2px 0 8px rgba(0, 0, 0, 0.3)',
+                        transition: 'all 0.2s ease',
+                    }}
+                    onTouchStart={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(139,21,56,0.3)';
+                    }}
+                    onTouchEnd={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
                     }}
                 >
-                    ☰
+                    ›
                 </button>
             )}
 

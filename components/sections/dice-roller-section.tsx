@@ -372,110 +372,107 @@ export default function DiceRollerSection() {
                             {isRolling ? '🎲 Rolling...' : `🎲 Roll ${numDice}d${diceType}`}
                         </button>
                     </div>
-                </div>
 
-                {/* Roll History - Separate section for better mobile ordering */}
-                {history.length > 0 && (
-                    <div className="dice-roll-history" style={{
-                        padding: 'clamp(2rem, 4vw, 3rem)',
-                        borderTop: '1px solid rgba(212,175,55,0.2)'
-                    }}>
-                        <h2 style={{
-                            color: 'var(--color-gold)',
-                            fontSize: '1.25rem',
-                            marginBottom: '1rem',
-                            fontWeight: '700'
-                        }}>
-                            Roll History
-                        </h2>
-                        <div style={{
-                            display: 'grid',
-                            gap: '0.5rem',
-                            maxHeight: '400px',
-                            overflowY: 'auto',
-                            paddingRight: '0.5rem'
-                        }} className="history-list">
-                            {history.map((h, i) => {
-                                const date = new Date(h.timestamp);
-                                const timeString = date.toLocaleTimeString('en-US', {
-                                    hour: 'numeric',
-                                    minute: '2-digit',
-                                    second: '2-digit',
-                                    hour12: true
-                                });
-                                
-                                return (
-                                    <div key={h.timestamp} style={{
-                                        padding: '0.75rem 1rem',
-                                        backgroundColor: i === 0 
-                                            ? 'rgba(212,175,55,0.1)' 
-                                            : 'rgba(0,0,0,0.2)',
-                                        border: `1px solid ${i === 0 
-                                            ? 'rgba(212,175,55,0.3)' 
-                                            : 'rgba(212,175,55,0.1)'}`,
-                                        borderRadius: '0.375rem',
-                                        display: 'grid',
-                                        gridTemplateColumns: 'auto 1fr auto',
-                                        alignItems: 'center',
-                                        gap: '1rem'
-                                    }} className="history-row">
-                                        <div style={{
-                                            display: 'flex',
+                    {/* Roll History */}
+                    {history.length > 0 && (
+                        <div className="dice-roll-history">
+                            <h2 style={{
+                                color: 'var(--color-gold)',
+                                fontSize: '1.25rem',
+                                marginBottom: '1rem',
+                                fontWeight: '700'
+                            }}>
+                                Roll History
+                            </h2>
+                            <div style={{
+                                display: 'grid',
+                                gap: '0.5rem',
+                                maxHeight: '400px',
+                                overflowY: 'auto',
+                                paddingRight: '0.5rem'
+                            }} className="history-list">
+                                {history.map((h, i) => {
+                                    const date = new Date(h.timestamp);
+                                    const timeString = date.toLocaleTimeString('en-US', {
+                                        hour: 'numeric',
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                        hour12: true
+                                    });
+                                    
+                                    return (
+                                        <div key={h.timestamp} style={{
+                                            padding: '0.75rem 1rem',
+                                            backgroundColor: i === 0 
+                                                ? 'rgba(212,175,55,0.1)' 
+                                                : 'rgba(0,0,0,0.2)',
+                                            border: `1px solid ${i === 0 
+                                                ? 'rgba(212,175,55,0.3)' 
+                                                : 'rgba(212,175,55,0.1)'}`,
+                                            borderRadius: '0.375rem',
+                                            display: 'grid',
+                                            gridTemplateColumns: 'auto 1fr auto',
                                             alignItems: 'center',
-                                            gap: '0.75rem'
-                                        }}>
-                                            <span style={{
-                                                fontSize: '1.5rem',
-                                                fontWeight: '800',
-                                                color: i === 0 ? 'var(--color-gold)' : 'rgba(244,232,208,0.7)',
-                                                minWidth: '50px',
-                                                textAlign: 'center'
+                                            gap: '1rem'
+                                        }} className="history-row">
+                                            <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.75rem'
                                             }}>
-                                                {h.total}
-                                            </span>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.125rem' }}>
                                                 <span style={{
-                                                    fontSize: '0.875rem',
-                                                    color: 'rgba(244,232,208,0.5)',
-                                                    fontWeight: '600'
+                                                    fontSize: '1.5rem',
+                                                    fontWeight: '800',
+                                                    color: i === 0 ? 'var(--color-gold)' : 'rgba(244,232,208,0.7)',
+                                                    minWidth: '50px',
+                                                    textAlign: 'center'
                                                 }}>
-                                                    {h.dice.length}d{h.diceType}
+                                                    {h.total}
                                                 </span>
-                                                <span style={{
-                                                    fontSize: '0.7rem',
-                                                    color: 'rgba(244,232,208,0.35)',
-                                                    fontWeight: '500'
-                                                }}>
-                                                    {timeString}
-                                                </span>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.125rem' }}>
+                                                    <span style={{
+                                                        fontSize: '0.875rem',
+                                                        color: 'rgba(244,232,208,0.5)',
+                                                        fontWeight: '600'
+                                                    }}>
+                                                        {h.dice.length}d{h.diceType}
+                                                    </span>
+                                                    <span style={{
+                                                        fontSize: '0.7rem',
+                                                        color: 'rgba(244,232,208,0.35)',
+                                                        fontWeight: '500'
+                                                    }}>
+                                                        {timeString}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div style={{
+                                                display: 'flex',
+                                                flexWrap: 'wrap',
+                                                gap: '0.375rem',
+                                                justifyContent: 'flex-end'
+                                            }}>
+                                                {h.dice.map((d, di) => (
+                                                    <span key={di} style={{
+                                                        padding: '0.25rem 0.5rem',
+                                                        backgroundColor: 'rgba(212,175,55,0.08)',
+                                                        border: '1px solid rgba(212,175,55,0.2)',
+                                                        borderRadius: '0.25rem',
+                                                        fontSize: '0.8rem',
+                                                        fontWeight: '700',
+                                                        color: 'rgba(244,232,208,0.7)'
+                                                    }}>
+                                                        {d}
+                                                    </span>
+                                                ))}
                                             </div>
                                         </div>
-                                        <div style={{
-                                            display: 'flex',
-                                            flexWrap: 'wrap',
-                                            gap: '0.375rem',
-                                            justifyContent: 'flex-end'
-                                        }}>
-                                            {h.dice.map((d, di) => (
-                                                <span key={di} style={{
-                                                    padding: '0.25rem 0.5rem',
-                                                    backgroundColor: 'rgba(212,175,55,0.08)',
-                                                    border: '1px solid rgba(212,175,55,0.2)',
-                                                    borderRadius: '0.25rem',
-                                                    fontSize: '0.8rem',
-                                                    fontWeight: '700',
-                                                    color: 'rgba(244,232,208,0.7)'
-                                                }}>
-                                                    {d}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
 
             <style>{`

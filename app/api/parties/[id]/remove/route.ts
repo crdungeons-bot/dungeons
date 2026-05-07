@@ -43,7 +43,7 @@ export async function POST(
         // Remove member
         await partiesCollection.updateOne(
             { _id: new ObjectId(id) },
-            { $pull: { members: { userId: new ObjectId(memberUserId) } } }
+            { $pull: { members: { userId: new ObjectId(memberUserId) } } } as any
         );
 
         return NextResponse.json({ success: true });

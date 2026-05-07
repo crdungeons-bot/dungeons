@@ -83,7 +83,7 @@ export async function POST(
                         joinedAt: new Date()
                     }
                 }
-            }
+            } as any
         );
 
         // Update invite status

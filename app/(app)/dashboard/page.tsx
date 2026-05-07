@@ -9,6 +9,7 @@ import RacialAbilitiesSection from '@/components/sections/racial-abilities-secti
 import BackgroundsSection from '@/components/sections/backgrounds-section';
 import SpellsSection from '@/components/sections/spells-section';
 import DiceRollerSection from '@/components/sections/dice-roller-section';
+import DashboardHomeSection from '@/components/sections/dashboard-home-section';
 
 export default async function Dashboard({
     searchParams,
@@ -35,49 +36,7 @@ export default async function Dashboard({
             {section === 'racial-abilities' && <RacialAbilitiesSection />}
             {section === 'backgrounds' && <BackgroundsSection />}
             {section === 'spells' && <SpellsSection />}
-            {(!section || section === 'home') && <DashboardHome />}
-        </div>
-    );
-}
-
-function DashboardHome() {
-    return (
-        <div style={{
-            padding: '4rem 3rem',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '80vh',
-            textAlign: 'center',
-        }}>
-            <p style={{
-                color: 'var(--color-accent-light)',
-                fontSize: '0.75rem',
-                fontWeight: '700',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                marginBottom: '1rem'
-            }}>
-                Welcome Back
-            </p>
-            <h1 style={{
-                color: 'var(--color-gold)',
-                fontSize: '2.5rem',
-                marginBottom: '1rem'
-            }}>
-                Your Dashboard
-            </h1>
-            <p style={{
-                color: 'rgba(244, 232, 208, 0.4)',
-                fontSize: '1rem',
-                maxWidth: '400px',
-                lineHeight: '1.8',
-                fontStyle: 'italic'
-            }}>
-                Select something from the sidebar to get started.
-                More features are on the way.
-            </p>
+            {(!section || section === 'home') && <DashboardHomeSection />}
         </div>
     );
 }

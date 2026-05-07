@@ -22,7 +22,7 @@ const sidebarGroups: SidebarGroup[] = [
         items: [
             { label: 'Dashboard', section: 'home' },
             { label: 'Characters', section: 'characters' },
-            { label: 'Parties', comingSoon: true },
+            { label: 'Parties', section: 'parties' },
             { label: 'Saved Items', comingSoon: true },
         ]
     },

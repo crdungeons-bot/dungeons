@@ -14,7 +14,7 @@ export default function CTA() {
         <section style={{
             position: 'relative',
             backgroundColor: 'var(--color-primary)',
-            padding: '7rem 0',
+            padding: 'clamp(4rem, 8vw, 7rem) 0',
             borderTop: '1px solid rgba(212, 175, 55, 0.2)',
             overflow: 'hidden',
         }}>
@@ -24,20 +24,31 @@ export default function CTA() {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: '800px',
-                height: '800px',
+                width: 'clamp(400px, 80vw, 800px)',
+                height: 'clamp(400px, 80vw, 800px)',
                 background: 'radial-gradient(circle, rgba(139,21,56,0.15) 0%, transparent 70%)',
                 pointerEvents: 'none',
             }} />
 
-            <div className="max-w-5xl mx-auto px-6" style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ 
+                maxWidth: '1100px',
+                margin: '0 auto',
+                padding: '0 1.5rem',
+                position: 'relative', 
+                zIndex: 1 
+            }}>
 
                 {/* Stats Row */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6" style={{ marginBottom: '5rem' }}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    gap: 'clamp(1rem, 3vw, 1.5rem)',
+                    marginBottom: 'clamp(3rem, 6vw, 5rem)'
+                }}>
                     {stats.map((stat) => (
                         <div key={stat.label} style={{ textAlign: 'center' }}>
                             <div style={{
-                                fontSize: '3rem',
+                                fontSize: 'clamp(2rem, 6vw, 3rem)',
                                 fontWeight: '800',
                                 color: 'var(--color-gold)',
                                 lineHeight: '1',
@@ -48,7 +59,7 @@ export default function CTA() {
                             </div>
                             <div style={{
                                 color: 'rgba(244, 232, 208, 0.5)',
-                                fontSize: '0.875rem',
+                                fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
                                 fontWeight: '600',
                                 letterSpacing: '0.1em',
                                 textTransform: 'uppercase'
@@ -63,7 +74,7 @@ export default function CTA() {
                 <div style={{
                     height: '1px',
                     background: 'linear-gradient(90deg, transparent, var(--color-gold), transparent)',
-                    marginBottom: '5rem',
+                    marginBottom: 'clamp(3rem, 6vw, 5rem)',
                     opacity: 0.4
                 }} />
 
@@ -74,18 +85,19 @@ export default function CTA() {
                         fontWeight: '700',
                         letterSpacing: '0.2em',
                         textTransform: 'uppercase',
-                        fontSize: '0.8rem',
+                        fontSize: 'clamp(0.7rem, 2vw, 0.8rem)',
                         marginBottom: '1.5rem'
                     }}>
                         Your Destiny Awaits
                     </p>
 
                     <h2 style={{
-                        fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                        fontSize: 'clamp(1.75rem, 5vw, 3.5rem)',
                         fontWeight: '800',
                         color: 'var(--color-parchment)',
                         lineHeight: '1.15',
                         marginBottom: '1.5rem',
+                        padding: '0 1rem'
                     }}>
                         The Dungeon Doesn't Care<br />
                         <span style={{ color: 'var(--color-gold)' }}>If You're Ready.</span>
@@ -93,28 +105,43 @@ export default function CTA() {
 
                     <p style={{
                         color: 'rgba(244, 232, 208, 0.6)',
-                        fontSize: '1.2rem',
+                        fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
                         maxWidth: '580px',
                         margin: '0 auto 3rem',
-                        lineHeight: '1.8'
+                        lineHeight: '1.8',
+                        padding: '0 1rem'
                     }}>
                         Thousands of adventurers have already chosen their path. 
                         Built their characters. Written their first chapter. 
                         The world of Calthera is unforgiving but it rewards the bold.
                     </p>
 
-                    <div className="flex gap-4 justify-center" style={{ flexWrap: 'wrap' }}>
+                    <div style={{ 
+                        display: 'flex', 
+                        gap: '1rem', 
+                        justifyContent: 'center',
+                        flexWrap: 'wrap',
+                        padding: '0 1rem'
+                    }}>
                         <Link
                             href="/register"
                             className="btn-primary"
-                            style={{ fontSize: '1.125rem', padding: '1rem 2.5rem' }}
+                            style={{ 
+                                fontSize: 'clamp(0.9rem, 2.5vw, 1.125rem)',
+                                padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2.5rem)',
+                                whiteSpace: 'nowrap'
+                            }}
                         >
                             Create Your Character
                         </Link>
                         <Link
                             href="/ashfall-concord"
                             className="btn-secondary"
-                            style={{ fontSize: '1.125rem', padding: '1rem 2.5rem' }}
+                            style={{ 
+                                fontSize: 'clamp(0.9rem, 2.5vw, 1.125rem)',
+                                padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2.5rem)',
+                                whiteSpace: 'nowrap'
+                            }}
                         >
                             Read the Lore
                         </Link>
@@ -122,7 +149,7 @@ export default function CTA() {
 
                     <p style={{
                         color: 'rgba(244, 232, 208, 0.25)',
-                        fontSize: '0.8rem',
+                        fontSize: 'clamp(0.75rem, 2vw, 0.8rem)',
                         marginTop: '1.5rem',
                         letterSpacing: '0.05em'
                     }}>

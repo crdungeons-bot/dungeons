@@ -395,6 +395,386 @@ function CreatePartyModal({
     );
 }
 
+type Character = {
+    id: string;
+    name: string;
+    race: string;
+    class: string;
+    level: number;
+};
+
+function AcceptInviteModal({
+    isOpen,
+    onClose,
+    invite,
+    onSuccess
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    invite: PartyInvite | null;
+    onSuccess: () => void;
+}) {
+    const [characters, setCharacters] = useState<Character[]>([]);
+    const [selectedCharacter, setSelectedCharacter] = useState<string>('');
+    const [loading, setLoading] = useState(false);
+    const [loadingChars, setLoadingChars] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        if (isOpen && invite) {
+            loadCharacters();
+        }
+    }, [isOpen, invite]);
+
+    const loadCharacters = async () => {
+        setLoadingChars(true);
+        const userId = localStorage.getItem('userId');
+        
+        if (!userId) return;
+
+        try {
+            const response = await fetch(`/api/characters?userId=${userId}`);
+            const data = await response.json();
+            setCharacters(data.characters || []);
+        } catch (err) {
+            console.error('Load characters error:', err);
+        } finally {
+            setLoadingChars(false);
+        }
+    };
+
+    const handleAccept = async () => {
+        if (!selectedCharacter || !invite) return;
+
+        setError('');
+        setLoading(true);
+
+        try {
+            const userId = localStorage.getItem('userId');
+
+            if (!userId) {
+                setError('Not logged in');
+                setLoading(false);
+                return;
+            }
+
+            const response = await fetch(`/api/parties/invites/${invite._id}/accept`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                    characterId: selectedCharacter
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.error || 'Failed to accept invite');
+                setLoading(false);
+                return;
+            }
+
+            setSelectedCharacter('');
+            setLoading(false);
+            onSuccess();
+        } catch (err) {
+            setError('An error occurred');
+            setLoading(false);
+        }
+    };
+
+    if (!isOpen || !invite) return null;
+
+    return (
+        <div
+            onClick={onClose}
+            style={{
+                position: 'fixed',
+                inset: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1000,
+                padding: '1rem'
+            }}
+        >
+            <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                    backgroundColor: 'var(--color-primary-dark)',
+                    border: '2px solid var(--color-gold)',
+                    borderRadius: '0.75rem',
+                    padding: '2rem',
+                    maxWidth: '500px',
+                    width: '100%',
+                    maxHeight: '90vh',
+                    overflowY: 'auto',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.5)'
+                }}
+            >
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1.5rem'
+                }}>
+                    <h2 style={{
+                        margin: 0,
+                        fontSize: '1.5rem',
+                        fontWeight: '800',
+                        color: 'var(--color-gold)'
+                    }}>
+                        Join Party
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--color-gold)',
+                            fontSize: '2rem',
+                            cursor: 'pointer',
+                            lineHeight: 1,
+                            padding: 0
+                        }}
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <p style={{
+                        margin: 0,
+                        fontSize: '1rem',
+                        color: 'var(--color-parchment)',
+                        lineHeight: '1.6'
+                    }}>
+                        You've been invited to join <strong style={{ color: 'var(--color-gold)' }}>{invite.partyName}</strong>.
+                        Select a character to adventure with:
+                    </p>
+                </div>
+
+                {loadingChars ? (
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '2rem',
+                        color: 'rgba(244,232,208,0.5)'
+                    }}>
+                        Loading characters...
+                    </div>
+                ) : characters.length === 0 ? (
+                    <div style={{
+                        padding: '2rem',
+                        backgroundColor: 'rgba(212,175,55,0.05)',
+                        border: '1px solid rgba(212,175,55,0.2)',
+                        borderRadius: '0.5rem',
+                        textAlign: 'center'
+                    }}>
+                        <p style={{
+                            margin: '0 0 1.25rem 0',
+                            fontSize: '0.95rem',
+                            color: 'rgba(244,232,208,0.6)',
+                            lineHeight: '1.6'
+                        }}>
+                            You need to create a character before joining a party.
+                        </p>
+                        <Link
+                            href="/create-character"
+                            style={{
+                                display: 'inline-block',
+                                padding: '0.625rem 1.5rem',
+                                backgroundColor: 'var(--color-gold)',
+                                color: 'var(--color-primary)',
+                                fontSize: '0.875rem',
+                                fontWeight: '800',
+                                borderRadius: '0.5rem',
+                                textDecoration: 'none',
+                                boxShadow: '0 0 12px rgba(212,175,55,0.25)'
+                            }}
+                        >
+                            Create Character
+                        </Link>
+                    </div>
+                ) : (
+                    <>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.75rem',
+                            marginBottom: '1.5rem'
+                        }}>
+                            {characters.map(char => (
+                                <button
+                                    key={char.id}
+                                    onClick={() => setSelectedCharacter(char.id)}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '1rem',
+                                        padding: '1rem',
+                                        backgroundColor: selectedCharacter === char.id ? 'rgba(212,175,55,0.15)' : 'rgba(0,0,0,0.2)',
+                                        border: `2px solid ${selectedCharacter === char.id ? 'var(--color-gold)' : 'rgba(212,175,55,0.15)'}`,
+                                        borderRadius: '0.5rem',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        textAlign: 'left'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (selectedCharacter !== char.id) {
+                                            e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)';
+                                            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.25)';
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (selectedCharacter !== char.id) {
+                                            e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.2)';
+                                            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.15)';
+                                        }
+                                    }}
+                                >
+                                    {/* Portrait */}
+                                    <div style={{
+                                        width: '50px',
+                                        height: '50px',
+                                        borderRadius: '0.375rem',
+                                        overflow: 'hidden',
+                                        flexShrink: 0,
+                                        background: `
+                                            linear-gradient(to bottom, rgba(10,8,6,0) 50%, rgba(10,8,6,0.9) 100%),
+                                            url(/images/races/${char.race}.png) center / cover no-repeat
+                                        `,
+                                        border: '1px solid rgba(212,175,55,0.3)'
+                                    }} />
+
+                                    {/* Info */}
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <p style={{
+                                            margin: 0,
+                                            fontSize: '1rem',
+                                            fontWeight: '700',
+                                            color: selectedCharacter === char.id ? 'var(--color-gold)' : 'var(--color-parchment)',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            {char.name}
+                                        </p>
+                                        <p style={{
+                                            margin: 0,
+                                            fontSize: '0.8rem',
+                                            color: 'rgba(244,232,208,0.5)',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            Level {char.level} {char.race.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} {char.class.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                        </p>
+                                    </div>
+
+                                    {/* Checkmark */}
+                                    {selectedCharacter === char.id && (
+                                        <div style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            borderRadius: '50%',
+                                            backgroundColor: 'var(--color-gold)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            color: 'var(--color-primary)',
+                                            fontSize: '0.9rem',
+                                            fontWeight: '800'
+                                        }}>
+                                            ✓
+                                        </div>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+
+                        {error && (
+                            <div style={{
+                                padding: '0.75rem',
+                                backgroundColor: 'rgba(139,21,56,0.2)',
+                                border: '1px solid var(--color-accent)',
+                                borderRadius: '0.375rem',
+                                color: '#f4a0b0',
+                                fontSize: '0.875rem',
+                                marginBottom: '1rem'
+                            }}>
+                                {error}
+                            </div>
+                        )}
+
+                        {/* Buttons */}
+                        <div style={{
+                            display: 'flex',
+                            gap: '0.75rem'
+                        }}>
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                style={{
+                                    flex: 1,
+                                    padding: '0.75rem',
+                                    backgroundColor: 'transparent',
+                                    color: 'rgba(244,232,208,0.6)',
+                                    border: '1px solid rgba(212,175,55,0.2)',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '0.95rem',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)';
+                                    e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                    e.currentTarget.style.borderColor = 'rgba(212,175,55,0.2)';
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleAccept}
+                                disabled={loading || !selectedCharacter}
+                                style={{
+                                    flex: 1,
+                                    padding: '0.75rem',
+                                    backgroundColor: loading || !selectedCharacter ? 'rgba(212,175,55,0.3)' : 'var(--color-gold)',
+                                    color: 'var(--color-primary)',
+                                    border: 'none',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '0.95rem',
+                                    fontWeight: '800',
+                                    cursor: loading || !selectedCharacter ? 'not-allowed' : 'pointer',
+                                    boxShadow: loading || !selectedCharacter ? 'none' : '0 0 12px rgba(212,175,55,0.25)',
+                                    transition: 'opacity 0.2s'
+                                }}
+                                onMouseEnter={(e) => {
+                                    if (!loading && selectedCharacter) {
+                                        e.currentTarget.style.opacity = '0.85';
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.opacity = '1';
+                                }}
+                            >
+                                {loading ? 'Joining...' : 'Join Party'}
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+}
+
 function PartyCard({ party, userId }: { party: Party; userId: string }) {
     const [hovered, setHovered] = useState(false);
     const isDM = party.dmUserId === userId;
@@ -787,7 +1167,19 @@ export default function PartiesSection() {
                     loadData(userId, userEmail);
                 }}
             />
-            {/* TODO: Accept Invite Modal (Character Selection) */}
+            <AcceptInviteModal
+                isOpen={showAcceptModal}
+                onClose={() => {
+                    setShowAcceptModal(false);
+                    setSelectedInvite(null);
+                }}
+                invite={selectedInvite}
+                onSuccess={() => {
+                    setShowAcceptModal(false);
+                    setSelectedInvite(null);
+                    loadData(userId, userEmail);
+                }}
+            />
         </div>
     );
 }

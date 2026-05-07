@@ -48,21 +48,6 @@ export default function DiceRollerSection() {
         }, 1200);
     };
 
-    const quickRoll = (type: DiceType, count: number) => {
-        setDiceType(type);
-        setNumDice(count);
-        setTimeout(() => {
-            const dice = Array.from({ length: count }, () => 
-                Math.floor(Math.random() * type) + 1
-            );
-            const total = dice.reduce((sum, d) => sum + d, 0);
-            const newResult = { dice, total, diceType: type, timestamp: Date.now() };
-            
-            setResult(newResult);
-            setHistory(prev => [newResult, ...prev].slice(0, 10));
-        }, 50);
-    };
-
     return (
         <div style={{
             minHeight: '100vh',
@@ -231,63 +216,11 @@ export default function DiceRollerSection() {
                                 cursor: isRolling ? 'not-allowed' : 'pointer',
                                 boxShadow: isRolling ? 'none' : '0 0 20px rgba(212,175,55,0.4)',
                                 transition: 'all 0.2s',
-                                letterSpacing: '0.05em',
-                                marginBottom: '2rem'
+                                letterSpacing: '0.05em'
                             }}
                         >
                             {isRolling ? '🎲 Rolling...' : `🎲 Roll ${numDice}d${diceType}`}
                         </button>
-                    </div>
-
-                    {/* Quick Rolls */}
-                    <div>
-                        <p style={{
-                            color: 'rgba(244,232,208,0.5)',
-                            fontSize: '0.75rem',
-                            marginBottom: '0.75rem',
-                            fontWeight: '600',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em'
-                        }}>
-                            Quick Rolls
-                        </p>
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '0.5rem'
-                        }}>
-                            {[
-                                { label: 'd20', type: 20 as DiceType, count: 1 },
-                                { label: '2d20 (Adv/Dis)', type: 20 as DiceType, count: 2 },
-                                { label: '4d6 (Stats)', type: 6 as DiceType, count: 4 },
-                                { label: '8d6 (Fireball)', type: 6 as DiceType, count: 8 },
-                                { label: '2d8', type: 8 as DiceType, count: 2 },
-                                { label: 'd100 (Percentile)', type: 100 as DiceType, count: 1 },
-                            ].map(qr => (
-                                <button
-                                    key={qr.label}
-                                    onClick={() => quickRoll(qr.type, qr.count)}
-                                    disabled={isRolling}
-                                    style={{
-                                        padding: '0.625rem 1rem',
-                                        backgroundColor: 'rgba(212,175,55,0.08)',
-                                        border: '1px solid rgba(212,175,55,0.25)',
-                                        borderRadius: '0.375rem',
-                                        color: 'var(--color-gold)',
-                                        fontSize: '0.85rem',
-                                        fontWeight: '600',
-                                        cursor: isRolling ? 'not-allowed' : 'pointer',
-                                        transition: 'all 0.2s',
-                                        opacity: isRolling ? 0.5 : 1,
-                                        textAlign: 'left'
-                                    }}
-                                    onMouseEnter={(e) => !isRolling && (e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.15)')}
-                                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)')}
-                                >
-                                    {qr.label}
-                                </button>
-                            ))}
-                        </div>
                     </div>
                 </div>
 
@@ -414,9 +347,35 @@ export default function DiceRollerSection() {
                         )}
                     </div>
 
+                    {/* Roll Button - Moved here for mobile reordering */}
+                    <div className="dice-roll-button-container" style={{ display: 'none' }}>
+                        <button
+                            onClick={rollDice}
+                            disabled={isRolling}
+                            style={{
+                                width: '100%',
+                                padding: '1rem',
+                                backgroundColor: isRolling 
+                                    ? 'rgba(212,175,55,0.3)' 
+                                    : 'var(--color-gold)',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                color: 'var(--color-primary)',
+                                fontSize: '1.1rem',
+                                fontWeight: '800',
+                                cursor: isRolling ? 'not-allowed' : 'pointer',
+                                boxShadow: isRolling ? 'none' : '0 0 20px rgba(212,175,55,0.4)',
+                                transition: 'all 0.2s',
+                                letterSpacing: '0.05em'
+                            }}
+                        >
+                            {isRolling ? '🎲 Rolling...' : `🎲 Roll ${numDice}d${diceType}`}
+                        </button>
+                    </div>
+
                     {/* Roll History */}
                     {history.length > 0 && (
-                        <div>
+                        <div className="dice-roll-history">
                             <h2 style={{
                                 color: 'var(--color-gold)',
                                 fontSize: '1.25rem',
@@ -530,21 +489,32 @@ export default function DiceRollerSection() {
                         flex-direction: column !important;
                         order: 2 !important;
                     }
+                    .dice-controls-sidebar > .dice-roll-button-container {
+                        display: none !important;
+                    }
                     .controls-title {
                         display: none !important;
                     }
                     .dice-results-area {
                         order: 1 !important;
                         padding: 1.5rem !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                    }
+                    .dice-results-area > .dice-roll-button-container {
+                        display: block !important;
+                        order: 2 !important;
+                        margin-bottom: 1.5rem !important;
                     }
                     .dice-results-display {
                         min-height: 250px !important;
-                    }
-                    .dice-roll-button-container {
                         order: 1 !important;
                     }
+                    .dice-roll-history {
+                        order: 3 !important;
+                    }
                     .dice-selection-controls {
-                        order: 2 !important;
+                        order: 1 !important;
                     }
                 }
                 @keyframes pulse {

@@ -940,7 +940,7 @@ export default function PartiesSection() {
 
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
-        const storedEmail = localStorage.getItem('userEmail');
+        const storedEmail = localStorage.getItem('email');
         
         if (storedUserId) setUserId(storedUserId);
         if (storedEmail) setUserEmail(storedEmail);

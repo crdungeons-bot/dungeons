@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import CharacterViewModal from './character-view-modal';
 
 type PartyMember = {
     userId: string;
@@ -38,18 +39,19 @@ function fmt(s: string): string {
     return s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-function MemberCard({ member, isDM, onRemove }: { 
+function MemberCard({ member, isDM, onRemove, onViewCharacter }: { 
     member: PartyMember; 
     isDM: boolean;
     onRemove: (userId: string) => void;
+    onViewCharacter: (characterId: string) => void;
 }) {
     const [hovered, setHovered] = useState(false);
 
     if (!member.character || !member.user) return null;
 
     return (
-        <Link
-            href={`/dashboard?section=characters&item=${member.characterId}`}
+        <div
+            onClick={() => onViewCharacter(member.characterId)}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             style={{
@@ -60,7 +62,6 @@ function MemberCard({ member, isDM, onRemove }: {
                 backgroundColor: hovered ? 'rgba(212,175,55,0.08)' : 'rgba(0,0,0,0.2)',
                 border: `1px solid ${hovered ? 'rgba(212,175,55,0.3)' : 'rgba(212,175,55,0.15)'}`,
                 borderRadius: '0.5rem',
-                textDecoration: 'none',
                 transition: 'all 0.2s ease',
                 cursor: 'pointer'
             }}
@@ -145,7 +146,7 @@ function MemberCard({ member, isDM, onRemove }: {
                     Remove
                 </button>
             )}
-        </Link>
+        </div>
     );
 }
 
@@ -161,6 +162,7 @@ export default function PartyDetailSection({ partyId }: { partyId: string }) {
     const [inviteSuccess, setInviteSuccess] = useState('');
     const [deleteConfirm, setDeleteConfirm] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [viewingCharacterId, setViewingCharacterId] = useState<string | null>(null);
 
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
@@ -518,6 +520,7 @@ export default function PartyDetailSection({ partyId }: { partyId: string }) {
                                 member={member} 
                                 isDM={isDM}
                                 onRemove={handleRemoveMember}
+                                onViewCharacter={(charId) => setViewingCharacterId(charId)}
                             />
                         ))}
                     </div>
@@ -622,6 +625,13 @@ export default function PartyDetailSection({ partyId }: { partyId: string }) {
                     )}
                 </div>
             )}
+            
+            {/* Character View Modal */}
+            <CharacterViewModal
+                characterId={viewingCharacterId || ''}
+                isOpen={!!viewingCharacterId}
+                onClose={() => setViewingCharacterId(null)}
+            />
         </div>
     );
 }

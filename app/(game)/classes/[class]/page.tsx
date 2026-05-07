@@ -9,40 +9,58 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ cl
     const data: ClassDetail = await response.json();
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-primary)' }}>
+        <div className="min-h-screen" style={{ backgroundColor: 'var(--color-primary)' }}>
             <Navigation />
 
-            <div className="max-w-4xl mx-auto p-6">
-                {/* Header */}
-                <div style={{
-                    background: 'linear-gradient(135deg, var(--color-accent-dark), var(--color-primary-light))',
-                    border: '2px solid var(--color-gold)',
-                    borderRadius: '0.5rem',
-                    padding: '2rem',
-                    marginBottom: '1.5rem'
-                }}>
-                    <h1 style={{ fontSize: '3rem', color: 'var(--color-gold)', marginBottom: '0.5rem' }}>
+            {/* Epic Hero Section with Background Image */}
+            <div className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+                <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                    style={{
+                        backgroundImage: `url(/images/dnd-classes/${className}.png)`,
+                        filter: 'brightness(0.4)',
+                    }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-[var(--color-primary)]" />
+                
+                <div className="relative z-10 text-center px-6 max-w-4xl">
+                    <h1 
+                        className="text-7xl md:text-8xl font-bold mb-6 tracking-wide"
+                        style={{
+                            color: 'var(--color-gold)',
+                            textShadow: '0 0 30px rgba(212, 175, 55, 0.8), 0 0 60px rgba(212, 175, 55, 0.4)',
+                            fontFamily: 'var(--font-accent)'
+                        }}
+                    >
                         {data.name}
                     </h1>
-                    <p style={{ fontSize: '1.25rem', color: 'var(--color-parchment)' }}>
+                    <div className="text-3xl" style={{ color: 'var(--color-parchment)' }}>
                         🎲 Hit Die: d{data.hit_die}
-                    </p>
+                    </div>
                 </div>
+            </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+            {/* Content Section */}
+            <div className="max-w-6xl mx-auto px-6 py-12 -mt-20 relative z-20">
+                
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
                     {/* Saving Throws */}
                     <div className="card-dnd">
-                        <h2 style={{ color: 'var(--color-primary)' }}>Saving Throws</h2>
-                        <div className="flex flex-wrap gap-2 mt-2">
+                        <h2 className="text-3xl font-bold mb-6" style={{ color: 'var(--color-gold)' }}>
+                            Saving Throws
+                        </h2>
+                        <div className="flex flex-wrap gap-3">
                             {data.saving_throws.map((st) => (
-                                <span key={st.index} style={{
-                                    backgroundColor: 'var(--color-accent)',
-                                    color: 'white',
-                                    padding: '0.25rem 0.75rem',
-                                    borderRadius: '9999px',
-                                    fontWeight: '600',
-                                    fontSize: '0.875rem'
-                                }}>
+                                <span 
+                                    key={st.index} 
+                                    className="px-5 py-3 rounded-lg font-semibold text-lg"
+                                    style={{
+                                        backgroundColor: 'var(--color-accent)',
+                                        color: 'var(--color-gold)',
+                                        border: '2px solid var(--color-gold-dark)',
+                                        textShadow: '0 0 10px rgba(212, 175, 55, 0.5)'
+                                    }}
+                                >
                                     {st.name}
                                 </span>
                             ))}
@@ -51,17 +69,20 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ cl
 
                     {/* Proficiencies */}
                     <div className="card-dnd">
-                        <h2 style={{ color: 'var(--color-primary)' }}>Proficiencies</h2>
-                        <div className="flex flex-wrap gap-2 mt-2">
+                        <h2 className="text-3xl font-bold mb-6" style={{ color: 'var(--color-gold)' }}>
+                            Proficiencies
+                        </h2>
+                        <div className="flex flex-wrap gap-2">
                             {data.proficiencies.map((prof) => (
-                                <span key={prof.index} style={{
-                                    backgroundColor: 'var(--color-primary)',
-                                    border: '1px solid var(--color-gold)',
-                                    color: 'var(--color-gold)',
-                                    padding: '0.25rem 0.75rem',
-                                    borderRadius: '9999px',
-                                    fontSize: '0.875rem'
-                                }}>
+                                <span 
+                                    key={prof.index} 
+                                    className="px-3 py-2 rounded-full text-sm font-medium"
+                                    style={{
+                                        backgroundColor: 'var(--color-primary-light)',
+                                        border: '1px solid var(--color-gold-dark)',
+                                        color: 'var(--color-parchment)'
+                                    }}
+                                >
                                     {prof.name}
                                 </span>
                             ))}
@@ -70,22 +91,29 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ cl
                 </div>
 
                 {/* Starting Equipment */}
-                <div className="card-dnd mt-6">
-                    <h2 style={{ color: 'var(--color-primary)' }}>Starting Equipment</h2>
-                    <div className="flex flex-wrap gap-3 mt-3">
+                <div className="card-dnd mb-6">
+                    <h2 className="text-3xl font-bold mb-6" style={{ color: 'var(--color-gold)' }}>
+                        Starting Equipment
+                    </h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {data.starting_equipment.map((item) => (
-                            <div key={item.equipment.index} style={{
-                                backgroundColor: 'var(--color-primary)',
-                                border: '1px solid var(--color-gold)',
-                                borderRadius: '0.5rem',
-                                padding: '0.5rem 1rem',
-                            }}>
-                                <span style={{ color: 'var(--color-parchment)', fontWeight: '500' }}>
+                            <div 
+                                key={item.equipment.index} 
+                                className="p-4 rounded-lg text-center"
+                                style={{
+                                    backgroundColor: 'var(--color-accent)',
+                                    border: '2px solid var(--color-gold-dark)',
+                                }}
+                            >
+                                <div style={{ color: 'var(--color-parchment)', fontWeight: '600', marginBottom: '0.25rem' }}>
                                     {item.equipment.name}
-                                </span>
-                                <span style={{ color: 'var(--color-gold)', marginLeft: '0.5rem' }}>
+                                </div>
+                                <div 
+                                    className="text-xl font-bold"
+                                    style={{ color: 'var(--color-gold)' }}
+                                >
                                     x{item.quantity}
-                                </span>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -93,11 +121,23 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ cl
 
                 {/* Proficiency Choices */}
                 {data.proficiency_choices.length > 0 && (
-                    <div className="card-dnd mt-6">
-                        <h2 style={{ color: 'var(--color-primary)' }}>Proficiency Choices</h2>
+                    <div className="card-dnd mb-8">
+                        <h2 className="text-3xl font-bold mb-6" style={{ color: 'var(--color-gold)' }}>
+                            Proficiency Choices
+                        </h2>
                         {data.proficiency_choices.map((choice, index) => (
-                            <div key={index} className="mt-3">
-                                <p style={{ color: 'var(--color-primary)', fontStyle: 'italic', marginBottom: '0.5rem' }}>
+                            <div 
+                                key={index} 
+                                className="p-4 rounded-lg mb-3"
+                                style={{
+                                    backgroundColor: 'var(--color-accent)',
+                                    border: '1px solid var(--color-gold-dark)'
+                                }}
+                            >
+                                <p 
+                                    className="text-lg italic"
+                                    style={{ color: 'var(--color-parchment)' }}
+                                >
                                     {choice.desc}
                                 </p>
                             </div>
@@ -106,7 +146,7 @@ export default async function ClassDetailPage({ params }: { params: Promise<{ cl
                 )}
 
                 {/* Back Button */}
-                <div className="mt-8">
+                <div className="text-center">
                     <Link href="/classes" className="btn-secondary inline-block">
                         ← Back to All Classes
                     </Link>

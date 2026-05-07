@@ -19,10 +19,10 @@ export default async function RaceDetailSection({ race }: { race: string }) {
     return (
         <div style={{
             // 4 gradient layers stacked in front of the image:
-            // Layer 1: left fade    ,  wide (0–42%) so it fully covers the image edge
-            // Layer 2: right fade   ,  same, mirrored
-            // Layer 3: dark overlay ,  keeps text readable, heavier at top/bottom
-            // Layer 4 (back): image ,  'contain' = full body, no cropping
+            // Layer 1: left fade   ,   wide (0–42%) so it fully covers the image edge
+            // Layer 2: right fade  ,   same, mirrored
+            // Layer 3: dark overlay,   keeps text readable, heavier at top/bottom
+            // Layer 4 (back): image,   'contain' = full body, no cropping
             background: `
                 linear-gradient(to right,  var(--color-primary) 0%, rgba(10,5,2,0) 42%),
                 linear-gradient(to left,   var(--color-primary) 0%, rgba(10,5,2,0) 42%),
@@ -162,7 +162,7 @@ export default async function RaceDetailSection({ race }: { race: string }) {
                 </div>
             </div>
 
-            {/* Sticky bar ,  sticks to the bottom of <main> as the user scrolls */}
+            {/* Sticky bar,   sticks to the bottom of <main> as the user scrolls */}
             <div style={{
                 position: 'sticky',
                 bottom: 0,

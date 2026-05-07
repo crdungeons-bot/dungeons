@@ -216,7 +216,7 @@ export default function StoryStep({
                             lineHeight: '1.65',
                             margin: 0,
                         }}>
-                            This is your character's voice. Fill in as much or as little as you like ,  you can always come back and add to it later. Other players and your DM will be able to read this on your character's page.
+                            This is your character's voice. Fill in as much or as little as you like,   you can always come back and add to it later. Other players and your DM will be able to read this on your character's page.
                         </p>
                     </div>
                 </div>
@@ -229,7 +229,7 @@ export default function StoryStep({
                 <StoryTextarea
                     label="Backstory"
                     placeholder={
-                        `e.g. Born into a family of traveling merchants, ${name || 'your character'} spent their early years crossing trade routes between kingdoms. It was on one such journey that they witnessed a creature from the shadowfell tear through their caravan ,  the only survivor, they vowed to understand the forces that nearly claimed them...`
+                        `e.g. Born into a family of traveling merchants, ${name || 'your character'} spent their early years crossing trade routes between kingdoms. It was on one such journey that they witnessed a creature from the shadowfell tear through their caravan,   the only survivor, they vowed to understand the forces that nearly claimed them...`
                     }
                     value={backstory}
                     onChange={setBackstory}
@@ -243,7 +243,7 @@ export default function StoryStep({
                 />
                 <StoryTextarea
                     label="Physical Description"
-                    placeholder="e.g. Tall and lean with pale grey skin and silver eyes that seem to catch light that isn't there. A scar runs from their left temple to the corner of their jaw ,  a souvenir they never speak of. They dress practically but always wear a single copper earring shaped like a crescent moon."
+                    placeholder="e.g. Tall and lean with pale grey skin and silver eyes that seem to catch light that isn't there. A scar runs from their left temple to the corner of their jaw,   a souvenir they never speak of. They dress practically but always wear a single copper earring shaped like a crescent moon."
                     value={appearance}
                     onChange={setAppearance}
                     rows={4}
@@ -272,7 +272,7 @@ export default function StoryStep({
                     <StoryTextarea
                         label="Ideals"
                         sublabel="What principles guide their decisions?"
-                        placeholder="e.g. Knowledge ,  the path to power and self-improvement is through knowledge. (Neutral)"
+                        placeholder="e.g. Knowledge,   the path to power and self-improvement is through knowledge. (Neutral)"
                         value={ideals}
                         onChange={setIdeals}
                         rows={4}
@@ -281,7 +281,7 @@ export default function StoryStep({
                     <StoryTextarea
                         label="Bonds"
                         sublabel="Who or what do they care about most?"
-                        placeholder="e.g. I have an ancient text that holds terrible secrets that must not fall into the wrong hands. My village was burned to the ground by soldiers of the empire ,  I will see them pay."
+                        placeholder="e.g. I have an ancient text that holds terrible secrets that must not fall into the wrong hands. My village was burned to the ground by soldiers of the empire,   I will see them pay."
                         value={bonds}
                         onChange={setBonds}
                         rows={4}
@@ -339,7 +339,7 @@ export default function StoryStep({
                             margin: 0,
                             fontStyle: 'italic',
                         }}>
-                            Story in progress ,  you can keep editing after creation too.
+                            Story in progress,   you can keep editing after creation too.
                         </p>
                     ) : (
                         <p style={{
@@ -348,7 +348,7 @@ export default function StoryStep({
                             margin: 0,
                             fontStyle: 'italic',
                         }}>
-                            All fields optional ,  skip if you prefer.
+                            All fields optional,   skip if you prefer.
                         </p>
                     )}
                 </div>

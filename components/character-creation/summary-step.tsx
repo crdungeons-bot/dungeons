@@ -411,7 +411,7 @@ export default function SummaryStep({
                             fontSize:     '0.85rem',
                             fontStyle:    'italic',
                         }}>
-                            No stats recorded ,  you can assign them later.
+                            No stats recorded,   you can assign them later.
                         </div>
                     </section>
                 )}

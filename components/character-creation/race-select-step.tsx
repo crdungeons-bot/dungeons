@@ -28,11 +28,11 @@ const RACE_DESCRIPTIONS: Record<string, string> = {
     dragonborn: 'Proud dragon-blooded warriors with a breath weapon and a fierce, uncompromising sense of honour.',
     dwarf:      'Stout and unyielding, masters of stone and steel forged by centuries underground.',
     elf:        'Ancient and graceful, blessed with keen senses, arcane talent, and centuries of hard-won wisdom.',
-    gnome:      'Small in stature, boundless in curiosity ,  natural tinkerers with a gift for illusion.',
+    gnome:      'Small in stature, boundless in curiosity,   natural tinkerers with a gift for illusion.',
     'half-elf': 'Born of two worlds, blending human ambition with elven charm, perception, and longevity.',
     'half-orc': 'Ferocious and tenacious, they refuse to fall even when death seems certain.',
     halfling:   'Nimble and uncannily lucky, halflings slip through danger with a cheerful, unshakeable calm.',
-    human:      'Endlessly adaptable and fiercely ambitious ,  humans shape the world through sheer determination.',
+    human:      'Endlessly adaptable and fiercely ambitious,   humans shape the world through sheer determination.',
     tiefling:   'Marked by infernal heritage, cunning survivors who forge their own fate despite the world\'s suspicion.',
 };
 
@@ -407,7 +407,7 @@ export default function RaceSelectStep({
 }: {
     races: Race[];
     preselect?: string;
-    /** Class index pre-selected from a class detail page ,  carried forward to step 2 */
+    /** Class index pre-selected from a class detail page,   carried forward to step 2 */
     preselectClass?: string;
 }) {
     const router = useRouter();
@@ -508,7 +508,7 @@ export default function RaceSelectStep({
                 )}
             </div>
 
-            {/* Sticky footer ,  appears when a race is confirmed */}
+            {/* Sticky footer,   appears when a race is confirmed */}
             {selectedRace && (
                 <div style={{
                     flexShrink: 0,

@@ -725,7 +725,7 @@ function FeaturesScreen({ charClass, charRace, newLevel, onNext, onFeaturesLoade
                 </div>
             ) : (
                 <div style={{ textAlign: 'center', padding: '1.5rem', color: 'rgba(244,232,208,0.35)', fontStyle: 'italic', fontSize: '0.85rem' }}>
-                    No new class features at this level ,  but your power grows all the same.
+                    No new class features at this level,   but your power grows all the same.
                 </div>
             )}
 

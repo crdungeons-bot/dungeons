@@ -5,8 +5,8 @@ import clientPromise from '@/lib/mongo';
  * GET /api/resources/feats
  *
  * Query parameters (all optional):
- *   q            ,  name / benefit text search (case-insensitive)
- *   prerequisite ,  filter by prerequisite string (e.g. 'Spellcasting')
+ *   q           ,   name / benefit text search (case-insensitive)
+ *   prerequisite,   filter by prerequisite string (e.g. 'Spellcasting')
  *
  * Returns: { feats: FeatEntry[], total: number }
  */

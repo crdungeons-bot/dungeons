@@ -3,9 +3,9 @@
  * Run with: npm run seed:spells
  *
  * Populates:
- *   dnd-resources.spells-abilities  ,  all spells, class abilities, racial abilities
- *   dnd-resources.items             ,  placeholder (schema only, ready for data)
- *   dnd-resources.feats             ,  placeholder (schema only, ready for data)
+ *   dnd-resources.spells-abilities ,   all spells, class abilities, racial abilities
+ *   dnd-resources.items            ,   placeholder (schema only, ready for data)
+ *   dnd-resources.feats            ,   placeholder (schema only, ready for data)
  */
 
 import { MongoClient } from 'mongodb';
@@ -80,7 +80,7 @@ async function seedSpellsAbilities(db: ReturnType<MongoClient['db']>) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Seed items ,  full D&D 5e catalogue from items-data.ts
+   Seed items,   full D&D 5e catalogue from items-data.ts
 ═══════════════════════════════════════════════════════════════════ */
 
 async function seedItems(db: ReturnType<MongoClient['db']>) {
@@ -112,7 +112,7 @@ async function seedFeats(db: ReturnType<MongoClient['db']>) {
 
     const collection = db.collection(col);
 
-    // Representative SRD feats ,  full data to be added later
+    // Representative SRD feats,   full data to be added later
     const sampleFeats = [
         { name: 'Alert',           prerequisite: null,          benefit: '+5 to initiative. Cannot be surprised while conscious. Enemies gain no benefit from being hidden when attacking you.' },
         { name: 'Athlete',         prerequisite: null,          benefit: '+1 STR or DEX. Climbing costs no extra movement. Standing up costs only 5 ft of movement. Running long jump only needs 5 ft run-up.' },
@@ -126,7 +126,7 @@ async function seedFeats(db: ReturnType<MongoClient['db']>) {
         { name: 'Healer',          prerequisite: null,          benefit: 'Stabilize at 1 HP with healer\'s kit. Use healer\'s kit to heal 1d6+4+max-HD HP (once per creature per short rest).' },
         { name: 'Keen Mind',       prerequisite: null,          benefit: '+1 INT. Always know N/S/E/W and hours to sunset/sunrise. Perfect memory for past month.' },
         { name: 'Linguist',        prerequisite: null,          benefit: '+1 INT. Learn 3 languages. Can create written ciphers.' },
-        { name: 'Lucky',           prerequisite: null,          benefit: '3 luck points per long rest. Spend to reroll attack/ability/saving throw ,  pick either result.' },
+        { name: 'Lucky',           prerequisite: null,          benefit: '3 luck points per long rest. Spend to reroll attack/ability/saving throw,   pick either result.' },
         { name: 'Mage Slayer',     prerequisite: null,          benefit: 'Reaction attack when adjacent creature casts. Disadvantage on concentration saves from your damage. Advantage vs spells while within 5 ft of caster.' },
         { name: 'Magic Initiate',  prerequisite: null,          benefit: 'Learn 2 cantrips and 1 1st-level spell (cast once per long rest without slot) from one class list.' },
         { name: 'Mounted Combatant', prerequisite: null,        benefit: 'Advantage vs unmounted creatures smaller than mount. Force attacks targeting mount to target you. Mount auto-succeeds DEX saves vs area effects (half dmg on fail = none; fail = half).' },

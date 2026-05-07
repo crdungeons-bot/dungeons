@@ -5,7 +5,7 @@ import { useRouter }         from 'next/navigation';
 import { STATIC_BACKGROUNDS } from '@/data/backgrounds';
 
 /* ═══════════════════════════════════════════════════════════════════
-   Static skill data ,  all 18 D&D 5e skills grouped by ability score
+   Static skill data,   all 18 D&D 5e skills grouped by ability score
 ═══════════════════════════════════════════════════════════════════ */
 
 const ABILITY_GROUPS = [
@@ -219,7 +219,7 @@ export default function ProficiencyStep({
         return { lockedMap: locked, choiceGroups: groups };
     }, [raceApiData, classApiData, background]);
 
-    /* ── User selection state ,  one selected-set per choice group ── */
+    /* ── User selection state,   one selected-set per choice group ── */
     const [selections, setSelections] = useState<Set<string>[]>(
         () => choiceGroups.map(() => new Set<string>())
     );
@@ -245,7 +245,7 @@ export default function ProficiencyStep({
 
     /* ── Handle bubble click ── */
     function handleClick(skillIndex: string) {
-        if (lockedMap.has(skillIndex)) return; // locked ,  no interaction
+        if (lockedMap.has(skillIndex)) return; // locked,   no interaction
 
         // Find which groups include this skill in their pool
         const eligibleGroups = choiceGroups
@@ -322,7 +322,7 @@ export default function ProficiencyStep({
                         lineHeight: '1.6',
                     }}>
                         Proficiencies marked with a badge are granted automatically by your
-                        race, class, or background ,  they cannot be changed.{' '}
+                        race, class, or background,   they cannot be changed.{' '}
                         {totalRemaining > 0
                             ? `Choose ${totalRemaining} more skill${totalRemaining > 1 ? 's' : ''} from the highlighted options below.`
                             : 'All your proficiency choices have been made!'}

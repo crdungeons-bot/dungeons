@@ -7,7 +7,7 @@ import type { StaticBackground } from '@/data/backgrounds';
 // Alias so internal code stays readable
 type BgDetail = StaticBackground;
 
-// ── Alignment data (hardcoded ,  these never change in D&D 5e) ─────────────────
+// ── Alignment data (hardcoded,   these never change in D&D 5e) ─────────────────
 
 type Alignment = {
     id: string;
@@ -23,7 +23,7 @@ const ALIGNMENTS: Alignment[] = [
     },
     {
         id: 'neutral-good', label: 'Neutral Good', abbr: 'NG',
-        desc: 'Does the best they can without being bound by rules or chaos ,  acts from the heart.',
+        desc: 'Does the best they can without being bound by rules or chaos,   acts from the heart.',
     },
     {
         id: 'chaotic-good', label: 'Chaotic Good', abbr: 'CG',
@@ -31,7 +31,7 @@ const ALIGNMENTS: Alignment[] = [
     },
     {
         id: 'lawful-neutral', label: 'Lawful Neutral', abbr: 'LN',
-        desc: 'Order and tradition above all else ,  not good or evil, just bound to a code.',
+        desc: 'Order and tradition above all else,   not good or evil, just bound to a code.',
     },
     {
         id: 'true-neutral', label: 'True Neutral', abbr: 'N',
@@ -47,7 +47,7 @@ const ALIGNMENTS: Alignment[] = [
     },
     {
         id: 'neutral-evil', label: 'Neutral Evil', abbr: 'NE',
-        desc: 'Does whatever serves their interests. No loyalty to anyone ,  utterly self-interested.',
+        desc: 'Does whatever serves their interests. No loyalty to anyone,   utterly self-interested.',
     },
     {
         id: 'chaotic-evil', label: 'Chaotic Evil', abbr: 'CE',
@@ -518,7 +518,7 @@ export default function BackgroundStep({
     const [weight, setWeight]               = useState('');
     const [age, setAge]                     = useState('');
 
-    // Accordion state ,  which background row is currently expanded
+    // Accordion state,   which background row is currently expanded
     const [expandedBg, setExpandedBg] = useState<string | null>(null);
 
     const toggleAccordion = (index: string) =>
@@ -612,7 +612,7 @@ export default function BackgroundStep({
                     margin: '0 0 1.25rem',
                     maxWidth: '560px',
                 }}>
-                    Alignment describes your character's moral compass ,  how they approach ethics, order, and the world around them.
+                    Alignment describes your character's moral compass,   how they approach ethics, order, and the world around them.
                 </p>
                 <AlignmentGrid selected={selectedAlignment} onSelect={setAlignment} />
 
@@ -625,7 +625,7 @@ export default function BackgroundStep({
                     margin: '0 0 1.25rem',
                     maxWidth: '560px',
                 }}>
-                    Optional ,  fill these in now or come back to them later.
+                    Optional,   fill these in now or come back to them later.
                 </p>
                 <div style={{
                     display: 'grid',

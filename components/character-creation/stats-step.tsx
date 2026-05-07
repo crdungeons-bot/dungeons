@@ -538,7 +538,7 @@ export default function StatsStep(props: StatsStepProps) {
                                 lineHeight: '1.65',
                                 margin: 0,
                             }}>
-                                Roll 4d6, drop the lowest die ,  repeated 6 times. Then assign each result to a stat of your choice.
+                                Roll 4d6, drop the lowest die,   repeated 6 times. Then assign each result to a stat of your choice.
                             </p>
                         </div>
 
@@ -619,7 +619,7 @@ export default function StatsStep(props: StatsStepProps) {
                                         {isRolling
                                             ? 'Rolling…'
                                             : selectedPool !== null
-                                                ? `${rolled[selectedPool].total} selected ,  now click a stat below to assign it`
+                                                ? `${rolled[selectedPool].total} selected,   now click a stat below to assign it`
                                                 : allAssigned
                                                     ? '✓ All stats assigned!'
                                                     : 'Click a value to pick it up, then click a stat slot to place it'}

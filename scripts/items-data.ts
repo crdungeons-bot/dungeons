@@ -1,27 +1,27 @@
 /**
  * Comprehensive D&D 5e item catalogue.
  * Schema fields:
- *   name                  ,  display name
- *   category              ,  top-level type (see below)
- *   subcategory           ,  finer grouping
- *   rarity                ,  mundane | common | uncommon | rare | very-rare | legendary | artifact
- *   magical               ,  true if it is a magic item
- *   requiresAttunement    ,  true if attunement is needed
- *   attunementBy          ,  restriction string ("a spellcaster", "a paladin", …)
- *   weight                ,  in lbs (undefined = negligible / not tracked)
- *   value                 ,  "15 gp" display string
- *   valueCp               ,  value in copper for numeric sorting
- *   damage                ,  "1d8 slashing"
- *   damageType            ,  "slashing" etc.
- *   twoHandedDamage       ,  alternate damage for Versatile
- *   ac                    ,  "11 + DEX"  or  "+2"  or  "16"
- *   stealthDisadvantage   ,  armor imposes stealth disadvantage
- *   strengthRequirement   ,  minimum STR to avoid speed penalty
- *   properties            ,  string[] of weapon/armor keywords
- *   range                 ,  "20/60" for thrown/ranged
- *   charges               ,  "7 (recharge 1d6+1 at dawn)" style string
- *   description           ,  full flavour + mechanical text
- *   source                ,  "PHB" | "DMG" | "XGE" | "TCE" etc.
+ *   name                 ,   display name
+ *   category             ,   top-level type (see below)
+ *   subcategory          ,   finer grouping
+ *   rarity               ,   mundane | common | uncommon | rare | very-rare | legendary | artifact
+ *   magical              ,   true if it is a magic item
+ *   requiresAttunement   ,   true if attunement is needed
+ *   attunementBy         ,   restriction string ("a spellcaster", "a paladin", …)
+ *   weight               ,   in lbs (undefined = negligible / not tracked)
+ *   value                ,   "15 gp" display string
+ *   valueCp              ,   value in copper for numeric sorting
+ *   damage               ,   "1d8 slashing"
+ *   damageType           ,   "slashing" etc.
+ *   twoHandedDamage      ,   alternate damage for Versatile
+ *   ac                   ,   "11 + DEX"  or  "+2"  or  "16"
+ *   stealthDisadvantage  ,   armor imposes stealth disadvantage
+ *   strengthRequirement  ,   minimum STR to avoid speed penalty
+ *   properties           ,   string[] of weapon/armor keywords
+ *   range                ,   "20/60" for thrown/ranged
+ *   charges              ,   "7 (recharge 1d6+1 at dawn)" style string
+ *   description          ,   full flavour + mechanical text
+ *   source               ,   "PHB" | "DMG" | "XGE" | "TCE" etc.
  */
 
 export type ItemEntry = {
@@ -155,7 +155,7 @@ const ITEMS: ItemEntry[] = [
 { name:'Arrow of Slaying',      category:'ammunition', subcategory:'arrow',          rarity:'very-rare', magical:true, weight:0.05,  value:'~600 gp',valueCp:60000, description:'An arrow crafted to kill a particular type of creature. When it hits, the target must make a DC 17 CON save or take 6d10 extra piercing damage.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   MAGIC WEAPONS ,  +1 / +2 / +3
+   MAGIC WEAPONS,   +1 / +2 / +3
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'+1 Dagger',       category:'weapon', subcategory:'simple-melee',   rarity:'uncommon',  magical:true, weight:1,  value:'~500 gp',   valueCp:50000,  damage:'1d4+1 piercing',  damageType:'piercing',    properties:['Finesse','Light','Thrown'], range:'20/60',   description:'A finely balanced dagger enchanted to grant a +1 bonus to attack and damage rolls.', source:'DMG' },
@@ -225,7 +225,7 @@ const ITEMS: ItemEntry[] = [
 { name:'+2 Shield',             category:'shield', subcategory:'shield',   rarity:'rare',      magical:true, weight:6, value:'~5,000 gp', valueCp:500000, ac:'+4', description:'A powerfully enchanted shield providing +2 AC on top of its normal +2 bonus, for a total of +4 AC.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  AMULETS / NECKLACES
+   WONDROUS ITEMS,   AMULETS / NECKLACES
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Amulet of Health',           category:'wondrous', subcategory:'amulet', rarity:'rare',      magical:true, requiresAttunement:true, weight:0, value:'~8,000 gp',   valueCp:800000, description:'Your Constitution score is 19 while you wear this amulet. It has no effect if your Constitution is already 19 or higher.', source:'DMG' },
@@ -239,7 +239,7 @@ const ITEMS: ItemEntry[] = [
 { name:'Periapt of Wound Closure',   category:'wondrous', subcategory:'amulet', rarity:'uncommon',  magical:true, requiresAttunement:true, weight:0, value:'~800 gp', valueCp:80000, description:'While attuned, you stabilize whenever you are dying at the start of your turn. Your hit dice heal double the normal amount when you spend them during a short rest.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  BOOTS
+   WONDROUS ITEMS,   BOOTS
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Boots of Elvenkind',          category:'wondrous', subcategory:'boots', rarity:'uncommon',  magical:true, requiresAttunement:true, weight:1, value:'~800 gp',   valueCp:80000, description:'While wearing these boots, your steps make no sound, regardless of the surface you are moving across. You also have advantage on Dexterity (Stealth) checks that rely on moving silently.', source:'DMG' },
@@ -251,7 +251,7 @@ const ITEMS: ItemEntry[] = [
 { name:'Slippers of Spider Climbing', category:'wondrous', subcategory:'boots', rarity:'uncommon',  magical:true, requiresAttunement:true, weight:0.5, value:'~800 gp', valueCp:80000, description:'While wearing these light slippers, you can move up, down, and across vertical surfaces and upside down along ceilings, while keeping your hands free. Your climbing speed equals your walking speed.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  CLOAKS
+   WONDROUS ITEMS,   CLOAKS
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Cloak of Displacement',  category:'wondrous', subcategory:'cloak', rarity:'rare',      magical:true, requiresAttunement:true, weight:1, value:'~5,000 gp',  valueCp:500000, description:'While wearing this cloak, it projects an illusion of you displaced slightly from your true location. Creatures have disadvantage on attack rolls against you. The effect ends until the start of your next turn if you take damage or are incapacitated.', source:'DMG' },
@@ -263,7 +263,7 @@ const ITEMS: ItemEntry[] = [
 { name:'Cape of the Mountebank', category:'wondrous', subcategory:'cloak', rarity:'rare',      magical:true, weight:1, value:'~5,000 gp', valueCp:500000, description:'This cape smells of brimstone. As an action, cast Dimension Door. Once used, this property can\'t be used again until the next dawn.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  GLOVES & BRACERS
+   WONDROUS ITEMS,   GLOVES & BRACERS
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Bracers of Archery',        category:'wondrous', subcategory:'bracers', rarity:'uncommon',  magical:true, requiresAttunement:true, weight:1, value:'~800 gp', valueCp:80000, description:'While wearing these bracers, you have proficiency with the longbow and shortbow, and you gain a +2 bonus to damage rolls with such weapons.', source:'DMG' },
@@ -274,7 +274,7 @@ const ITEMS: ItemEntry[] = [
 { name:'Gloves of Thievery',        category:'wondrous', subcategory:'gloves',  rarity:'uncommon',  magical:true, weight:0.5, value:'~800 gp', valueCp:80000, description:'These gloves are invisible while worn. While wearing them, you gain a +5 bonus to Dexterity (Sleight of Hand) checks and Dexterity checks made to pick locks.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  HELMS
+   WONDROUS ITEMS,   HELMS
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Helm of Comprehending Languages', category:'wondrous', subcategory:'helm', rarity:'uncommon', magical:true, weight:3, value:'~800 gp', valueCp:80000, description:'While wearing this helm, you can use an action to cast the Comprehend Languages spell from it at will.', source:'DMG' },
@@ -283,7 +283,7 @@ const ITEMS: ItemEntry[] = [
 { name:'Helm of Brilliance',  category:'wondrous', subcategory:'helm', rarity:'very-rare', magical:true, requiresAttunement:true, weight:3, value:'~35,000 gp', valueCp:3500000, description:'Studded with gems. Contains 1d10 diamonds, 2d10 rubies, 3d10 fire opals, and 4d10 opals. Grants fire resistance. Cast Daylight, Fireball, and other fire/light spells by expending gems.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  BELTS
+   WONDROUS ITEMS,   BELTS
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Belt of Dwarvenkind',            category:'wondrous', subcategory:'belt', rarity:'rare',      magical:true, requiresAttunement:true, weight:1, value:'~5,000 gp',   valueCp:500000, description:'CON score increases by 2 (max 20). Advantage on CHA (Persuasion) checks with dwarves. Resistance to poison. 50% chance each day: grow a beard (if capable), speak Dwarvish, and darkvision 60 ft.', source:'DMG' },
@@ -295,7 +295,7 @@ const ITEMS: ItemEntry[] = [
 { name:'Belt of Storm Giant Strength',   category:'wondrous', subcategory:'belt', rarity:'legendary', magical:true, requiresAttunement:true, weight:1, value:'~150,000 gp', valueCp:15000000, description:'Your Strength score is 29 while you wear this belt. The highest possible Strength score attainable through magic items.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  BAGS & CONTAINERS
+   WONDROUS ITEMS,   BAGS & CONTAINERS
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Bag of Holding',              category:'wondrous', subcategory:'bag', rarity:'uncommon', magical:true, weight:15, value:'~4,000 gp', valueCp:400000, description:'This bag\'s interior space is larger than its outside. Its interior is 2 ft in diameter and 4 ft deep. Can hold up to 500 lbs (but not more than 64 cubic ft). Weighs 15 lbs regardless. Breathing creatures inside can survive 10 minutes before suffocation.', source:'DMG' },
@@ -306,7 +306,7 @@ const ITEMS: ItemEntry[] = [
 { name:'Portable Hole',               category:'wondrous', subcategory:'bag', rarity:'rare',     magical:true, weight:0,   value:'~8,000 gp', valueCp:800000, description:'A 6-ft-diameter circle of black cloth that opens into a nondimensional space 10 ft deep. Can hold up to 282 cubic feet of material. Placing it inside a Bag of Holding destroys both items and opens a gate to the Astral Plane.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  RODS
+   WONDROUS ITEMS,   RODS
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Immovable Rod',     category:'rod',  subcategory:'rod', rarity:'uncommon',  magical:true, weight:2, value:'~800 gp',    valueCp:80000,  description:'This flat iron rod has a button on one end. Press the button and the rod becomes fixed in space, refusing to move regardless of gravity. Can hold up to 8,000 lbs. STR DC 30 to move it. Stays put until 8,000 lbs press on it or the button is pressed again.', source:'DMG' },
@@ -320,7 +320,7 @@ const ITEMS: ItemEntry[] = [
 { name:'Rod of the Pact Keeper +3', category:'rod', subcategory:'rod', rarity:'very-rare',magical:true, requiresAttunement:true, attunementBy:'a warlock', weight:2, value:'~35,000 gp',valueCp:3500000, description:'+3 to spell attack rolls and spell save DC for your warlock spells. Once per dawn, you can regain one warlock spell slot while holding the rod.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  STAVES
+   WONDROUS ITEMS,   STAVES
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Staff of Charming',  category:'staff', subcategory:'staff', rarity:'rare',      magical:true, requiresAttunement:true, attunementBy:'a bard, cleric, druid, sorcerer, warlock, or wizard', weight:4, charges:'10 (regain 1d8+2 at dawn)', value:'~5,000 gp', valueCp:500000, description:'Has 10 charges. Cast Charm Person (1), Command (1), or Comprehend Languages (1) by expending charges. If you fail a save against Charm, you can use your reaction to succeed instead, expending 1 charge.', source:'DMG' },
@@ -335,7 +335,7 @@ const ITEMS: ItemEntry[] = [
 { name:"Staff of the Python",  category:'staff', subcategory:'staff', rarity:'uncommon', magical:true, requiresAttunement:true, attunementBy:'a cleric, druid, or warlock', weight:4, charges:'3 (regain all at dawn)', value:'~800 gp', valueCp:80000, description:'As an action, throw the staff to a space within 10 ft to transform it into a Giant Constrictor Snake under your control. As a bonus action, command it. Revert to a staff by using a bonus action on your turn. If killed while a snake, the staff is destroyed.', source:'DMG' },
 
 /* ══════════════════════════════════════════════════════════════════
-   WONDROUS ITEMS ,  WANDS
+   WONDROUS ITEMS,   WANDS
 ══════════════════════════════════════════════════════════════════ */
 
 { name:'Wand of Magic Missiles',  category:'wand', subcategory:'wand', rarity:'uncommon',  magical:true, weight:1, charges:'7 (regain 1d6+1 at dawn)', value:'~800 gp',    valueCp:80000,  description:'Has 7 charges. Use 1–3 charges as an action to cast Magic Missile (one extra dart per additional charge expended).', source:'DMG' },
@@ -568,12 +568,12 @@ const ITEMS: ItemEntry[] = [
 { name:'Tarnishless Brass Ring',         category:'trinket', subcategory:'trinket', rarity:'common', weight:0, value:'~1 gp', valueCp:100, description:'A plain brass ring that never tarnishes, no matter how old it gets. A strange property for such a mundane item.', source:'PHB' },
 { name:'Dragon Scale',                   category:'trinket', subcategory:'trinket', rarity:'uncommon', weight:0, value:'~10 gp', valueCp:1000, description:'A single scale from a dragon, still faintly warm to the touch. The color identifies the dragon\'s type.', source:'PHB' },
 { name:'Silver Skull',                   category:'trinket', subcategory:'trinket', rarity:'uncommon', weight:1, value:'~25 gp', valueCp:2500, description:'A tiny silver skull the size of a coin. Its jaw opens and closes when squeezed but makes no sound.', source:'PHB' },
-{ name:'Set of Bone Dice',               category:'trinket', subcategory:'trinket', rarity:'common', weight:0, value:'~5 gp', valueCp:500, description:'A set of polished bone dice that always seem to roll fairly ,  perhaps suspiciously so.', source:'PHB' },
+{ name:'Set of Bone Dice',               category:'trinket', subcategory:'trinket', rarity:'common', weight:0, value:'~5 gp', valueCp:500, description:'A set of polished bone dice that always seem to roll fairly,   perhaps suspiciously so.', source:'PHB' },
 { name:'Tiny Musical Instrument',        category:'trinket', subcategory:'trinket', rarity:'common', weight:0, value:'~5 gp', valueCp:500, description:'A miniature lute, flute, or drum no larger than a thumb. It produces real, sweet notes when played.', source:'PHB' },
 { name:'Eye of a Cultist',               category:'trinket', subcategory:'trinket', rarity:'common', weight:0, value:', ', valueCp:0, description:'A preserved glass eye bearing an unnerving horizontal slit pupil. It seems to follow you when you\'re not looking directly at it.', source:'PHB' },
 { name:'Map to an Unknown Location',     category:'trinket', subcategory:'trinket', rarity:'uncommon', weight:0, value:', ', valueCp:0, description:'A hand-drawn map depicting a place that matches no geography you\'ve seen. An X marks the spot.', source:'PHB' },
 { name:'Small Idol',                     category:'trinket', subcategory:'trinket', rarity:'common', weight:1, value:'~10 gp', valueCp:1000, description:'A carved statuette of an unknown deity. Its features are worn smooth, suggesting it has been prayed to for centuries.', source:'PHB' },
-{ name:'Lock Without a Key',             category:'trinket', subcategory:'trinket', rarity:'common', weight:1, value:'~10 gp', valueCp:1000, description:'A perfectly functioning lock with no corresponding key in existence ,  at least, none that has ever been found.', source:'PHB' },
+{ name:'Lock Without a Key',             category:'trinket', subcategory:'trinket', rarity:'common', weight:1, value:'~10 gp', valueCp:1000, description:'A perfectly functioning lock with no corresponding key in existence,   at least, none that has ever been found.', source:'PHB' },
 { name:'Vial of Strange Liquid',         category:'trinket', subcategory:'trinket', rarity:'common', weight:0, value:', ', valueCp:0, description:'A sealed vial containing a bright blue liquid that slowly moves on its own, pressing against the glass as if alive.', source:'PHB' },
 { name:'Fossilized Dragon Egg Fragment', category:'trinket', subcategory:'trinket', rarity:'rare',   weight:2, value:'~100 gp', valueCp:10000, description:'A fragment of what appears to be a fossilized dragon egg, still bearing an iridescent sheen after millennia.', source:'PHB' },
 

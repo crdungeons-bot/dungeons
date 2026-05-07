@@ -19,16 +19,16 @@ type ClassDetail = {
 };
 
 const CLASS_DESCRIPTIONS: Record<string, string> = {
-    barbarian: 'Primal fury incarnate ,  nearly impossible to kill and devastating up close.',
+    barbarian: 'Primal fury incarnate,   nearly impossible to kill and devastating up close.',
     bard:      'Magic through music and wit, inspiring allies and turning battles with words alone.',
-    cleric:    'Divine power channeled through faith ,  healer, warrior, and vessel of the gods.',
+    cleric:    'Divine power channeled through faith,   healer, warrior, and vessel of the gods.',
     druid:     'Shape-shifter and nature\'s champion, wielding elemental forces and wild magic.',
-    fighter:   'Disciplined, versatile, and devastating ,  the purest expression of martial mastery.',
-    monk:      'Ki-powered unarmed combatant ,  fluid, precise, and blindingly fast.',
+    fighter:   'Disciplined, versatile, and devastating,   the purest expression of martial mastery.',
+    monk:      'Ki-powered unarmed combatant,   fluid, precise, and blindingly fast.',
     paladin:   'Holy warrior bound by a sacred oath, fusing heavy armour with divine magic.',
     ranger:    'Hunter and tracker who thrives in the wild, pairing archery with nature magic.',
     rogue:     'Precision striker who exploits every opening for one perfectly calculated blow.',
-    sorcerer:  'Raw arcane power from within ,  innate, wild, and impossible to suppress.',
+    sorcerer:  'Raw arcane power from within,   innate, wild, and impossible to suppress.',
     warlock:   'Pact-bound caster trading service to a dark patron for eldritch, rechargeable power.',
     wizard:    'The broadest spell arsenal in existence, earned through decades of obsessive study.',
 };
@@ -36,14 +36,14 @@ const CLASS_DESCRIPTIONS: Record<string, string> = {
 const CLASS_FLAVORS: Record<string, string> = {
     barbarian: 'Barbarians charge headlong into battle, shrugging off wounds through sheer unstoppable rage.',
     bard:      'Bards inspire allies, mock enemies, and bend the world to their will with words alone. Equally at home in a royal court or a dungeon.',
-    cleric:    'Clerics walk the line between mortal and divine ,  smiting enemies with holy power one moment and restoring the fallen the next.',
+    cleric:    'Clerics walk the line between mortal and divine,   smiting enemies with holy power one moment and restoring the fallen the next.',
     druid:     'Druids can call lightning from a clear sky, walk as a bear through enemy lines, or speak with the trees. Their power is ancient.',
     fighter:   'Fighters are unmatched in their ability to dish out and absorb punishment, whether wielding a greatsword or raining arrows from afar.',
     monk:      'Monks focus their ki into devastating unarmed strikes, impossible agility, and abilities that defy the laws of nature.',
     paladin:   'Paladins combine the martial prowess of a fighter with the divine power of a cleric, fuelled by a sacred oath.',
     ranger:    'Rangers are most dangerous in their favoured terrain, using cunning, speed, and a bond with nature to outlast any foe.',
     rogue:     'Rogues exploit every blind spot and moment of distraction for a devastating strike. They pick locks, pocket secrets, and vanish into shadow.',
-    sorcerer:  'Magic is not something a sorcerer learns ,  it is something they were born as. Wild, unpredictable, and enormously powerful.',
+    sorcerer:  'Magic is not something a sorcerer learns,   it is something they were born as. Wild, unpredictable, and enormously powerful.',
     warlock:   'Warlocks have made a deal, and that deal has made them dangerous. Their spells hit harder and recharge faster than any other caster\'s.',
     wizard:    'Wizards command the broadest and most devastating catalogue of spells through decades of obsessive study.',
 };
@@ -294,7 +294,7 @@ function ClassDetailPanel({
                     </div>
                 </Section>
 
-                {/* Proficiencies ,  first 8 to keep the panel tight */}
+                {/* Proficiencies,   first 8 to keep the panel tight */}
                 {data.proficiencies.length > 0 && (
                     <Section label="Proficiencies">
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>

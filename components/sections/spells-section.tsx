@@ -320,19 +320,19 @@ export default function SpellsSection() {
     /* ── Derive filter options from loaded data ── */
     const ALL_CLASSES = useMemo(() =>
         Array.from(new Set(entries.flatMap(e => e.classes ?? []))).sort()
-    , [entries]);
+   ,  [entries]);
 
     const ALL_RACES = useMemo(() =>
         Array.from(new Set(entries.flatMap(e => e.races ?? []))).sort()
-    , [entries]);
+   ,  [entries]);
 
     const ALL_SCHOOLS = useMemo(() =>
         Array.from(new Set(entries.map(e => e.school).filter(Boolean) as string[])).sort()
-    , [entries]);
+   ,  [entries]);
 
     const ALL_ACTION_TYPES = useMemo(() =>
         Array.from(new Set(entries.map(e => e.actionType).filter(Boolean))).sort()
-    , [entries]);
+   ,  [entries]);
 
     const filtered = useMemo(() => {
         const q = filters.search.toLowerCase();

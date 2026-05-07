@@ -32,6 +32,19 @@ export default function Hero() {
                 position: 'relative', 
                 zIndex: 1 
             }}>
+                {/* Logo */}
+                <div style={{ marginBottom: '2rem' }}>
+                    <img 
+                        src="/dnd-guru-logo-transparent.png" 
+                        alt="DND Guru Logo" 
+                        style={{ 
+                            width: 'clamp(200px, 40vw, 350px)',
+                            height: 'auto',
+                            filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.8))'
+                        }}
+                    />
+                </div>
+                
                 <h1 style={{ 
                     fontSize: 'clamp(2rem, 7vw, 3.75rem)',
                     fontWeight: 'bold', 

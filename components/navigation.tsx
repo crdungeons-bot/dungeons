@@ -46,15 +46,20 @@ export default function Navigation() {
                 margin: '0 auto',
                 padding: '0 1rem'
             }}>
-                {/* Logo / Brand (placeholder for now) */}
-                <div style={{ 
-                    color: 'var(--color-gold)', 
-                    fontWeight: '800', 
-                    fontSize: '1.25rem',
-                    letterSpacing: '0.05em'
-                }}>
-                    D&D
-                </div>
+                {/* Logo / Brand */}
+                <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                    <img 
+                        src="/dnd-guru-logo.svg" 
+                        alt="DND Guru Logo" 
+                        style={{ 
+                            height: '40px',
+                            width: 'auto',
+                            transition: 'opacity 0.2s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'}
+                        onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+                    />
+                </Link>
 
                 {/* Desktop Navigation */}
                 <div style={{ 

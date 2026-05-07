@@ -186,14 +186,17 @@ function SidebarInner({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
 
             <aside style={{
                 width: isCollapsed ? '60px' : '260px',
-                minHeight: '100%',
+                height: 'calc(100vh - var(--nav-height, 0px))',
+                position: 'sticky',
+                top: 0,
+                alignSelf: 'flex-start',
                 backgroundColor: 'var(--color-primary-dark)',
                 borderRight: '1px solid rgba(212, 175, 55, 0.2)',
                 transition: 'width 0.25s ease',
                 overflow: 'hidden',
-                flexShrink: 0,
                 display: 'flex',
                 flexDirection: 'column',
+                zIndex: 30,
             }} className="sidebar-desktop">
                 {/* Header: Create button + collapse toggle on one line */}
                 <div style={{
@@ -526,11 +529,14 @@ export default function Sidebar() {
         <Suspense fallback={
             <aside style={{
                 width: '260px',
-                minHeight: '100%',
+                height: 'calc(100vh - var(--nav-height, 0px))',
+                position: 'sticky',
+                top: 0,
+                alignSelf: 'flex-start',
                 backgroundColor: 'var(--color-primary-dark)',
                 borderRight: '1px solid rgba(212, 175, 55, 0.2)',
-                flexShrink: 0,
-            }} />
+                zIndex: 30,
+            }} className="sidebar-desktop" />
         }>
             <SidebarInner 
                 isCollapsed={isCollapsed} 

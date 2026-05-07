@@ -9,7 +9,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <Navigation />
                 <div style={{ display: 'flex', flex: 1 }}>
                     <Sidebar />
-                    <main style={{ flex: 1, overflow: 'auto' }}>
+                    <main style={{ flex: 1, overflow: 'auto', minHeight: 0 }} className="dashboard-main-content">
                         {children}
                     </main>
                 </div>

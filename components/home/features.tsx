@@ -32,40 +32,47 @@ const features = [
 export default function Features() {
     return (
         <section style={{ 
-            padding: '6rem 0', 
+            padding: 'clamp(3rem, 8vw, 6rem) 0',
             backgroundColor: 'var(--color-primary)',
             borderTop: '1px solid rgba(212, 175, 55, 0.2)',
             borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
         }}>
-            <div className="max-w-6xl mx-auto px-6">
+            <div style={{
+                maxWidth: '1200px',
+                margin: '0 auto',
+                padding: '0 1.5rem'
+            }}>
 
                 {/* Section Header */}
-                <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 4rem)' }}>
                     <p style={{ 
                         color: 'var(--color-accent)', 
                         fontWeight: '700',
                         letterSpacing: '0.2em',
                         textTransform: 'uppercase',
-                        fontSize: '0.875rem',
+                        fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
                         marginBottom: '1rem'
                     }}>
                         The Adventure Awaits
                     </p>
                     <h2 style={{ 
-                        fontSize: '3rem', 
+                        fontSize: 'clamp(1.75rem, 5vw, 3rem)',
                         fontWeight: '800', 
                         color: 'var(--color-parchment)',
-                        lineHeight: '1.1',
-                        marginBottom: '1.5rem'
+                        lineHeight: '1.2',
+                        marginBottom: '1.5rem',
+                        padding: '0 1rem'
                     }}>
                         Every Legend Begins With<br />
                         <span style={{ color: 'var(--color-gold)' }}>A Single Choice</span>
                     </h2>
                     <p style={{ 
                         color: 'rgba(244, 232, 208, 0.6)',
-                        fontSize: '1.125rem',
+                        fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
                         maxWidth: '600px',
-                        margin: '0 auto'
+                        margin: '0 auto',
+                        lineHeight: '1.6',
+                        padding: '0 1rem'
                     }}>
                         The world of D&D is vast, dangerous, and endlessly rewarding. 
                         Here is everything you need to step into it.
@@ -73,7 +80,11 @@ export default function Features() {
                 </div>
 
                 {/* Feature Cards */}
-                <div className="grid md:grid-cols-3 gap-6">
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: 'clamp(1rem, 3vw, 1.5rem)'
+                }}>
                     {features.map((feature) => (
                         <div
                             key={feature.title}
@@ -81,7 +92,7 @@ export default function Features() {
                                 backgroundColor: 'var(--color-primary-light)',
                                 border: '1px solid rgba(212, 175, 55, 0.25)',
                                 borderRadius: '0.5rem',
-                                padding: '2rem',
+                                padding: 'clamp(1.5rem, 4vw, 2rem)',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 gap: '1rem',
@@ -116,7 +127,7 @@ export default function Features() {
                                 border: '1px solid rgba(212, 175, 55, 0.3)',
                                 borderRadius: '9999px',
                                 padding: '0.25rem 0.875rem',
-                                fontSize: '0.8rem',
+                                fontSize: 'clamp(0.75rem, 2vw, 0.8rem)',
                                 fontWeight: '700',
                                 color: 'var(--color-gold)',
                                 letterSpacing: '0.05em',
@@ -129,7 +140,7 @@ export default function Features() {
                             <div>
                                 <p style={{ 
                                     color: 'var(--color-accent-light)', 
-                                    fontSize: '0.75rem',
+                                    fontSize: 'clamp(0.7rem, 1.8vw, 0.75rem)',
                                     fontWeight: '700',
                                     letterSpacing: '0.15em',
                                     textTransform: 'uppercase',
@@ -138,7 +149,7 @@ export default function Features() {
                                     {feature.subtitle}
                                 </p>
                                 <h3 style={{ 
-                                    fontSize: '1.5rem',
+                                    fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
                                     fontWeight: '700',
                                     color: 'var(--color-parchment)',
                                     marginBottom: '0.75rem'
@@ -148,7 +159,7 @@ export default function Features() {
                                 <p style={{ 
                                     color: 'rgba(244, 232, 208, 0.65)',
                                     lineHeight: '1.7',
-                                    fontSize: '0.95rem'
+                                    fontSize: 'clamp(0.875rem, 2vw, 0.95rem)'
                                 }}>
                                     {feature.description}
                                 </p>
@@ -160,7 +171,7 @@ export default function Features() {
                                 style={{ 
                                     color: 'var(--color-gold)',
                                     fontWeight: '600',
-                                    fontSize: '0.9rem',
+                                    fontSize: 'clamp(0.85rem, 2vw, 0.9rem)',
                                     textDecoration: 'none',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -180,14 +191,15 @@ export default function Features() {
                 {/* Bottom divider with quote */}
                 <div style={{ 
                     textAlign: 'center', 
-                    marginTop: '5rem',
-                    padding: '0 2rem'
+                    marginTop: 'clamp(3rem, 6vw, 5rem)',
+                    padding: '0 1.5rem'
                 }}>
                     <p style={{ 
                         color: 'rgba(212, 175, 55, 0.5)', 
-                        fontSize: '1rem',
+                        fontSize: 'clamp(0.9rem, 2vw, 1rem)',
                         fontStyle: 'italic',
-                        letterSpacing: '0.05em'
+                        letterSpacing: '0.05em',
+                        lineHeight: '1.6'
                     }}>
                         "Not all those who wander are lost... some are just looking for a dungeon."
                     </p>

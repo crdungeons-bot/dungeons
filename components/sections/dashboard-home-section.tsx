@@ -359,10 +359,10 @@ export default function DashboardHomeSection() {
                     gap: '0.75rem'
                 }}>
                     {[
-                        { label: 'Roll Dice', section: 'dice-roller', icon: '🎲' },
-                        { label: 'Browse Races', section: 'races', icon: '👥' },
-                        { label: 'Browse Classes', section: 'classes', icon: '⚔️' },
-                        { label: 'View Spells', section: 'spells', icon: '✨' },
+                        { label: 'Roll Dice', section: 'dice-roller' },
+                        { label: 'Browse Races', section: 'races' },
+                        { label: 'Browse Classes', section: 'classes' },
+                        { label: 'View Spells', section: 'spells' },
                     ].map(link => (
                         <Link
                             key={link.section}
@@ -370,7 +370,7 @@ export default function DashboardHomeSection() {
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '0.5rem',
+                                justifyContent: 'center',
                                 padding: '0.75rem 1rem',
                                 backgroundColor: 'rgba(212,175,55,0.08)',
                                 border: '1px solid rgba(212,175,55,0.2)',
@@ -390,8 +390,7 @@ export default function DashboardHomeSection() {
                                 e.currentTarget.style.borderColor = 'rgba(212,175,55,0.2)';
                             }}
                         >
-                            <span style={{ fontSize: '1.25rem' }}>{link.icon}</span>
-                            <span>{link.label}</span>
+                            {link.label}
                         </Link>
                     ))}
                 </div>

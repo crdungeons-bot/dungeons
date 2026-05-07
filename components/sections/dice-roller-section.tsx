@@ -428,65 +428,84 @@ export default function DiceRollerSection() {
                                 overflowY: 'auto',
                                 paddingRight: '0.5rem'
                             }}>
-                                {history.map((h, i) => (
-                                    <div key={h.timestamp} style={{
-                                        padding: '1.25rem',
-                                        backgroundColor: i === 0 
-                                            ? 'rgba(212,175,55,0.1)' 
-                                            : 'rgba(0,0,0,0.2)',
-                                        border: `1px solid ${i === 0 
-                                            ? 'rgba(212,175,55,0.3)' 
-                                            : 'rgba(212,175,55,0.1)'}`,
-                                        borderRadius: '0.5rem',
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        flexWrap: 'wrap',
-                                        gap: '1rem'
-                                    }}>
-                                        <div style={{
+                                {history.map((h, i) => {
+                                    const date = new Date(h.timestamp);
+                                    const timeString = date.toLocaleTimeString('en-US', {
+                                        hour: 'numeric',
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                        hour12: true
+                                    });
+                                    
+                                    return (
+                                        <div key={h.timestamp} style={{
+                                            padding: '1.25rem',
+                                            backgroundColor: i === 0 
+                                                ? 'rgba(212,175,55,0.1)' 
+                                                : 'rgba(0,0,0,0.2)',
+                                            border: `1px solid ${i === 0 
+                                                ? 'rgba(212,175,55,0.3)' 
+                                                : 'rgba(212,175,55,0.1)'}`,
+                                            borderRadius: '0.5rem',
                                             display: 'flex',
+                                            justifyContent: 'space-between',
                                             alignItems: 'center',
-                                            gap: '1.25rem'
-                                        }}>
-                                            <span style={{
-                                                fontSize: '2rem',
-                                                fontWeight: '800',
-                                                color: i === 0 ? 'var(--color-gold)' : 'rgba(244,232,208,0.7)',
-                                                minWidth: '60px',
-                                                textAlign: 'center'
-                                            }}>
-                                                {h.total}
-                                            </span>
-                                            <span style={{
-                                                fontSize: '1rem',
-                                                color: 'rgba(244,232,208,0.5)',
-                                                fontWeight: '600'
-                                            }}>
-                                                {h.dice.length}d{h.diceType}
-                                            </span>
-                                        </div>
-                                        <div style={{
-                                            display: 'flex',
                                             flexWrap: 'wrap',
-                                            gap: '0.5rem'
+                                            gap: '1rem'
                                         }}>
-                                            {h.dice.map((d, di) => (
-                                                <span key={di} style={{
-                                                    padding: '0.375rem 0.75rem',
-                                                    backgroundColor: 'rgba(212,175,55,0.08)',
-                                                    border: '1px solid rgba(212,175,55,0.2)',
-                                                    borderRadius: '0.375rem',
-                                                    fontSize: '0.95rem',
-                                                    fontWeight: '700',
-                                                    color: 'rgba(244,232,208,0.7)'
+                                            <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '1.25rem'
+                                            }}>
+                                                <span style={{
+                                                    fontSize: '2rem',
+                                                    fontWeight: '800',
+                                                    color: i === 0 ? 'var(--color-gold)' : 'rgba(244,232,208,0.7)',
+                                                    minWidth: '60px',
+                                                    textAlign: 'center'
                                                 }}>
-                                                    {d}
+                                                    {h.total}
                                                 </span>
-                                            ))}
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                                    <span style={{
+                                                        fontSize: '1rem',
+                                                        color: 'rgba(244,232,208,0.5)',
+                                                        fontWeight: '600'
+                                                    }}>
+                                                        {h.dice.length}d{h.diceType}
+                                                    </span>
+                                                    <span style={{
+                                                        fontSize: '0.75rem',
+                                                        color: 'rgba(244,232,208,0.35)',
+                                                        fontWeight: '500'
+                                                    }}>
+                                                        {timeString}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div style={{
+                                                display: 'flex',
+                                                flexWrap: 'wrap',
+                                                gap: '0.5rem'
+                                            }}>
+                                                {h.dice.map((d, di) => (
+                                                    <span key={di} style={{
+                                                        padding: '0.375rem 0.75rem',
+                                                        backgroundColor: 'rgba(212,175,55,0.08)',
+                                                        border: '1px solid rgba(212,175,55,0.2)',
+                                                        borderRadius: '0.375rem',
+                                                        fontSize: '0.95rem',
+                                                        fontWeight: '700',
+                                                        color: 'rgba(244,232,208,0.7)'
+                                                    }}>
+                                                        {d}
+                                                    </span>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     )}

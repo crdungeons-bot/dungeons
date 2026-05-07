@@ -93,7 +93,7 @@ export default async function CreateCharacterPage({
                 </h1>
 
                 {/* Progress indicator */}
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', paddingBottom: '0.5rem' }}>
                     {STEPS.map((label, i) => {
                         const stepNum  = i + 1;
                         const isDone   = stepNum < currentStep;
@@ -119,7 +119,7 @@ export default async function CreateCharacterPage({
                                         {isDone ? '✓' : stepNum}
                                     </div>
                                     <span style={{
-                                        fontSize: '0.75rem',
+                                        fontSize: isActive ? '0.75rem' : '0rem',
                                         color: isActive
                                             ? 'var(--color-gold)'
                                             : isDone

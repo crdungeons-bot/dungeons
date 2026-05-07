@@ -450,16 +450,16 @@ export default function ClassSelectStep({
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             {/* Grid + panel row */}
-            <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+            <div style={{ display: 'flex', flex: 1, minHeight: 0 }} className="class-select-container">
                 {/* Class grid */}
-                <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
+                <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }} className="class-grid-container">
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: panelOpen
                             ? 'repeat(auto-fill, minmax(170px, 1fr))'
                             : 'repeat(auto-fill, minmax(210px, 1fr))',
                         gap: '1rem',
-                    }}>
+                    }} className="class-grid">
                         {classes.map(cls => (
                             <ClassSelectCard
                                 key={cls.index}
@@ -486,7 +486,7 @@ export default function ClassSelectStep({
                         overflowY: 'auto',
                         display: 'flex',
                         flexDirection: 'column',
-                    }}>
+                    }} className="class-detail-panel">
                         {loadingDetail || !viewingData
                             ? <PanelSkeleton />
                             : (
@@ -514,9 +514,9 @@ export default function ClassSelectStep({
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 gap: '1rem',
-            }}>
+            }} className="class-footer">
                 {/* Left: back + selected info */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }} className="class-footer-left">
                     <button
                         onClick={handleBack}
                         style={{
@@ -558,7 +558,7 @@ export default function ClassSelectStep({
                 </div>
 
                 {/* Right: clear + continue */}
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }} className="class-footer-buttons">
                     {selectedClass && (
                         <button
                             onClick={() => setSelectedClass(null)}
@@ -596,6 +596,53 @@ export default function ClassSelectStep({
                     </button>
                 </div>
             </div>
+
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .class-select-container {
+                        flex-direction: column !important;
+                    }
+                    
+                    .class-grid-container {
+                        padding: 1rem !important;
+                        max-height: ${panelOpen ? '40vh' : 'none'} !important;
+                    }
+                    
+                    .class-grid {
+                        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .class-detail-panel {
+                        width: 100% !important;
+                        max-height: 50vh !important;
+                        border-left: none !important;
+                        border-top: 1px solid rgba(212,175,55,0.2) !important;
+                    }
+                    
+                    .class-footer {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        padding: 1rem !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .class-footer-left {
+                        flex-direction: column !important;
+                        align-items: flex-start !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .class-footer-buttons {
+                        width: 100%;
+                        flex-direction: row !important;
+                    }
+                    
+                    .class-footer-buttons button {
+                        flex: 1;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

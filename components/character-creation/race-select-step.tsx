@@ -454,9 +454,9 @@ export default function RaceSelectStep({
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             {/* Grid + panel row */}
-            <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+            <div style={{ display: 'flex', flex: 1, minHeight: 0 }} className="race-select-container">
                 {/* Race grid */}
-                <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
+                <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }} className="race-grid-container">
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: panelOpen
@@ -464,7 +464,7 @@ export default function RaceSelectStep({
                             : 'repeat(auto-fill, minmax(210px, 1fr))',
                         gap: '1rem',
                         transition: 'grid-template-columns 0.25s',
-                    }}>
+                    }} className="race-grid">
                         {races.map(race => (
                             <RaceSelectCard
                                 key={race.index}
@@ -492,7 +492,7 @@ export default function RaceSelectStep({
                         overflowY: 'auto',
                         display: 'flex',
                         flexDirection: 'column',
-                    }}>
+                    }} className="race-detail-panel">
                         {loadingDetail || !viewingData
                             ? <PanelSkeleton />
                             : (
@@ -521,7 +521,7 @@ export default function RaceSelectStep({
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     gap: '1rem',
-                }}>
+                }} className="race-footer">
                     <div>
                         <p style={{
                             color: 'rgba(212,175,55,0.5)',
@@ -543,7 +543,7 @@ export default function RaceSelectStep({
                         </p>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }} className="race-footer-buttons">
                         <button
                             onClick={() => setSelectedRace(null)}
                             style={{
@@ -578,6 +578,46 @@ export default function RaceSelectStep({
                     </div>
                 </div>
             )}
+
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .race-select-container {
+                        flex-direction: column !important;
+                    }
+                    
+                    .race-grid-container {
+                        padding: 1rem !important;
+                        max-height: ${panelOpen ? '40vh' : 'none'} !important;
+                    }
+                    
+                    .race-grid {
+                        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .race-detail-panel {
+                        width: 100% !important;
+                        max-height: 50vh !important;
+                        border-left: none !important;
+                        border-top: 1px solid rgba(212,175,55,0.2) !important;
+                    }
+                    
+                    .race-footer {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        padding: 1rem !important;
+                    }
+                    
+                    .race-footer-buttons {
+                        width: 100%;
+                        flex-direction: column !important;
+                    }
+                    
+                    .race-footer-buttons button {
+                        width: 100%;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

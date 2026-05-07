@@ -154,7 +154,7 @@ function StoryBlock({ label, content }: { label: string; content?: string }) {
 ═══════════════════════════════════════════════════════════════════ */
 
 function OverviewTab({ char }: { char: CharacterData }) {
-    const bg = STATIC_BACKGROUNDS.find(b => b.id === char.background);
+    const bg = STATIC_BACKGROUNDS.find(b => b.index === char.background);
     const alignInfo = ALIGNMENTS[char.alignment] || { label: fmt(char.alignment), desc: '' };
 
     return (
@@ -203,7 +203,7 @@ function OverviewTab({ char }: { char: CharacterData }) {
                     <div>
                         <p style={{ margin: '0 0 0.25rem', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Background</p>
                         <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#fff' }}>{fmt(char.background)}</p>
-                        {bg && <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'rgba(244,232,208,0.5)', fontStyle: 'italic' }}>{bg.feature}</p>}
+                        {bg && <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'rgba(244,232,208,0.5)', fontStyle: 'italic' }}>{bg.feature.name}</p>}
                     </div>
                     {char.age && (
                         <div>

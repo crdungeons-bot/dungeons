@@ -372,107 +372,110 @@ export default function DiceRollerSection() {
                             {isRolling ? '🎲 Rolling...' : `🎲 Roll ${numDice}d${diceType}`}
                         </button>
                     </div>
+                </div>
 
-                    {/* Roll History */}
-                    {history.length > 0 && (
-                        <div className="dice-roll-history">
-                            <h2 style={{
-                                color: 'var(--color-gold)',
-                                fontSize: '1.25rem',
-                                marginBottom: '1rem',
-                                fontWeight: '700'
-                            }}>
-                                Roll History
-                            </h2>
-                            <div style={{
-                                display: 'grid',
-                                gap: '0.75rem',
-                                maxHeight: '400px',
-                                overflowY: 'auto',
-                                paddingRight: '0.5rem'
-                            }}>
-                                {history.map((h, i) => {
-                                    const date = new Date(h.timestamp);
-                                    const timeString = date.toLocaleTimeString('en-US', {
-                                        hour: 'numeric',
-                                        minute: '2-digit',
-                                        second: '2-digit',
-                                        hour12: true
-                                    });
-                                    
-                                    return (
-                                        <div key={h.timestamp} style={{
-                                            padding: '1.25rem',
-                                            backgroundColor: i === 0 
-                                                ? 'rgba(212,175,55,0.1)' 
-                                                : 'rgba(0,0,0,0.2)',
-                                            border: `1px solid ${i === 0 
-                                                ? 'rgba(212,175,55,0.3)' 
-                                                : 'rgba(212,175,55,0.1)'}`,
-                                            borderRadius: '0.5rem',
+                {/* Roll History - Separate section for better mobile ordering */}
+                {history.length > 0 && (
+                    <div className="dice-roll-history" style={{
+                        padding: 'clamp(2rem, 4vw, 3rem)',
+                        borderTop: '1px solid rgba(212,175,55,0.2)'
+                    }}>
+                        <h2 style={{
+                            color: 'var(--color-gold)',
+                            fontSize: '1.25rem',
+                            marginBottom: '1rem',
+                            fontWeight: '700'
+                        }}>
+                            Roll History
+                        </h2>
+                        <div style={{
+                            display: 'grid',
+                            gap: '0.5rem',
+                            maxHeight: '400px',
+                            overflowY: 'auto',
+                            paddingRight: '0.5rem'
+                        }} className="history-list">
+                            {history.map((h, i) => {
+                                const date = new Date(h.timestamp);
+                                const timeString = date.toLocaleTimeString('en-US', {
+                                    hour: 'numeric',
+                                    minute: '2-digit',
+                                    second: '2-digit',
+                                    hour12: true
+                                });
+                                
+                                return (
+                                    <div key={h.timestamp} style={{
+                                        padding: '0.75rem 1rem',
+                                        backgroundColor: i === 0 
+                                            ? 'rgba(212,175,55,0.1)' 
+                                            : 'rgba(0,0,0,0.2)',
+                                        border: `1px solid ${i === 0 
+                                            ? 'rgba(212,175,55,0.3)' 
+                                            : 'rgba(212,175,55,0.1)'}`,
+                                        borderRadius: '0.375rem',
+                                        display: 'grid',
+                                        gridTemplateColumns: 'auto 1fr auto',
+                                        alignItems: 'center',
+                                        gap: '1rem'
+                                    }} className="history-row">
+                                        <div style={{
                                             display: 'flex',
-                                            justifyContent: 'space-between',
                                             alignItems: 'center',
-                                            flexWrap: 'wrap',
-                                            gap: '1rem'
+                                            gap: '0.75rem'
                                         }}>
-                                            <div style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '1.25rem'
+                                            <span style={{
+                                                fontSize: '1.5rem',
+                                                fontWeight: '800',
+                                                color: i === 0 ? 'var(--color-gold)' : 'rgba(244,232,208,0.7)',
+                                                minWidth: '50px',
+                                                textAlign: 'center'
                                             }}>
+                                                {h.total}
+                                            </span>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.125rem' }}>
                                                 <span style={{
-                                                    fontSize: '2rem',
-                                                    fontWeight: '800',
-                                                    color: i === 0 ? 'var(--color-gold)' : 'rgba(244,232,208,0.7)',
-                                                    minWidth: '60px',
-                                                    textAlign: 'center'
+                                                    fontSize: '0.875rem',
+                                                    color: 'rgba(244,232,208,0.5)',
+                                                    fontWeight: '600'
                                                 }}>
-                                                    {h.total}
+                                                    {h.dice.length}d{h.diceType}
                                                 </span>
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                                                    <span style={{
-                                                        fontSize: '1rem',
-                                                        color: 'rgba(244,232,208,0.5)',
-                                                        fontWeight: '600'
-                                                    }}>
-                                                        {h.dice.length}d{h.diceType}
-                                                    </span>
-                                                    <span style={{
-                                                        fontSize: '0.75rem',
-                                                        color: 'rgba(244,232,208,0.35)',
-                                                        fontWeight: '500'
-                                                    }}>
-                                                        {timeString}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div style={{
-                                                display: 'flex',
-                                                flexWrap: 'wrap',
-                                                gap: '0.5rem'
-                                            }}>
-                                                {h.dice.map((d, di) => (
-                                                    <span key={di} style={{
-                                                        padding: '0.375rem 0.75rem',
-                                                        backgroundColor: 'rgba(212,175,55,0.08)',
-                                                        border: '1px solid rgba(212,175,55,0.2)',
-                                                        borderRadius: '0.375rem',
-                                                        fontSize: '0.95rem',
-                                                        fontWeight: '700',
-                                                        color: 'rgba(244,232,208,0.7)'
-                                                    }}>
-                                                        {d}
-                                                    </span>
-                                                ))}
+                                                <span style={{
+                                                    fontSize: '0.7rem',
+                                                    color: 'rgba(244,232,208,0.35)',
+                                                    fontWeight: '500'
+                                                }}>
+                                                    {timeString}
+                                                </span>
                                             </div>
                                         </div>
-                                    );
-                                })}
-                            </div>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            gap: '0.375rem',
+                                            justifyContent: 'flex-end'
+                                        }}>
+                                            {h.dice.map((d, di) => (
+                                                <span key={di} style={{
+                                                    padding: '0.25rem 0.5rem',
+                                                    backgroundColor: 'rgba(212,175,55,0.08)',
+                                                    border: '1px solid rgba(212,175,55,0.2)',
+                                                    borderRadius: '0.25rem',
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: '700',
+                                                    color: 'rgba(244,232,208,0.7)'
+                                                }}>
+                                                    {d}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
             <style>{`
@@ -487,7 +490,8 @@ export default function DiceRollerSection() {
                         border-top: 1px solid rgba(212,175,55,0.2) !important;
                         display: flex !important;
                         flex-direction: column !important;
-                        order: 2 !important;
+                        order: 3 !important;
+                        padding: 1.5rem !important;
                     }
                     .dice-controls-sidebar > .dice-roll-button-container {
                         display: none !important;
@@ -511,10 +515,30 @@ export default function DiceRollerSection() {
                         order: 1 !important;
                     }
                     .dice-roll-history {
-                        order: 3 !important;
+                        order: 4 !important;
+                        padding: 1.5rem !important;
+                        border-top: none !important;
                     }
                     .dice-selection-controls {
                         order: 1 !important;
+                    }
+                    .dice-selection-controls button {
+                        padding: 0.5rem 0.25rem !important;
+                        font-size: 0.9rem !important;
+                    }
+                    .history-row {
+                        grid-template-columns: auto 1fr !important;
+                        padding: 0.625rem 0.75rem !important;
+                    }
+                    .history-row > div:first-child {
+                        gap: 0.5rem !important;
+                    }
+                    .history-row > div:first-child > span:first-child {
+                        font-size: 1.25rem !important;
+                        min-width: 40px !important;
+                    }
+                    .history-list {
+                        gap: 0.375rem !important;
                     }
                 }
                 @keyframes pulse {

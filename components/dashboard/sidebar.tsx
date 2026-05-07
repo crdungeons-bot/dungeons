@@ -146,31 +146,33 @@ function SidebarInner({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
                 />
             )}
 
-            {/* Mobile Menu Button */}
-            <button
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                className="mobile-only mobile-menu-btn"
-                style={{
-                    position: 'fixed',
-                    top: '5rem',
-                    left: '1rem',
-                    zIndex: 50,
-                    width: '3rem',
-                    height: '3rem',
-                    backgroundColor: 'var(--color-primary-dark)',
-                    border: '2px solid var(--color-gold)',
-                    borderRadius: '0.5rem',
-                    color: 'var(--color-gold)',
-                    fontSize: '1.5rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
-                }}
-            >
-                {isMobileOpen ? '×' : '☰'}
-            </button>
+            {/* Mobile Menu Button - Only show when sidebar is closed */}
+            {!isMobileOpen && (
+                <button
+                    onClick={() => setIsMobileOpen(true)}
+                    className="mobile-only mobile-menu-btn"
+                    style={{
+                        position: 'fixed',
+                        top: '5rem',
+                        left: '1rem',
+                        zIndex: 50,
+                        width: '3rem',
+                        height: '3rem',
+                        backgroundColor: 'var(--color-primary-dark)',
+                        border: '2px solid var(--color-gold)',
+                        borderRadius: '0.5rem',
+                        color: 'var(--color-gold)',
+                        fontSize: '1.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+                    }}
+                >
+                    ☰
+                </button>
+            )}
 
             <aside style={{
                 width: isCollapsed ? '60px' : '260px',

@@ -276,51 +276,56 @@ export default function DashboardHomeSection() {
                     )}
                 </div>
 
-                {/* Parties Section (Coming Soon) */}
+                {/* Parties Section */}
                 <div style={{
                     backgroundColor: 'var(--color-primary-light)',
                     border: '1px solid rgba(212,175,55,0.2)',
                     borderRadius: '0.75rem',
                     padding: '1.5rem',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                    position: 'relative',
-                    opacity: 0.6
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
                 }}>
                     <div style={{
-                        position: 'absolute',
-                        top: '1rem',
-                        right: '1rem',
-                        padding: '0.25rem 0.75rem',
-                        backgroundColor: 'rgba(212,175,55,0.15)',
-                        border: '1px solid rgba(212,175,55,0.3)',
-                        borderRadius: '999px',
-                        fontSize: '0.65rem',
-                        fontWeight: '800',
-                        letterSpacing: '0.05em',
-                        color: 'var(--color-gold)'
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '1.25rem'
                     }}>
-                        COMING SOON
-                    </div>
-
-                    <div>
-                        <p style={{
-                            margin: '0 0 0.25rem 0',
-                            fontSize: '0.65rem',
-                            fontWeight: '800',
-                            letterSpacing: '0.1em',
-                            textTransform: 'uppercase',
-                            color: 'rgba(212,175,55,0.5)'
-                        }}>
-                            My Parties
-                        </p>
-                        <h2 style={{
-                            margin: '0 0 1.25rem 0',
-                            fontSize: '1.5rem',
-                            fontWeight: '800',
-                            color: 'var(--color-gold)'
-                        }}>
-                            0
-                        </h2>
+                        <div>
+                            <p style={{
+                                margin: '0 0 0.25rem 0',
+                                fontSize: '0.65rem',
+                                fontWeight: '800',
+                                letterSpacing: '0.1em',
+                                textTransform: 'uppercase',
+                                color: 'rgba(212,175,55,0.5)'
+                            }}>
+                                My Parties
+                            </p>
+                            <h2 style={{
+                                margin: 0,
+                                fontSize: '1.5rem',
+                                fontWeight: '800',
+                                color: 'var(--color-gold)'
+                            }}>
+                                0
+                            </h2>
+                        </div>
+                        <Link
+                            href="/dashboard?section=parties"
+                            style={{
+                                padding: '0.5rem 1rem',
+                                backgroundColor: 'rgba(212,175,55,0.15)',
+                                color: 'var(--color-gold)',
+                                fontSize: '0.75rem',
+                                fontWeight: '700',
+                                borderRadius: '0.375rem',
+                                textDecoration: 'none',
+                                border: '1px solid rgba(212,175,55,0.3)',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            View
+                        </Link>
                     </div>
 
                     <div style={{
@@ -330,7 +335,7 @@ export default function DashboardHomeSection() {
                         fontSize: '0.875rem',
                         fontStyle: 'italic'
                     }}>
-                        Create and manage adventuring parties with your friends. This feature is under development.
+                        Join or create a party to adventure with friends!
                     </div>
                 </div>
             </div>

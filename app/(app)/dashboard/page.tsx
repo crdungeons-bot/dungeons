@@ -11,6 +11,7 @@ import SpellsSection from '@/components/sections/spells-section';
 import DiceRollerSection from '@/components/sections/dice-roller-section';
 import DashboardHomeSection from '@/components/sections/dashboard-home-section';
 import PartiesSection from '@/components/sections/parties-section';
+import PartyDetailSection from '@/components/sections/party-detail-section';
 
 export default async function Dashboard({
     searchParams,
@@ -28,7 +29,8 @@ export default async function Dashboard({
             {section === 'characters' && !item && <CharactersSection />}
         {section === 'characters' &&  item && <CharacterDetailSection id={item} />}
             
-            {section === 'parties' && <PartiesSection />}
+            {section === 'parties' && !item && <PartiesSection />}
+            {section === 'parties' && item && <PartyDetailSection partyId={item} />}
             
         {section === 'races' && !item && <RacesSection />}
             {section === 'races' && item && <RaceDetailSection race={item} />}

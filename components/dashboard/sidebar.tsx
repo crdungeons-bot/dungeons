@@ -29,8 +29,8 @@ const sidebarGroups: SidebarGroup[] = [
     {
         title: 'Active Session',
         items: [
+            { label: 'Dice Roller', section: 'dice-roller' },
             { label: 'Live Play', comingSoon: true },
-            { label: 'Dice Roller', comingSoon: true },
             { label: 'Session Notes', comingSoon: true },
         ]
     },

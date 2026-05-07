@@ -507,16 +507,19 @@ function ASIScreen({ stats, onAccept }: {
     const [statA,    setStatA]    = useState<StatKey | null>(null);
     const [statB,    setStatB]    = useState<StatKey | null>(null);
 
+    const hasPrimalChampion = stats.str > 20 || stats.con > 20;
+    const getStatCap = (key: StatKey) => (hasPrimalChampion && (key === 'str' || key === 'con')) ? 24 : 20;
+
     const newStats = useMemo((): Stats => {
         const s = { ...stats };
         if (mode === 'double' && statA) {
-            s[statA] = Math.min(20, s[statA] + 2);
+            s[statA] = Math.min(getStatCap(statA), s[statA] + 2);
         } else if (mode === 'split') {
-            if (statA) s[statA] = Math.min(20, s[statA] + 1);
-            if (statB) s[statB] = Math.min(20, s[statB] + 1);
+            if (statA) s[statA] = Math.min(getStatCap(statA), s[statA] + 1);
+            if (statB) s[statB] = Math.min(getStatCap(statB), s[statB] + 1);
         }
         return s;
-    }, [stats, mode, statA, statB]);
+    }, [stats, mode, statA, statB, getStatCap]);
 
     const isValid = mode === 'double' ? statA !== null : (statA !== null && statB !== null && statA !== statB);
 
@@ -541,7 +544,9 @@ function ASIScreen({ stats, onAccept }: {
             <div style={{ textAlign: 'center' }}>
                 <p style={{ margin: '0 0 0.3rem', fontSize: '0.62rem', fontWeight: '800', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Ability Score Improvement</p>
                 <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#fff' }}>Choose how to improve your character</p>
-                <p style={{ margin: '0.4rem 0 0', fontSize: '0.82rem', color: 'rgba(244,232,208,0.4)', fontStyle: 'italic' }}>Ability scores cannot exceed 20.</p>
+                <p style={{ margin: '0.4rem 0 0', fontSize: '0.82rem', color: 'rgba(244,232,208,0.4)', fontStyle: 'italic' }}>
+                    Ability scores cannot exceed 20{stats.str > 20 || stats.con > 20 ? ' (STR/CON: 24 for Barbarians)' : ''}.
+                </p>
             </div>
 
             {/* Mode toggle */}
@@ -566,7 +571,9 @@ function ASIScreen({ stats, onAccept }: {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.6rem' }}>
                 {STAT_KEYS.map(key => {
                     const current  = stats[key] ?? 10;
-                    const capped   = current >= 20;
+                    const hasPrimalChampion = stats.str > 20 || stats.con > 20;
+                    const statCap = (hasPrimalChampion && (key === 'str' || key === 'con')) ? 24 : 20;
+                    const capped   = current >= statCap;
                     const selected = isSelected(key);
                     const gain     = gainFor(key);
 
@@ -662,6 +669,17 @@ function FeaturesScreen({ charClass, charRace, newLevel, onNext, onFeaturesLoade
                 const entries = (data.entries ?? []).filter((e: { type?: string }) =>
                     e.type === 'class-ability' || e.type === 'racial-ability'
                 );
+                
+                // Add Primal Champion for Barbarians at level 20
+                if (charClass === 'barbarian' && newLevel === 20) {
+                    entries.unshift({
+                        name: 'Primal Champion',
+                        type: 'class-ability',
+                        actionType: 'Passive',
+                        description: 'At 20th level, you embody the power of the wilds. Your Strength and Constitution scores increase by 4. Your maximum for those scores is now 24. (Already applied to your stats!)'
+                    });
+                }
+                
                 setFeatures(entries);
                 onFeaturesLoaded(entries.length);
                 setLoadingFeatures(false);
@@ -871,9 +889,19 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
         return () => { const s = document.getElementById('lu-keyframes'); if (s) s.remove(); };
     }, []);
 
+    // Primal Champion: Barbarians get +4 STR and +4 CON at level 20
+    const initialStats: Stats = useMemo(() => {
+        const stats = { ...char.stats };
+        if (char.class === 'barbarian' && newLevel === 20) {
+            stats.str = Math.min((stats.str ?? 10) + 4, 24);
+            stats.con = Math.min((stats.con ?? 10) + 4, 24);
+        }
+        return stats;
+    }, [char.stats, char.class, newLevel]);
+
     const [step,         setStep]         = useState<Step>('announce');
     const [hpGain,       setHpGain]       = useState(0);
-    const [newStats,     setNewStats]     = useState<Stats>({ ...char.stats });
+    const [newStats,     setNewStats]     = useState<Stats>(initialStats);
     const [saving,       setSaving]       = useState(false);
     const [featureCount, setFeatureCount] = useState(0);
 

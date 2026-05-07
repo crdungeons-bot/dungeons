@@ -110,130 +110,134 @@ export default function DiceRollerSection() {
                     borderRight: '1px solid rgba(212,175,55,0.2)',
                     padding: 'clamp(1.5rem, 3vw, 2rem)',
                     overflowY: 'auto'
-                }}>
+                }} className="dice-controls-sidebar">
                     <h2 style={{ 
                         color: 'var(--color-gold)',
                         fontSize: '1.1rem',
                         marginBottom: '1.5rem',
                         fontWeight: '700'
-                    }}>
+                    }} className="controls-title">
                         Dice Controls
                     </h2>
 
                     {/* Dice Type Selector */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{
-                            display: 'block',
-                            color: 'rgba(244,232,208,0.7)',
-                            fontSize: '0.85rem',
-                            marginBottom: '0.75rem',
-                            fontWeight: '600'
-                        }}>
-                            Dice Type
-                        </label>
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            gap: '0.5rem'
-                        }}>
-                            {DICE_TYPES.map(type => (
-                                <button
-                                    key={type}
-                                    onClick={() => setDiceType(type)}
-                                    disabled={isRolling}
-                                    style={{
-                                        padding: '0.75rem 0.25rem',
-                                        backgroundColor: diceType === type 
-                                            ? 'rgba(212,175,55,0.15)' 
-                                            : 'rgba(0,0,0,0.3)',
-                                        border: `2px solid ${diceType === type 
-                                            ? 'var(--color-gold)' 
-                                            : 'rgba(212,175,55,0.2)'}`,
-                                        borderRadius: '0.375rem',
-                                        color: diceType === type 
-                                            ? 'var(--color-gold)' 
-                                            : 'rgba(244,232,208,0.7)',
-                                        fontSize: '1.1rem',
-                                        fontWeight: '800',
-                                        cursor: isRolling ? 'not-allowed' : 'pointer',
-                                        transition: 'all 0.2s',
-                                        opacity: isRolling ? 0.5 : 1
-                                    }}
-                                >
-                                    d{type}
-                                </button>
-                            ))}
+                    <div className="dice-selection-controls">
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{
+                                display: 'block',
+                                color: 'rgba(244,232,208,0.7)',
+                                fontSize: '0.85rem',
+                                marginBottom: '0.75rem',
+                                fontWeight: '600'
+                            }}>
+                                Dice Type
+                            </label>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(3, 1fr)',
+                                gap: '0.5rem'
+                            }}>
+                                {DICE_TYPES.map(type => (
+                                    <button
+                                        key={type}
+                                        onClick={() => setDiceType(type)}
+                                        disabled={isRolling}
+                                        style={{
+                                            padding: '0.75rem 0.25rem',
+                                            backgroundColor: diceType === type 
+                                                ? 'rgba(212,175,55,0.15)' 
+                                                : 'rgba(0,0,0,0.3)',
+                                            border: `2px solid ${diceType === type 
+                                                ? 'var(--color-gold)' 
+                                                : 'rgba(212,175,55,0.2)'}`,
+                                            borderRadius: '0.375rem',
+                                            color: diceType === type 
+                                                ? 'var(--color-gold)' 
+                                                : 'rgba(244,232,208,0.7)',
+                                            fontSize: '1.1rem',
+                                            fontWeight: '800',
+                                            cursor: isRolling ? 'not-allowed' : 'pointer',
+                                            transition: 'all 0.2s',
+                                            opacity: isRolling ? 0.5 : 1
+                                        }}
+                                    >
+                                        d{type}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Number of Dice */}
-                    <div style={{ marginBottom: '2rem' }}>
-                        <label style={{
-                            display: 'block',
-                            color: 'rgba(244,232,208,0.7)',
-                            fontSize: '0.85rem',
-                            marginBottom: '0.75rem',
-                            fontWeight: '600'
-                        }}>
-                            Number: <span style={{ color: 'var(--color-gold)', fontSize: '1.25rem' }}>{numDice}</span>
-                        </label>
-                        <input
-                            type="range"
-                            min="1"
-                            max="10"
-                            value={numDice}
-                            onChange={(e) => setNumDice(parseInt(e.target.value))}
-                            disabled={isRolling}
-                            style={{
-                                width: '100%',
-                                height: '8px',
-                                borderRadius: '4px',
-                                background: `linear-gradient(to right, 
-                                    var(--color-gold) 0%, 
-                                    var(--color-gold) ${(numDice - 1) / 9 * 100}%, 
-                                    rgba(212,175,55,0.2) ${(numDice - 1) / 9 * 100}%, 
-                                    rgba(212,175,55,0.2) 100%)`,
-                                outline: 'none',
-                                cursor: isRolling ? 'not-allowed' : 'pointer',
-                                opacity: isRolling ? 0.5 : 1
-                            }}
-                        />
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            marginTop: '0.5rem',
-                            fontSize: '0.7rem',
-                            color: 'rgba(244,232,208,0.3)'
-                        }}>
-                            <span>1</span>
-                            <span>10</span>
+                        {/* Number of Dice */}
+                        <div style={{ marginBottom: '2rem' }}>
+                            <label style={{
+                                display: 'block',
+                                color: 'rgba(244,232,208,0.7)',
+                                fontSize: '0.85rem',
+                                marginBottom: '0.75rem',
+                                fontWeight: '600'
+                            }}>
+                                Number: <span style={{ color: 'var(--color-gold)', fontSize: '1.25rem' }}>{numDice}</span>
+                            </label>
+                            <input
+                                type="range"
+                                min="1"
+                                max="10"
+                                value={numDice}
+                                onChange={(e) => setNumDice(parseInt(e.target.value))}
+                                disabled={isRolling}
+                                style={{
+                                    width: '100%',
+                                    height: '8px',
+                                    borderRadius: '4px',
+                                    background: `linear-gradient(to right, 
+                                        var(--color-gold) 0%, 
+                                        var(--color-gold) ${(numDice - 1) / 9 * 100}%, 
+                                        rgba(212,175,55,0.2) ${(numDice - 1) / 9 * 100}%, 
+                                        rgba(212,175,55,0.2) 100%)`,
+                                    outline: 'none',
+                                    cursor: isRolling ? 'not-allowed' : 'pointer',
+                                    opacity: isRolling ? 0.5 : 1
+                                }}
+                            />
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                marginTop: '0.5rem',
+                                fontSize: '0.7rem',
+                                color: 'rgba(244,232,208,0.3)'
+                            }}>
+                                <span>1</span>
+                                <span>10</span>
+                            </div>
                         </div>
                     </div>
 
                     {/* Roll Button */}
-                    <button
-                        onClick={rollDice}
-                        disabled={isRolling}
-                        style={{
-                            width: '100%',
-                            padding: '1rem',
-                            backgroundColor: isRolling 
-                                ? 'rgba(212,175,55,0.3)' 
-                                : 'var(--color-gold)',
-                            border: 'none',
-                            borderRadius: '0.5rem',
-                            color: 'var(--color-primary)',
-                            fontSize: '1.1rem',
-                            fontWeight: '800',
-                            cursor: isRolling ? 'not-allowed' : 'pointer',
-                            boxShadow: isRolling ? 'none' : '0 0 20px rgba(212,175,55,0.4)',
-                            transition: 'all 0.2s',
-                            letterSpacing: '0.05em',
-                            marginBottom: '2rem'
-                        }}
-                    >
-                        {isRolling ? '🎲 Rolling...' : `🎲 Roll ${numDice}d${diceType}`}
-                    </button>
+                    <div className="dice-roll-button-container">
+                        <button
+                            onClick={rollDice}
+                            disabled={isRolling}
+                            style={{
+                                width: '100%',
+                                padding: '1rem',
+                                backgroundColor: isRolling 
+                                    ? 'rgba(212,175,55,0.3)' 
+                                    : 'var(--color-gold)',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                color: 'var(--color-primary)',
+                                fontSize: '1.1rem',
+                                fontWeight: '800',
+                                cursor: isRolling ? 'not-allowed' : 'pointer',
+                                boxShadow: isRolling ? 'none' : '0 0 20px rgba(212,175,55,0.4)',
+                                transition: 'all 0.2s',
+                                letterSpacing: '0.05em',
+                                marginBottom: '2rem'
+                            }}
+                        >
+                            {isRolling ? '🎲 Rolling...' : `🎲 Roll ${numDice}d${diceType}`}
+                        </button>
+                    </div>
 
                     {/* Quick Rolls */}
                     <div>
@@ -294,7 +298,7 @@ export default function DiceRollerSection() {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '2rem'
-                }}>
+                }} className="dice-results-area">
                     
                     {/* Results Display */}
                     <div style={{
@@ -302,7 +306,7 @@ export default function DiceRollerSection() {
                         alignItems: 'center',
                         justifyContent: 'center',
                         minHeight: '400px',
-                    }}>
+                    }} className="dice-results-display">
                         {!isRolling && !result && (
                             <div style={{
                                 textAlign: 'center',
@@ -516,6 +520,31 @@ export default function DiceRollerSection() {
                 @media (max-width: 768px) {
                     .dice-roller-layout {
                         grid-template-columns: 1fr !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                    }
+                    .dice-controls-sidebar {
+                        border-right: none !important;
+                        border-top: 1px solid rgba(212,175,55,0.2) !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        order: 2 !important;
+                    }
+                    .controls-title {
+                        display: none !important;
+                    }
+                    .dice-results-area {
+                        order: 1 !important;
+                        padding: 1.5rem !important;
+                    }
+                    .dice-results-display {
+                        min-height: 250px !important;
+                    }
+                    .dice-roll-button-container {
+                        order: 1 !important;
+                    }
+                    .dice-selection-controls {
+                        order: 2 !important;
                     }
                 }
                 @keyframes pulse {

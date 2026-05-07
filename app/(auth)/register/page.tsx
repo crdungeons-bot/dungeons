@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navigation } from '@/components';
 
@@ -11,6 +11,9 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
+    const [humanCheck, setHumanCheck] = useState(false);
+    const [honeypot, setHoneypot] = useState('');
+    const [formLoadTime] = useState(Date.now());
     const router = useRouter();
 
     const validateEmail = (email: string) => {
@@ -34,6 +37,28 @@ export default function Register() {
         e.preventDefault();
         setMessage('');
 
+        // Check honeypot (if filled, it's likely a bot)
+        if (honeypot) {
+            setIsError(true);
+            setMessage('Invalid submission detected');
+            return;
+        }
+
+        // Check human verification checkbox
+        if (!humanCheck) {
+            setIsError(true);
+            setMessage('Please confirm you are human');
+            return;
+        }
+
+        // Check if form was filled too quickly (less than 2 seconds = likely bot)
+        const timeTaken = Date.now() - formLoadTime;
+        if (timeTaken < 2000) {
+            setIsError(true);
+            setMessage('Please take your time filling out the form');
+            return;
+        }
+
         // Validate email before submitting
         if (!validateEmail(email)) {
             setIsError(true);
@@ -45,7 +70,14 @@ export default function Register() {
             const response = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ firstName, lastName, email, password }),
+                body: JSON.stringify({ 
+                    firstName, 
+                    lastName, 
+                    email, 
+                    password,
+                    humanCheck,
+                    timestamp: formLoadTime 
+                }),
             });
 
             const data = await response.json();
@@ -104,6 +136,23 @@ export default function Register() {
                 }}>
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
+                        {/* Honeypot field - hidden from users, bots will fill it */}
+                        <input
+                            type="text"
+                            name="website"
+                            value={honeypot}
+                            onChange={(e) => setHoneypot(e.target.value)}
+                            tabIndex={-1}
+                            autoComplete="off"
+                            style={{
+                                position: 'absolute',
+                                left: '-9999px',
+                                width: '1px',
+                                height: '1px',
+                                opacity: 0
+                            }}
+                        />
+
                         {/* Reusable input style */}
                         {[
                             { label: 'First Name', type: 'text', value: firstName, setter: setFirstName, placeholder: 'Your first name' },
@@ -146,6 +195,42 @@ export default function Register() {
                                 />
                             </div>
                         ))}
+
+                        {/* Human verification checkbox */}
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            padding: '0.75rem',
+                            backgroundColor: 'rgba(212, 175, 55, 0.05)',
+                            borderRadius: '0.375rem',
+                            border: '1px solid rgba(212, 175, 55, 0.2)'
+                        }}>
+                            <input
+                                type="checkbox"
+                                id="humanCheck"
+                                checked={humanCheck}
+                                onChange={(e) => setHumanCheck(e.target.checked)}
+                                required
+                                style={{
+                                    width: '18px',
+                                    height: '18px',
+                                    cursor: 'pointer',
+                                    accentColor: 'var(--color-gold)'
+                                }}
+                            />
+                            <label 
+                                htmlFor="humanCheck" 
+                                style={{
+                                    color: 'rgba(244, 232, 208, 0.8)',
+                                    fontSize: '0.9rem',
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                }}
+                            >
+                                I am a human adventurer, not a bot
+                            </label>
+                        </div>
 
                         {message && (
                             <div style={{

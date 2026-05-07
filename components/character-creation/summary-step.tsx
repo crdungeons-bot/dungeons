@@ -197,10 +197,10 @@ export default function SummaryStep({
 
     /* ── derived display values ── */
     const displayName       = name       ? fmt(name)       : 'Unnamed Hero';
-    const displayRace       = race       ? fmt(race)       : '—';
-    const displayClass      = dndClass   ? fmt(dndClass)   : '—';
-    const displayBackground = background ? fmt(background) : '—';
-    const displayAlignment  = alignment  ? fmt(alignment)  : '—';
+    const displayRace       = race       ? fmt(race)       : ', ';
+    const displayClass      = dndClass   ? fmt(dndClass)   : ', ';
+    const displayBackground = background ? fmt(background) : ', ';
+    const displayAlignment  = alignment  ? fmt(alignment)  : ', ';
 
     const bgDetail = background
         ? (STATIC_BACKGROUNDS.find(b => b.index === background) ?? null)
@@ -411,7 +411,7 @@ export default function SummaryStep({
                             fontSize:     '0.85rem',
                             fontStyle:    'italic',
                         }}>
-                            No stats recorded — you can assign them later.
+                            No stats recorded ,  you can assign them later.
                         </div>
                     </section>
                 )}

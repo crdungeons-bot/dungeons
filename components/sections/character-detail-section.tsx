@@ -77,13 +77,13 @@ const SKILL_GROUPS = [
 
 const ALIGNMENTS: Record<string, { label: string; desc: string }> = {
     'lawful-good':    { label: 'Lawful Good',    desc: 'Principled and compassionate. Acts with a strict code and genuine care for others.' },
-    'neutral-good':   { label: 'Neutral Good',   desc: 'Does the best they can without being bound by rules or chaos — acts from the heart.' },
+    'neutral-good':   { label: 'Neutral Good',   desc: 'Does the best they can without being bound by rules or chaos ,  acts from the heart.' },
     'chaotic-good':   { label: 'Chaotic Good',   desc: 'Follows their conscience regardless of law. Values freedom and kindness above order.' },
-    'lawful-neutral': { label: 'Lawful Neutral',  desc: 'Order and tradition above all else — not good or evil, just bound to a code.' },
+    'lawful-neutral': { label: 'Lawful Neutral',  desc: 'Order and tradition above all else ,  not good or evil, just bound to a code.' },
     'true-neutral':   { label: 'True Neutral',    desc: 'Acts without strong moral preference, maintaining balance or living for themselves.' },
     'chaotic-neutral':{ label: 'Chaotic Neutral', desc: 'Values personal freedom above all. Follows whims, avoids authority, resists control.' },
     'lawful-evil':    { label: 'Lawful Evil',     desc: 'Uses order and structure as a tool for domination. Methodical, patient, and ruthless.' },
-    'neutral-evil':   { label: 'Neutral Evil',    desc: 'Does whatever serves their interests. No loyalty to anyone — utterly self-interested.' },
+    'neutral-evil':   { label: 'Neutral Evil',    desc: 'Does whatever serves their interests. No loyalty to anyone ,  utterly self-interested.' },
     'chaotic-evil':   { label: 'Chaotic Evil',    desc: 'Driven by destructive impulse and contempt for order. Dangerous, unpredictable, violent.' },
 };
 
@@ -208,13 +208,13 @@ function CombatStatsBar({ char }: { char: CharacterData }) {
     const combatStats: CombatStat[] = [
         {
             label:  'Max HP',
-            value:  char.hp !== null ? `${char.hp}` : '—',
+            value:  char.hp !== null ? `${char.hp}` : ', ',
             sub:    'Hit Points',
             accent: 'rgba(220,80,80,0.85)',
         },
         {
             label:  'AC',
-            value:  hasStats ? `${ac}` : '—',
+            value:  hasStats ? `${ac}` : ', ',
             sub:    char.class === 'barbarian' ? 'Unarmored (CON)' : char.class === 'monk' ? 'Unarmored (WIS)' : 'Unarmored',
             accent: 'rgba(93,142,232,0.85)',
         },
@@ -226,7 +226,7 @@ function CombatStatsBar({ char }: { char: CharacterData }) {
         },
         {
             label:  'Initiative',
-            value:  hasStats ? initStr : '—',
+            value:  hasStats ? initStr : ', ',
             sub:    'DEX modifier',
             accent: dexMod >= 0 ? 'rgba(240,200,80,0.85)' : 'rgba(220,80,80,0.85)',
         },
@@ -764,7 +764,7 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
                 {/* Racial abilities */}
                 {fRacial.length > 0 && (
                     <section>
-                        <MagicGroupHeader title={`Racial Abilities — ${fmt(charRace)}`} count={fRacial.length} color="rgba(80,200,100,0.8)" />
+                        <MagicGroupHeader title={`Racial Abilities ,  ${fmt(charRace)}`} count={fRacial.length} color="rgba(80,200,100,0.8)" />
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                             {fRacial.map((e, i) => <MagicCard key={`r-${i}`} entry={e} />)}
                         </div>
@@ -774,7 +774,7 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
                 {/* Class abilities – unlocked */}
                 {fClassHave.length > 0 && (
                     <section>
-                        <MagicGroupHeader title={`${fmt(charClass)} Abilities — Level ${charLevel}`} count={fClassHave.length} color="rgba(212,175,55,0.8)" />
+                        <MagicGroupHeader title={`${fmt(charClass)} Abilities ,  Level ${charLevel}`} count={fClassHave.length} color="rgba(212,175,55,0.8)" />
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                             {fClassHave.map((e, i) => <MagicCard key={`c-${i}`} entry={e} />)}
                         </div>
@@ -815,10 +815,10 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
                     </div>
                 )}
 
-                {/* Coming abilities (locked) — always shown regardless of filters */}
+                {/* Coming abilities (locked) ,  always shown regardless of filters */}
                 {fClassLater.length > 0 && (
                     <section>
-                        <MagicGroupHeader title="Coming Soon — Level Up to Unlock" count={fClassLater.length} color="rgba(244,232,208,0.2)" />
+                        <MagicGroupHeader title="Coming Soon ,  Level Up to Unlock" count={fClassLater.length} color="rgba(244,232,208,0.2)" />
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                             {fClassLater.map((e, i) => <MagicCard key={`cl-${i}`} entry={e} locked />)}
                         </div>
@@ -907,7 +907,7 @@ function LoadoutsTab() {
             <div>
                 <p style={{ margin: '0 0 0.4rem', fontSize: '0.62rem', fontWeight: '800', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.35)' }}>Loadouts</p>
                 <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(244,232,208,0.3)', fontStyle: 'italic', maxWidth: '320px', lineHeight: '1.6' }}>
-                    Save and swap equipment builds — coming in a future update.
+                    Save and swap equipment builds ,  coming in a future update.
                 </p>
             </div>
         </div>
@@ -1009,21 +1009,21 @@ function ItemRow({ item, index }: { item: InventoryItem; index: number }) {
                 {/* Properties */}
                 <div style={{ padding: '0 0.5rem', overflow: 'hidden' }}>
                     <span style={{ fontSize: '0.75rem', color: 'rgba(244,232,208,0.5)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
-                        {item.properties ?? '—'}
+                        {item.properties ?? ', '}
                     </span>
                 </div>
 
                 {/* Weight */}
                 <div style={{ padding: '0 0.5rem', textAlign: 'center' }}>
                     <span style={{ fontSize: '0.75rem', color: 'rgba(244,232,208,0.4)' }}>
-                        {item.weight !== undefined ? `${item.weight} lb` : '—'}
+                        {item.weight !== undefined ? `${item.weight} lb` : ', '}
                     </span>
                 </div>
 
                 {/* Value */}
                 <div style={{ padding: '0 0.5rem', textAlign: 'right' }}>
                     <span style={{ fontSize: '0.75rem', color: 'rgba(212,175,55,0.65)', whiteSpace: 'nowrap' }}>
-                        {item.value ?? '—'}
+                        {item.value ?? ', '}
                     </span>
                 </div>
 
@@ -1077,7 +1077,7 @@ function TableHeader() {
 function GearTab({ char }: { char: CharacterData }) {
     const bgData = STATIC_BACKGROUNDS.find(b => b.index === char.background);
 
-    // Currency state — editable inline
+    // Currency state ,  editable inline
     const [currency,    setCurrency]    = useState<Currency>(char.currency);
     const [editCurrency,setEditCurrency]= useState(false);
     const [saving,      setSaving]      = useState(false);
@@ -1277,7 +1277,7 @@ function LoreTab({ char }: { char: CharacterData }) {
             {/* ── Background Feature ── */}
             {bgData && (
                 <section>
-                    <SectionHead>Background Feature — {bgData.name}</SectionHead>
+                    <SectionHead>Background Feature ,  {bgData.name}</SectionHead>
                     <div style={{ background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '10px', padding: '1rem 1.25rem' }}>
                         <p style={{ margin: '0 0 0.4rem', fontSize: '0.9rem', fontWeight: '700', color: 'var(--color-gold)' }}>{bgData.feature.name}</p>
                         {bgData.feature.desc.map((d, i) => (

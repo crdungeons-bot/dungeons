@@ -3,27 +3,27 @@ import { ClassDetail } from '@/types';
 
 const CLASS_DESCRIPTIONS: Record<string, string> = {
     barbarian:
-        'Primal fury incarnate. Barbarians charge headlong into battle, shrugging off wounds that would fell lesser warriors. Their rage is not mere anger — it is a battle-trance that transforms pain into power, turning the tide of any fight through sheer unstoppable force.',
+        'Primal fury incarnate. Barbarians charge headlong into battle, shrugging off wounds that would fell lesser warriors. Their rage is not mere anger ,  it is a battle-trance that transforms pain into power, turning the tide of any fight through sheer unstoppable force.',
     bard:
         'Masters of magic woven through music and story. Bards inspire allies, mock enemies, and bend the world to their will with words alone. Equally at home in a royal court or a dungeon, they collect secrets and songs the way others collect scars.',
     cleric:
         'Divine warriors and healers who channel the raw power of their god. Clerics walk the line between mortal and divine, smiting enemies with holy power one moment and restoring the fallen the next. Their faith is their weapon, and their weapon is absolute.',
     druid:
-        'Guardians of the natural world and wielders of wild magic. Druids can call lightning from a clear sky, walk as a bear through enemy lines, or speak with the trees. Their power is ancient — older than kingdoms, older than gods.',
+        'Guardians of the natural world and wielders of wild magic. Druids can call lightning from a clear sky, walk as a bear through enemy lines, or speak with the trees. Their power is ancient ,  older than kingdoms, older than gods.',
     fighter:
         "The supreme masters of martial combat. Fighters are unmatched in their ability to dish out and absorb punishment. Whether wielding a greatsword with bone-crushing precision or peppering enemies with arrows from afar, a fighter's discipline and training make them a force that never stops coming.",
     monk:
         'Weapons are unnecessary when your body is the deadliest instrument in the room. Monks focus their ki into devastating unarmed strikes, impossible agility, and abilities that defy the laws of nature. They are calm, efficient, and utterly lethal.',
     paladin:
-        "The oath-bound champion of justice and divine will. Paladins combine the martial prowess of a fighter with the divine power of a cleric, fuelled by a sacred oath that grants them near-supernatural resilience. Break their code and face the consequences — keep it and become something approaching unstoppable.",
+        "The oath-bound champion of justice and divine will. Paladins combine the martial prowess of a fighter with the divine power of a cleric, fuelled by a sacred oath that grants them near-supernatural resilience. Break their code and face the consequences ,  keep it and become something approaching unstoppable.",
     ranger:
         "Hunters and trackers who blend martial skill with primal magic. Rangers are most dangerous in their favoured terrain, using cunning, speed, and a deeply personal bond with nature to outmanoeuvre and outlast any foe. They strike from the shadows before the enemy even knows they're there.",
     rogue:
-        'Precision over power. Rogues exploit every weakness, every blind spot, every moment of distraction for a devastating strike that leaves enemies wondering what hit them. They pick locks, pocket secrets, and vanish into shadow — and the ones who underestimate them rarely get a second chance.',
+        'Precision over power. Rogues exploit every weakness, every blind spot, every moment of distraction for a devastating strike that leaves enemies wondering what hit them. They pick locks, pocket secrets, and vanish into shadow ,  and the ones who underestimate them rarely get a second chance.',
     sorcerer:
         'Magic is not something a sorcerer learns. It is something they were born as. Wild, unpredictable, and enormously powerful, sorcerers channel arcane energy that flows through their very bloodline. They bend the rules of magic itself, twisting spells in ways no wizard could predict.',
     warlock:
-        "Power granted by a pact with something ancient and incomprehensible. Warlocks have made a deal, and that deal has made them dangerous. Their spells hit harder and recharge faster than any other caster's — but the patron is always watching, always waiting, and never gives something for nothing.",
+        "Power granted by a pact with something ancient and incomprehensible. Warlocks have made a deal, and that deal has made them dangerous. Their spells hit harder and recharge faster than any other caster's ,  but the patron is always watching, always waiting, and never gives something for nothing.",
     wizard:
         "The most powerful casters in existence, if they survive long enough to reach their potential. Wizards command the broadest and most devastating catalogue of spells through decades of obsessive study. Intelligence is their armour, foresight their shield, and a well-prepared spell list the most powerful weapon in any world.",
 };
@@ -37,10 +37,10 @@ export default async function ClassDetailSection({ dndClass }: { dndClass: strin
     return (
         <div style={{
             // 4 gradient layers stacked in front of the image:
-            // Layer 1: left fade    — wide (0–42%) so it fully covers the image edge
-            // Layer 2: right fade   — same, mirrored
-            // Layer 3: dark overlay — keeps text readable, heavier at top/bottom
-            // Layer 4 (back): image — 'contain' = full body, no cropping
+            // Layer 1: left fade    ,  wide (0–42%) so it fully covers the image edge
+            // Layer 2: right fade   ,  same, mirrored
+            // Layer 3: dark overlay ,  keeps text readable, heavier at top/bottom
+            // Layer 4 (back): image ,  'contain' = full body, no cropping
             background: `
                 linear-gradient(to right,  var(--color-primary) 0%, rgba(10,5,2,0) 42%),
                 linear-gradient(to left,   var(--color-primary) 0%, rgba(10,5,2,0) 42%),
@@ -177,7 +177,7 @@ export default async function ClassDetailSection({ dndClass }: { dndClass: strin
                 )}
             </div>
 
-            {/* Sticky bar — sticks to the bottom of <main> as the user scrolls */}
+            {/* Sticky bar ,  sticks to the bottom of <main> as the user scrolls */}
             <div style={{
                 position: 'sticky',
                 bottom: 0,

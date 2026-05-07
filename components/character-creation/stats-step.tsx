@@ -227,14 +227,14 @@ function StatCard({
                 display: 'flex',
                 alignItems: 'center',
             }}>
-                {value ?? '—'}
+                {value ?? ', '}
             </span>
             <span style={{
                 fontSize: '0.75rem',
                 fontWeight: '700',
                 color: value !== null ? 'rgba(212,175,55,0.55)' : 'rgba(212,175,55,0.15)',
             }}>
-                {value !== null ? getMod(value) : '—'}
+                {value !== null ? getMod(value) : ', '}
             </span>
             <span style={{
                 fontSize: '0.7rem',
@@ -288,7 +288,7 @@ function StatInputCard({
                 max={30}
                 value={value}
                 onChange={e => onChange(e.target.value)}
-                placeholder="—"
+                placeholder=", "
                 style={{
                     width: '64px',
                     textAlign: 'center',
@@ -309,7 +309,7 @@ function StatInputCard({
                 fontWeight: '700',
                 color: valid ? 'rgba(212,175,55,0.55)' : 'rgba(212,175,55,0.15)',
             }}>
-                {valid ? getMod(num) : '—'}
+                {valid ? getMod(num) : ', '}
             </span>
             <span style={{
                 fontSize: '0.7rem',
@@ -538,7 +538,7 @@ export default function StatsStep(props: StatsStepProps) {
                                 lineHeight: '1.65',
                                 margin: 0,
                             }}>
-                                Roll 4d6, drop the lowest die — repeated 6 times. Then assign each result to a stat of your choice.
+                                Roll 4d6, drop the lowest die ,  repeated 6 times. Then assign each result to a stat of your choice.
                             </p>
                         </div>
 
@@ -619,7 +619,7 @@ export default function StatsStep(props: StatsStepProps) {
                                         {isRolling
                                             ? 'Rolling…'
                                             : selectedPool !== null
-                                                ? `${rolled[selectedPool].total} selected — now click a stat below to assign it`
+                                                ? `${rolled[selectedPool].total} selected ,  now click a stat below to assign it`
                                                 : allAssigned
                                                     ? '✓ All stats assigned!'
                                                     : 'Click a value to pick it up, then click a stat slot to place it'}

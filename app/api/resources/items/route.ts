@@ -5,12 +5,12 @@ import clientPromise from '@/lib/mongo';
  * GET /api/resources/items
  *
  * Query parameters (all optional):
- *   category    — weapon | armor | shield | wondrous | ring | rod | staff | wand | potion | scroll | tool | ammunition | gear | clothing | trinket | misc
- *   subcategory — e.g. martial-melee, heavy, healing, artisan …
- *   rarity      — mundane | common | uncommon | rare | very-rare | legendary | artifact
- *   magical     — 'true' | 'false'
- *   attunement  — 'true' | 'false'
- *   q           — name / description text search (case-insensitive)
+ *   category    ,  weapon | armor | shield | wondrous | ring | rod | staff | wand | potion | scroll | tool | ammunition | gear | clothing | trinket | misc
+ *   subcategory ,  e.g. martial-melee, heavy, healing, artisan …
+ *   rarity      ,  mundane | common | uncommon | rare | very-rare | legendary | artifact
+ *   magical     ,  'true' | 'false'
+ *   attunement  ,  'true' | 'false'
+ *   q           ,  name / description text search (case-insensitive)
  *
  * Returns: { items: ItemEntry[], total: number }
  */

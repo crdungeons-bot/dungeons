@@ -5,17 +5,17 @@ import clientPromise from '@/lib/mongo';
  * GET /api/resources/spells-abilities
  *
  * Query parameters (all optional):
- *   class        — filter to entries whose `classes` array contains this value
- *   race         — filter to entries whose `races` array contains this value
- *   type         — 'spell' | 'class-ability' | 'racial-ability'
+ *   class        ,  filter to entries whose `classes` array contains this value
+ *   race         ,  filter to entries whose `races` array contains this value
+ *   type         ,  'spell' | 'class-ability' | 'racial-ability'
  *                  ('spell' means no `type` field in the document)
- *   levelMax     — for spells: only levels 0..levelMax
- *   levelGained  — for abilities: only entries with this exact levelGained value
- *   school       — filter by spell school
- *   actionType   — filter by actionType
- *   concentration — 'true' | 'false'
- *   ritual        — 'true' | 'false'
- *   q            — text search on name + description (case-insensitive substring)
+ *   levelMax     ,  for spells: only levels 0..levelMax
+ *   levelGained  ,  for abilities: only entries with this exact levelGained value
+ *   school       ,  filter by spell school
+ *   actionType   ,  filter by actionType
+ *   concentration ,  'true' | 'false'
+ *   ritual        ,  'true' | 'false'
+ *   q            ,  text search on name + description (case-insensitive substring)
  *
  * Returns: { entries: SpellEntry[], total: number }
  */

@@ -2,16 +2,16 @@ import { Card } from '@/components';
 import { DndClass, ClassesResponse } from '@/types';
 
 const CLASS_DESCRIPTIONS: Record<string, string> = {
-    barbarian: 'Primal rage made flesh — nearly impossible to kill and devastating up close.',
+    barbarian: 'Primal rage made flesh ,  nearly impossible to kill and devastating up close.',
     bard:      'Magic through music and wit, inspiring allies and turning battles with words alone.',
-    cleric:    'Divine power channeled through faith — healer, warrior, and vessel of the gods.',
+    cleric:    'Divine power channeled through faith ,  healer, warrior, and vessel of the gods.',
     druid:     'Shape-shifter and nature\'s champion, wielding elemental forces and wild magic.',
-    fighter:   'Disciplined, versatile, and devastating — the purest expression of martial mastery.',
-    monk:      'Ki-powered unarmed combatant — fluid, precise, and blindingly fast.',
+    fighter:   'Disciplined, versatile, and devastating ,  the purest expression of martial mastery.',
+    monk:      'Ki-powered unarmed combatant ,  fluid, precise, and blindingly fast.',
     paladin:   'Holy warrior bound by a sacred oath, fusing heavy armour with divine magic.',
     ranger:    'Hunter and tracker who thrives in the wild, pairing archery with nature magic.',
     rogue:     'Precision striker who exploits every opening for one perfectly calculated blow.',
-    sorcerer:  'Raw arcane power from within — innate, wild, and impossible to suppress.',
+    sorcerer:  'Raw arcane power from within ,  innate, wild, and impossible to suppress.',
     warlock:   'Pact-bound caster trading service to a dark patron for eldritch, rechargeable power.',
     wizard:    'The broadest spell arsenal in existence, earned through decades of obsessive study.',
 };

@@ -53,7 +53,7 @@ export default async function RacialAbilitiesSection() {
                     Racial Abilities
                 </h1>
                 <p style={{ color: 'rgba(244,232,208,0.45)', fontSize: '0.9rem', margin: 0 }}>
-                    Every innate ability granted by race — hover a trait on any race card to preview it in context.
+                    Every innate ability granted by race ,  hover a trait on any race card to preview it in context.
                 </p>
             </div>
 

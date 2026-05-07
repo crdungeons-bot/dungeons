@@ -98,7 +98,7 @@ export const STATIC_BACKGROUNDS: StaticBackground[] = [
         feature: {
             name: 'By Popular Demand',
             desc: [
-                'You can always find a place to perform — usually a tavern or inn — and your performance makes you something of a local celebrity.',
+                'You can always find a place to perform ,  usually a tavern or inn ,  and your performance makes you something of a local celebrity.',
                 'In exchange for performing, you receive free lodging and food of a modest or comfortable standard (depending on the establishment). In addition, your performance creates goodwill that can make strangers more positively disposed toward you.',
             ],
         },

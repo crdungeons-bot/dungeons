@@ -1256,8 +1256,16 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
     }, [isAsiLevel]);
 
     const goNext = () => {
+        // Special handling for 'asi' and 'feat' steps which aren't in stepFlow
+        if (step === 'asi' || step === 'feat') {
+            setStep('features');
+            return;
+        }
+        
         const idx = stepFlow.indexOf(step);
-        if (idx < stepFlow.length - 1) setStep(stepFlow[idx + 1]);
+        if (idx >= 0 && idx < stepFlow.length - 1) {
+            setStep(stepFlow[idx + 1]);
+        }
     };
 
     const handleConfirm = async () => {

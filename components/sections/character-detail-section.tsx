@@ -995,7 +995,7 @@ function ItemRow({ item, index }: { item: EnrichedInventoryItem | InventoryItem;
                 <div style={{ padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
                     {isEnriched ? (
                         <ItemTooltip item={item as EnrichedInventoryItem}>
-                            <span style={{ fontSize: '0.85rem', fontWeight: '600', color: (item as EnrichedInventoryItem).rarity ? RARITY_COLORS[(item as EnrichedInventoryItem).rarity!] : '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: 'help' }}>
+                            <span style={{ fontSize: '0.85rem', fontWeight: '600', color: (item as EnrichedInventoryItem).rarity ? RARITY_COLORS[(item as EnrichedInventoryItem).rarity as ItemRarity] ?? '#fff' : '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: 'help' }}>
                                 {item.name}
                             </span>
                         </ItemTooltip>

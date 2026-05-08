@@ -302,7 +302,7 @@ export default function StoryStep({
             </div>
 
             {/* ── Sticky footer ── */}
-            <div style={{
+            <div className="story-footer" style={{
                 flexShrink: 0,
                 borderTop: '1px solid rgba(212,175,55,0.25)',
                 backgroundColor: 'rgba(10,5,2,0.92)',
@@ -315,7 +315,7 @@ export default function StoryStep({
                 gap: '1rem',
             }}>
                 {/* Left: back + status */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                <div className="story-footer-left" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
                     <button
                         onClick={handleBack}
                         style={{
@@ -333,7 +333,7 @@ export default function StoryStep({
                     </button>
 
                     {hasAnyContent ? (
-                        <p style={{
+                        <p className="story-status-text" style={{
                             color: 'rgba(212,175,55,0.5)',
                             fontSize: '0.8rem',
                             margin: 0,
@@ -342,7 +342,7 @@ export default function StoryStep({
                             Story in progress,   you can keep editing after creation too.
                         </p>
                     ) : (
-                        <p style={{
+                        <p className="story-status-text" style={{
                             color: 'rgba(244,232,208,0.2)',
                             fontSize: '0.8rem',
                             margin: 0,
@@ -372,6 +372,37 @@ export default function StoryStep({
                     {hasAnyContent ? 'Continue to Stats \u2192' : 'Skip to Stats \u2192'}
                 </button>
             </div>
+
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .story-footer {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        padding: 0.75rem 1rem !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .story-footer-left {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .story-footer-left button {
+                        width: 100% !important;
+                    }
+                    
+                    .story-status-text {
+                        text-align: center !important;
+                        font-size: 0.75rem !important;
+                    }
+                    
+                    .story-footer > button {
+                        width: 100% !important;
+                        padding: 0.75rem 1rem !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

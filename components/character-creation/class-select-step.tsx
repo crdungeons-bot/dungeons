@@ -623,23 +623,25 @@ export default function ClassSelectStep({
                     .class-footer {
                         flex-direction: column !important;
                         align-items: stretch !important;
-                        padding: 1rem !important;
+                        padding: 0.75rem 1rem !important;
                         gap: 0.75rem !important;
                     }
                     
                     .class-footer-left {
                         flex-direction: column !important;
                         align-items: flex-start !important;
-                        gap: 0.75rem !important;
+                        gap: 0.5rem !important;
                     }
                     
                     .class-footer-buttons {
-                        width: 100%;
-                        flex-direction: row !important;
+                        width: 100% !important;
+                        flex-direction: column !important;
+                        gap: 0.5rem !important;
                     }
                     
                     .class-footer-buttons button {
-                        flex: 1;
+                        width: 100% !important;
+                        padding: 0.75rem 1rem !important;
                     }
                 }
             `}</style>

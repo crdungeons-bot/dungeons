@@ -612,7 +612,7 @@ export default function SummaryStep({
             </div>
 
             {/* ══════════════ FOOTER ══════════════ */}
-            <div style={{
+            <div className="summary-footer" style={{
                 position:        'sticky',
                 bottom:          0,
                 display:         'flex',
@@ -652,7 +652,7 @@ export default function SummaryStep({
                     ← Stats
                 </button>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.3rem' }}>
+                <div className="summary-footer-right" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.3rem' }}>
                     {error && (
                         <p style={{
                             margin:     0,
@@ -707,6 +707,36 @@ export default function SummaryStep({
                     </button>
                 </div>
             </div>
+
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .summary-footer {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        padding: 0.75rem 1rem !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .summary-footer > button {
+                        width: 100% !important;
+                    }
+                    
+                    .summary-footer-right {
+                        width: 100% !important;
+                        align-items: stretch !important;
+                    }
+                    
+                    .summary-footer-right p {
+                        text-align: center !important;
+                    }
+                    
+                    .summary-footer-right button {
+                        width: 100% !important;
+                        min-width: 0 !important;
+                        padding: 0.85rem 1rem !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

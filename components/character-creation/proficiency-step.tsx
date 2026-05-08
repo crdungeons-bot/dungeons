@@ -502,7 +502,7 @@ export default function ProficiencyStep({
             </div>
 
             {/* ── Footer ── */}
-            <div style={{
+            <div className="proficiency-footer" style={{
                 position:        'sticky',
                 bottom:          0,
                 display:         'flex',
@@ -539,7 +539,7 @@ export default function ProficiencyStep({
                     ← Background
                 </button>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className="proficiency-footer-right" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     {totalRemaining > 0 && (
                         <p style={{
                             margin:     0,
@@ -573,6 +573,35 @@ export default function ProficiencyStep({
                     </button>
                 </div>
             </div>
+
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .proficiency-footer {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        padding: 0.75rem 1rem !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .proficiency-footer > button {
+                        width: 100% !important;
+                    }
+                    
+                    .proficiency-footer-right {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .proficiency-footer-right p {
+                        text-align: center !important;
+                    }
+                    
+                    .proficiency-footer-right button {
+                        width: 100% !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

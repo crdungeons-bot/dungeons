@@ -764,7 +764,7 @@ export default function StatsStep(props: StatsStepProps) {
             </div>
 
             {/* ── Sticky footer ── */}
-            <div style={{
+            <div className="stats-footer" style={{
                 flexShrink: 0,
                 borderTop: '1px solid rgba(212,175,55,0.25)',
                 backgroundColor: 'rgba(10,5,2,0.92)',
@@ -776,7 +776,7 @@ export default function StatsStep(props: StatsStepProps) {
                 alignItems: 'center',
                 gap: '1rem',
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                <div className="stats-footer-left" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
                     <button
                         onClick={handleBack}
                         style={{
@@ -795,7 +795,7 @@ export default function StatsStep(props: StatsStepProps) {
 
                     {/* Stat total summary once values exist */}
                     {(allAssigned || allManualValid) && (
-                        <div style={{ display: 'flex', gap: '1rem' }}>
+                        <div className="stats-summary" style={{ display: 'flex', gap: '1rem' }}>
                             {STATS.map(s => {
                                 const val = mode === 'rolled'
                                     ? (statToRoll[s.key] !== null ? rolled[statToRoll[s.key]!].total : null)
@@ -836,6 +836,36 @@ export default function StatsStep(props: StatsStepProps) {
                     Finish &#8594;
                 </button>
             </div>
+
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .stats-footer {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        padding: 0.75rem 1rem !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .stats-footer-left {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .stats-footer-left button {
+                        width: 100% !important;
+                    }
+                    
+                    .stats-summary {
+                        display: none !important;
+                    }
+                    
+                    .stats-footer > button {
+                        width: 100% !important;
+                        padding: 0.75rem 1rem !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

@@ -658,7 +658,7 @@ export default function BackgroundStep({
             </div>
 
             {/* ── Sticky footer ── */}
-            <div style={{
+            <div className="background-footer" style={{
                 flexShrink: 0,
                 borderTop: '1px solid rgba(212,175,55,0.25)',
                 backgroundColor: 'rgba(10,5,2,0.92)',
@@ -671,7 +671,7 @@ export default function BackgroundStep({
                 gap: '1rem',
             }}>
                 {/* Left: back + progress summary */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                <div className="background-footer-left" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
                     <button
                         onClick={handleBack}
                         style={{
@@ -689,7 +689,7 @@ export default function BackgroundStep({
                     </button>
 
                     {/* Quick-glance summary of what's been filled */}
-                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                    <div className="background-status-pills" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                         <StatusPill label="Name" value={characterName.trim() || null} required />
                         <StatusPill label="Background" value={selectedBgName ?? null} required />
                         <StatusPill label="Alignment" value={ALIGNMENTS.find(a => a.id === selectedAlignment)?.label ?? null} required />
@@ -717,6 +717,36 @@ export default function BackgroundStep({
                     Continue to Story &#8594;
                 </button>
             </div>
+
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .background-footer {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        padding: 0.75rem 1rem !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .background-footer-left {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .background-footer-left button {
+                        width: 100% !important;
+                    }
+                    
+                    .background-status-pills {
+                        display: none !important;
+                    }
+                    
+                    .background-footer > button {
+                        width: 100% !important;
+                        padding: 0.75rem 1rem !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

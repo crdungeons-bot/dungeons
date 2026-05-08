@@ -605,16 +605,23 @@ export default function RaceSelectStep({
                     .race-footer {
                         flex-direction: column !important;
                         align-items: stretch !important;
-                        padding: 1rem !important;
+                        padding: 0.75rem 1rem !important;
+                        gap: 0.75rem !important;
+                    }
+                    
+                    .race-footer > div:first-child {
+                        text-align: center;
                     }
                     
                     .race-footer-buttons {
                         width: 100%;
                         flex-direction: column !important;
+                        gap: 0.5rem !important;
                     }
                     
                     .race-footer-buttons button {
-                        width: 100%;
+                        width: 100% !important;
+                        padding: 0.75rem 1rem !important;
                     }
                 }
             `}</style>

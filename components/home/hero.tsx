@@ -14,16 +14,16 @@ export default function Hero() {
             setAnimationComplete(true);
             setShowContent(true);
         } else {
-            // Show content after logo pauses in center (1.5s for fly in + 2.5s pause = 4s)
+            // Show content after logo pauses and white fades out
             const contentTimer = setTimeout(() => {
                 setShowContent(true);
-            }, 4000);
+            }, 5500);
 
-            // Mark animation as complete after it flies to nav (4s + 1s transition = 5s)
+            // Mark animation as complete
             const completeTimer = setTimeout(() => {
                 setAnimationComplete(true);
                 sessionStorage.setItem('logoAnimationShown', 'true');
-            }, 5000);
+            }, 6000);
 
             return () => {
                 clearTimeout(contentTimer);
@@ -54,16 +54,35 @@ export default function Hero() {
                 backgroundColor: 'rgba(0, 0, 0, 0.6)'
             }} />
 
+            {/* White screen overlay during animation */}
+            {!animationComplete && (
+                <div 
+                    className="white-overlay"
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'white',
+                        zIndex: 9998,
+                        pointerEvents: 'none'
+                    }}
+                />
+            )}
+
             {/* Flying Logo Animation - only shows on first visit */}
             {!animationComplete && (
-                <div style={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 9999,
-                    pointerEvents: 'none'
-                }}>
+                <div 
+                    className="logo-container"
+                    style={{
+                        position: 'fixed',
+                        top: '50vh',
+                        left: '50vw',
+                        zIndex: 9999,
+                        pointerEvents: 'none'
+                    }}
+                >
                     <img 
                         src="/dnd-guru-logo-transparent.png" 
                         alt="DND Guru Logo" 
@@ -71,7 +90,8 @@ export default function Hero() {
                         style={{ 
                             width: 'clamp(200px, 40vw, 350px)',
                             height: 'auto',
-                            filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.8))'
+                            filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.8))',
+                            display: 'block'
                         }}
                     />
                 </div>
@@ -145,45 +165,64 @@ export default function Hero() {
             </div>
 
             <style jsx>{`
-                @keyframes logoFlyIn {
+                @keyframes whiteOverlay {
                     0% {
-                        transform: translate(-150vw, 0) scale(0.8);
-                        opacity: 0;
-                    }
-                    30% {
-                        transform: translate(-50%, -50%) scale(1);
                         opacity: 1;
                     }
-                    80% {
-                        transform: translate(-50%, -50%) scale(1);
+                    10% {
+                        opacity: 1;
+                    }
+                    90% {
                         opacity: 1;
                     }
                     100% {
-                        transform: translate(calc(-50vw + 3rem), calc(-50vh + 2rem)) scale(0.12);
                         opacity: 0;
                     }
                 }
 
+                @keyframes logoFly {
+                    0% {
+                        transform: translate(-150vw, -50%);
+                        opacity: 1;
+                    }
+                    20% {
+                        transform: translate(-50%, -50%);
+                        opacity: 1;
+                    }
+                    70% {
+                        transform: translate(-50%, -50%);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translate(calc(-50vw + 3rem), calc(-50vh + 2rem)) scale(0.11);
+                        opacity: 0;
+                    }
+                }
+
+                .white-overlay {
+                    animation: whiteOverlay 6s ease-out forwards;
+                }
+
                 .logo-flying {
-                    animation: logoFlyIn 5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                    animation: logoFly 6s ease-in-out forwards;
                 }
 
                 @media (max-width: 768px) {
-                    @keyframes logoFlyIn {
+                    @keyframes logoFly {
                         0% {
-                            transform: translate(-150vw, 0) scale(0.6);
-                            opacity: 0;
-                        }
-                        30% {
-                            transform: translate(-50%, -50%) scale(1);
+                            transform: translate(-150vw, -50%);
                             opacity: 1;
                         }
-                        80% {
-                            transform: translate(-50%, -50%) scale(1);
+                        20% {
+                            transform: translate(-50%, -50%);
+                            opacity: 1;
+                        }
+                        70% {
+                            transform: translate(-50%, -50%);
                             opacity: 1;
                         }
                         100% {
-                            transform: translate(calc(-50vw + 2rem), calc(-50vh + 1.5rem)) scale(0.15);
+                            transform: translate(calc(-50vw + 2rem), calc(-50vh + 1.5rem)) scale(0.13);
                             opacity: 0;
                         }
                     }

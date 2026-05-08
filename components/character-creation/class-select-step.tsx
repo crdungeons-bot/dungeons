@@ -106,16 +106,20 @@ function ClassSelectCard({
             )}
 
             {/* Action buttons */}
-            <div style={{
-                padding: '0.75rem 1rem',
-                display: 'flex',
-                gap: '0.5rem',
-            }}>
+            <div 
+                className="class-card-buttons"
+                style={{
+                    padding: '0.75rem 1rem',
+                    display: 'flex',
+                    gap: '0.5rem',
+                }}
+            >
                 <button
                     onClick={onViewDetails}
+                    className="view-details-btn"
                     style={{
                         flex: 1,
-                        padding: '0.65rem',
+                        padding: '0.65rem 0.5rem',
                         borderRadius: '0.375rem',
                         border: '1px solid rgba(212,175,55,0.35)',
                         color: 'rgba(212,175,55,0.65)',
@@ -124,7 +128,6 @@ function ClassSelectCard({
                         fontWeight: '600',
                         cursor: 'pointer',
                         transition: 'all 0.15s',
-                        whiteSpace: 'nowrap',
                     }}
                     onMouseEnter={e => {
                         e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)';
@@ -139,9 +142,10 @@ function ClassSelectCard({
                 </button>
                 <button
                     onClick={onSelect}
+                    className="select-btn"
                     style={{
                         flex: 1,
-                        padding: '0.65rem',
+                        padding: '0.65rem 0.5rem',
                         borderRadius: '0.375rem',
                         border: 'none',
                         backgroundColor: isSelected ? 'rgba(212,175,55,0.85)' : 'var(--color-gold)',
@@ -606,6 +610,15 @@ export default function ClassSelectStep({
                         .class-grid {
                             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
                             gap: 0.75rem !important;
+                        }
+                        
+                        .class-card-buttons {
+                            flex-direction: column !important;
+                            padding: 0.75rem 1rem !important;
+                        }
+                        
+                        .class-card-buttons button {
+                            width: 100% !important;
                         }
                         
                         .class-footer {

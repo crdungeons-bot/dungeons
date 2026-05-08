@@ -181,12 +181,16 @@ export default function Hero() {
                     }
                 }
 
-                @keyframes logoShrinkMove {
+                @keyframes logoFadeInShrinkMove {
                     0% {
+                        transform: translate(0, 0) scale(1);
+                        opacity: 0;
+                    }
+                    20% {
                         transform: translate(0, 0) scale(1);
                         opacity: 1;
                     }
-                    30% {
+                    40% {
                         transform: translate(0, 0) scale(1);
                         opacity: 1;
                     }
@@ -201,16 +205,20 @@ export default function Hero() {
                 }
 
                 .logo-shrink-move {
-                    animation: logoShrinkMove 2.5s ease-in-out forwards;
+                    animation: logoFadeInShrinkMove 2.5s ease-in-out forwards;
                 }
 
                 @media (max-width: 768px) {
-                    @keyframes logoShrinkMove {
+                    @keyframes logoFadeInShrinkMove {
                         0% {
+                            transform: translate(0, 0) scale(1);
+                            opacity: 0;
+                        }
+                        20% {
                             transform: translate(0, 0) scale(1);
                             opacity: 1;
                         }
-                        30% {
+                        40% {
                             transform: translate(0, 0) scale(1);
                             opacity: 1;
                         }

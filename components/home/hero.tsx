@@ -5,20 +5,30 @@ import Link from 'next/link';
 
 export default function Hero() {
     const [animationComplete, setAnimationComplete] = useState(false);
+    const [showContent, setShowContent] = useState(false);
 
     useEffect(() => {
         // Check if animation has already been shown in this session
         const hasSeenAnimation = sessionStorage.getItem('logoAnimationShown');
         if (hasSeenAnimation) {
             setAnimationComplete(true);
+            setShowContent(true);
         } else {
-            // Mark animation as shown after it completes
-            const timer = setTimeout(() => {
+            // Show content after logo pauses in center (1.5s for fly in + 2.5s pause = 4s)
+            const contentTimer = setTimeout(() => {
+                setShowContent(true);
+            }, 4000);
+
+            // Mark animation as complete after it flies to nav (4s + 1s transition = 5s)
+            const completeTimer = setTimeout(() => {
                 setAnimationComplete(true);
                 sessionStorage.setItem('logoAnimationShown', 'true');
-            }, 3500); // Total animation duration
+            }, 5000);
 
-            return () => clearTimeout(timer);
+            return () => {
+                clearTimeout(contentTimer);
+                clearTimeout(completeTimer);
+            };
         }
     }, []);
 
@@ -44,6 +54,29 @@ export default function Hero() {
                 backgroundColor: 'rgba(0, 0, 0, 0.6)'
             }} />
 
+            {/* Flying Logo Animation - only shows on first visit */}
+            {!animationComplete && (
+                <div style={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 9999,
+                    pointerEvents: 'none'
+                }}>
+                    <img 
+                        src="/dnd-guru-logo-transparent.png" 
+                        alt="DND Guru Logo" 
+                        className="logo-flying"
+                        style={{ 
+                            width: 'clamp(200px, 40vw, 350px)',
+                            height: 'auto',
+                            filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.8))'
+                        }}
+                    />
+                </div>
+            )}
+
             {/* Content sits on top of the overlay */}
             <div style={{ 
                 maxWidth: '1200px',
@@ -53,20 +86,6 @@ export default function Hero() {
                 position: 'relative', 
                 zIndex: 1 
             }}>
-                {/* Logo */}
-                <div style={{ marginBottom: '2rem' }}>
-                    <img 
-                        src="/dnd-guru-logo-transparent.png" 
-                        alt="DND Guru Logo" 
-                        className={animationComplete ? 'logo-static' : 'logo-animated'}
-                        style={{ 
-                            width: 'clamp(200px, 40vw, 350px)',
-                            height: 'auto',
-                            filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.8))'
-                        }}
-                    />
-                </div>
-                
                 <h1 style={{ 
                     fontSize: 'clamp(2rem, 7vw, 3.75rem)',
                     fontWeight: 'bold', 
@@ -74,8 +93,8 @@ export default function Hero() {
                     color: 'var(--color-gold)',
                     textShadow: '2px 2px 8px rgba(0,0,0,0.9)',
                     lineHeight: '1.2',
-                    opacity: animationComplete ? 1 : 0,
-                    animation: animationComplete ? 'none' : 'fadeInContent 0.8s ease-out 2s forwards'
+                    opacity: showContent ? 1 : 0,
+                    transition: 'opacity 0.8s ease-out'
                 }}>
                     Your D&D Adventure Starts Here
                 </h1>
@@ -86,8 +105,8 @@ export default function Hero() {
                     textShadow: '1px 1px 4px rgba(0,0,0,0.9)',
                     maxWidth: '700px',
                     margin: '0 auto 2rem',
-                    opacity: animationComplete ? 1 : 0,
-                    animation: animationComplete ? 'none' : 'fadeInContent 0.8s ease-out 2.3s forwards'
+                    opacity: showContent ? 1 : 0,
+                    transition: 'opacity 0.8s ease-out 0.2s'
                 }}>
                     Build your character, master your class, and forge a legend worth telling.
                 </p>
@@ -97,8 +116,8 @@ export default function Hero() {
                     justifyContent: 'center',
                     flexWrap: 'wrap',
                     padding: '0 1rem',
-                    opacity: animationComplete ? 1 : 0,
-                    animation: animationComplete ? 'none' : 'fadeInContent 0.8s ease-out 2.6s forwards'
+                    opacity: showContent ? 1 : 0,
+                    transition: 'opacity 0.8s ease-out 0.4s'
                 }}>
                     <Link 
                         href="/register" 
@@ -128,59 +147,43 @@ export default function Hero() {
             <style jsx>{`
                 @keyframes logoFlyIn {
                     0% {
-                        transform: translate(-100vw, 50vh) scale(0.5);
+                        transform: translate(-150vw, 0) scale(0.8);
                         opacity: 0;
                     }
-                    40% {
-                        transform: translate(0, 0) scale(1);
+                    30% {
+                        transform: translate(-50%, -50%) scale(1);
                         opacity: 1;
                     }
-                    60% {
-                        transform: translate(0, 0) scale(1);
+                    80% {
+                        transform: translate(-50%, -50%) scale(1);
                         opacity: 1;
                     }
                     100% {
-                        transform: translate(calc(50vw - 50%), calc(-50vh - 2rem)) scale(0.15);
+                        transform: translate(calc(-50vw + 3rem), calc(-50vh + 2rem)) scale(0.12);
                         opacity: 0;
                     }
                 }
 
-                @keyframes fadeInContent {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-
-                .logo-animated {
-                    animation: logoFlyIn 3.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-                }
-
-                .logo-static {
-                    animation: none;
-                    opacity: 1;
+                .logo-flying {
+                    animation: logoFlyIn 5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
                 }
 
                 @media (max-width: 768px) {
                     @keyframes logoFlyIn {
                         0% {
-                            transform: translate(-100vw, 30vh) scale(0.4);
+                            transform: translate(-150vw, 0) scale(0.6);
                             opacity: 0;
                         }
-                        40% {
-                            transform: translate(0, 0) scale(1);
+                        30% {
+                            transform: translate(-50%, -50%) scale(1);
                             opacity: 1;
                         }
-                        60% {
-                            transform: translate(0, 0) scale(1);
+                        80% {
+                            transform: translate(-50%, -50%) scale(1);
                             opacity: 1;
                         }
                         100% {
-                            transform: translate(calc(50vw - 50%), calc(-40vh - 1rem)) scale(0.2);
+                            transform: translate(calc(-50vw + 2rem), calc(-50vh + 1.5rem)) scale(0.15);
                             opacity: 0;
                         }
                     }

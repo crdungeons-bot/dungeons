@@ -488,7 +488,7 @@ export default function StatsStep(props: StatsStepProps) {
 
     return (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <div style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
+            <div className="stats-content" style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
 
                 {/* ── MODE: CHOOSE ───────────────────────────────── */}
                 {mode === 'choose' && (
@@ -678,11 +678,14 @@ export default function StatsStep(props: StatsStepProps) {
                                 }}>
                                     Stat Assignment
                                 </p>
-                                <div style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: 'repeat(6, 1fr)',
-                                    gap: '0.625rem',
-                                }}>
+                                <div 
+                                    className="stat-grid"
+                                    style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(6, 1fr)',
+                                        gap: '0.625rem',
+                                    }}
+                                >
                                     {STATS.map(stat => {
                                         const rollIdx = statToRoll[stat.key];
                                         const value   = rollIdx !== null ? rolled[rollIdx].total : null;
@@ -726,11 +729,14 @@ export default function StatsStep(props: StatsStepProps) {
                             </p>
                         </div>
 
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(6, 1fr)',
-                            gap: '0.625rem',
-                        }}>
+                        <div 
+                            className="stat-grid"
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(6, 1fr)',
+                                gap: '0.625rem',
+                            }}
+                        >
                             {STATS.map(stat => (
                                 <StatInputCard
                                     key={stat.key}
@@ -838,7 +844,22 @@ export default function StatsStep(props: StatsStepProps) {
             </div>
 
             <style jsx>{`
+                @media (max-width: 1024px) {
+                    .stat-grid {
+                        grid-template-columns: repeat(3, 1fr) !important;
+                    }
+                }
+                
                 @media (max-width: 768px) {
+                    .stats-content {
+                        padding: 1rem !important;
+                    }
+                    
+                    .stat-grid {
+                        grid-template-columns: repeat(2, 1fr) !important;
+                        gap: 0.5rem !important;
+                    }
+                    
                     .stats-footer {
                         flex-direction: column !important;
                         align-items: stretch !important;
@@ -863,6 +884,12 @@ export default function StatsStep(props: StatsStepProps) {
                     .stats-footer > button {
                         width: 100% !important;
                         padding: 0.75rem 1rem !important;
+                    }
+                }
+                
+                @media (max-width: 480px) {
+                    .stat-grid {
+                        grid-template-columns: repeat(2, 1fr) !important;
                     }
                 }
             `}</style>

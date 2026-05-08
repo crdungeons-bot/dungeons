@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId }                  from 'mongodb';
 import clientPromise                 from '@/lib/mongo';
+import { STATIC_BACKGROUNDS }        from '@/data/backgrounds';
 
 export async function GET(request: NextRequest) {
     const userId = request.nextUrl.searchParams.get('userId');
@@ -64,9 +65,46 @@ export async function POST(request: NextRequest) {
         }
 
         const client = await clientPromise;
-        const db     = client.db('dnd-app');
+        const appDb = client.db('dnd-app');
+        const resourcesDb = client.db('dnd-resources');
 
-        const result = await db.collection('characters').insertOne({
+        // Get background data to extract starting equipment
+        const bgData = STATIC_BACKGROUNDS.find(b => b.index === background);
+        
+        // Initialize inventory and currency
+        const inventory: Array<{ itemId: string; quantity: number; equipped: boolean; attuned: boolean; source: string }> = [];
+        const currency = { pp: 0, gp: 0, sp: 0, cp: 0 };
+
+        if (bgData?.starting_equipment) {
+            for (const equip of bgData.starting_equipment) {
+                const itemName = equip.equipment.name;
+                const quantity = equip.quantity;
+
+                // Check if this is currency (gold/silver/copper pieces)
+                if (itemName.toLowerCase().includes('gold pieces') || itemName.toLowerCase().includes('gp')) {
+                    currency.gp += quantity;
+                } else if (itemName.toLowerCase().includes('silver pieces') || itemName.toLowerCase().includes('sp')) {
+                    currency.sp += quantity;
+                } else if (itemName.toLowerCase().includes('copper pieces') || itemName.toLowerCase().includes('cp')) {
+                    currency.cp += quantity;
+                } else if (itemName.toLowerCase().includes('platinum pieces') || itemName.toLowerCase().includes('pp')) {
+                    currency.pp += quantity;
+                } else {
+                    // This is an actual item - try to match it to database
+                    // For now, just add it by name (will be enriched on fetch)
+                    // Note: item names need to match database exactly for enrichment to work
+                    inventory.push({
+                        itemId: itemName,
+                        quantity,
+                        equipped: false,
+                        attuned: false,
+                        source: 'background'
+                    });
+                }
+            }
+        }
+
+        const result = await appDb.collection('characters').insertOne({
             userId: new ObjectId(userId),
             name:       name.trim(),
             race,
@@ -81,6 +119,8 @@ export async function POST(request: NextRequest) {
             story:      story   ?? {},
             hp:         hp      ?? null,
             level:      1,
+            inventory,
+            currency,
             createdAt:  new Date(),
         });
 

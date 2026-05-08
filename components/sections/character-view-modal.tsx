@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { STATIC_BACKGROUNDS } from '@/data/backgrounds';
 import type { SpellEntry } from '@/data/spells';
+import { useCharacterInventory, type EnrichedInventoryItem } from '@/hooks/use-character-inventory';
+import ItemTooltip from '@/components/ui/item-tooltip';
 
 /* ═══════════════════════════════════════════════════════════════════
    Types
@@ -719,9 +721,12 @@ function inferCategory(name: string): ItemCategory {
     return 'misc';
 }
 
-function ItemRow({ item, index }: { item: InventoryItem; index: number }) {
+function ItemRow({ item, index }: { item: EnrichedInventoryItem | InventoryItem; index: number }) {
     const [expanded, setExpanded] = useState(false);
-    const meta = ITEM_CATEGORY_META[item.category];
+    const meta = ITEM_CATEGORY_META[item.category as ItemCategory] ?? ITEM_CATEGORY_META.misc;
+    
+    // Check if this is an enriched item (has full details from database)
+    const isEnriched = 'description' in item && item.description;
 
     return (
         <>
@@ -744,13 +749,21 @@ function ItemRow({ item, index }: { item: InventoryItem; index: number }) {
                 {/* Name + badges */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff' }}>
-                            {item.name}
-                        </span>
+                        {isEnriched ? (
+                            <ItemTooltip item={item as EnrichedInventoryItem}>
+                                <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff', cursor: 'help' }}>
+                                    {item.name}
+                                </span>
+                            </ItemTooltip>
+                        ) : (
+                            <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff' }}>
+                                {item.name}
+                            </span>
+                        )}
                         {item.source === 'background' && (
                             <span style={{ fontSize: '0.55rem', fontWeight: '700', letterSpacing: '0.08em', color: 'rgba(212,175,55,0.45)', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '3px', padding: '0.05rem 0.3rem' }}>BG</span>
                         )}
-                        {item.equipped && (
+                        {'equipped' in item && item.equipped && (
                             <span title="Equipped" style={{ fontSize: '0.7rem', color: 'rgba(80,200,120,0.8)' }}>⚔</span>
                         )}
                     </div>
@@ -799,37 +812,37 @@ function ItemRow({ item, index }: { item: InventoryItem; index: number }) {
             </div>
 
             {/* Expanded details */}
-            {expanded && (
+            {expanded && isEnriched && (item as EnrichedInventoryItem).description && (
                 <div style={{
                     padding: '1rem 1.25rem',
                     background: 'rgba(212,175,55,0.04)',
                     borderBottom: '1px solid rgba(212,175,55,0.1)',
                     borderLeft: `3px solid ${meta.color}`
                 }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem', marginBottom: item.description ? '0.75rem' : 0 }}>
-                        {item.properties && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem', marginBottom: (item as EnrichedInventoryItem).description ? '0.75rem' : 0 }}>
+                        {(item as EnrichedInventoryItem).properties && (
                             <div>
                                 <p style={{ margin: '0 0 0.2rem', fontSize: '0.6rem', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Properties</p>
-                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(244,232,208,0.7)' }}>{item.properties}</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(244,232,208,0.7)' }}>{(item as EnrichedInventoryItem).properties!.join(', ')}</p>
                             </div>
                         )}
-                        {item.weight !== undefined && (
+                        {(item as EnrichedInventoryItem).weight !== undefined && (
                             <div>
                                 <p style={{ margin: '0 0 0.2rem', fontSize: '0.6rem', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Weight</p>
-                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(244,232,208,0.7)' }}>{item.weight} lb</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(244,232,208,0.7)' }}>{(item as EnrichedInventoryItem).weight} lb</p>
                             </div>
                         )}
-                        {item.value && (
+                        {(item as EnrichedInventoryItem).value && (
                             <div>
                                 <p style={{ margin: '0 0 0.2rem', fontSize: '0.6rem', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Value</p>
-                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(212,175,55,0.75)', fontWeight: '600' }}>{item.value}</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(212,175,55,0.75)', fontWeight: '600' }}>{(item as EnrichedInventoryItem).value}</p>
                             </div>
                         )}
                     </div>
-                    {item.description && (
+                    {(item as EnrichedInventoryItem).description && (
                         <div style={{ paddingTop: '0.5rem', borderTop: '1px solid rgba(212,175,55,0.1)' }}>
                             <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(244,232,208,0.7)', lineHeight: '1.65', fontStyle: 'italic' }}>
-                                {item.description}
+                                {(item as EnrichedInventoryItem).description}
                             </p>
                         </div>
                     )}
@@ -842,16 +855,12 @@ function ItemRow({ item, index }: { item: InventoryItem; index: number }) {
 function GearTab({ char }: { char: CharacterData }) {
     const bgData = STATIC_BACKGROUNDS.find(b => b.index === char.background);
     const currency = char.currency;
-
-    const startingItems: InventoryItem[] = useMemo(() =>
-        (bgData?.starting_equipment ?? []).map((e, i) => ({
-            id: `bg-${i}`,
-            name: e.equipment.name,
-            category: inferCategory(e.equipment.name),
-            quantity: e.quantity,
-            source: 'background' as const,
-        }))
-        , [bgData]);
+    
+    // Fetch enriched inventory from API
+    const { data: inventoryData, loading: loadingInventory } = useCharacterInventory(char.id);
+    
+    // Use enriched inventory items
+    const inventoryItems: EnrichedInventoryItem[] = inventoryData?.inventory ?? [];
 
     return (
         <div style={{ padding: '1.5rem 2rem 4rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -877,23 +886,15 @@ function GearTab({ char }: { char: CharacterData }) {
             {/* Inventory (read-only) */}
             <section>
                 <SectionHead>Inventory</SectionHead>
-                {startingItems.length > 0 ? (
-                    <div style={{ border: '1px solid rgba(212,175,55,0.18)', borderRadius: '8px', overflow: 'hidden', overflowX: 'auto' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '4px 1fr 100px 160px 56px 64px 44px 44px', background: 'rgba(0,0,0,0.4)', borderBottom: '1px solid rgba(212,175,55,0.2)', borderRadius: '8px 8px 0 0', position: 'sticky', top: 0, zIndex: 2 }}>
-                            <div />
-                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Item Name</div>
-                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Type</div>
-                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Properties</div>
-                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)', textAlign: 'center' }}>Wt.</div>
-                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)', textAlign: 'right' }}>Value</div>
-                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)', textAlign: 'center' }}>Qty</div>
-                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)', textAlign: 'center' }}>⚔</div>
-                        </div>
-                        <div>
-                            {startingItems.map((item, i) => (
-                                <ItemRow key={item.id} item={item} index={i} />
-                            ))}
-                        </div>
+                {loadingInventory ? (
+                    <div style={{ padding: '1.5rem', textAlign: 'center' }}>
+                        <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(244,232,208,0.4)' }}>Loading inventory...</p>
+                    </div>
+                ) : inventoryItems.length > 0 ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        {inventoryItems.map((item, i) => (
+                            <ItemRow key={item.itemId + '-' + i} item={item} index={i} />
+                        ))}
                     </div>
                 ) : (
                     <div style={{ border: '1px dashed rgba(212,175,55,0.15)', borderRadius: '8px', padding: '3rem', textAlign: 'center' }}>

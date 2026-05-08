@@ -1088,8 +1088,6 @@ function TableHeader() {
 
 /* ── Main GearTab ── */
 function GearTab({ char }: { char: CharacterData }) {
-    const bgData = STATIC_BACKGROUNDS.find(b => b.index === char.background);
-    
     // Fetch enriched inventory from API
     const { data: inventoryData, loading: loadingInventory } = useCharacterInventory(char.id);
 
@@ -1098,20 +1096,8 @@ function GearTab({ char }: { char: CharacterData }) {
     const [editCurrency,setEditCurrency]= useState(false);
     const [saving,      setSaving]      = useState(false);
     
-    // Use enriched inventory items if available, otherwise show empty
+    // Use enriched inventory items
     const inventoryItems: EnrichedInventoryItem[] = inventoryData?.inventory ?? [];
-    
-    // Fallback: If inventory is empty and character has background equipment, show it as read-only preview
-    const fallbackItems: InventoryItem[] = useMemo(() => {
-        if (inventoryItems.length > 0) return [];
-        return (bgData?.starting_equipment ?? []).map((e, i) => ({
-            id:       `bg-${i}`,
-            name:     e.equipment.name,
-            category: inferCategory(e.equipment.name),
-            quantity: e.quantity,
-            source:   'background' as const,
-        }));
-    }, [bgData, inventoryItems.length]);
 
     async function saveCurrency() {
         setSaving(true);
@@ -1186,22 +1172,6 @@ function GearTab({ char }: { char: CharacterData }) {
                             ))}
                         </div>
                     </div>
-                ) : fallbackItems.length > 0 ? (
-                    <>
-                        <div style={{ border: '1px solid rgba(212,175,55,0.18)', borderRadius: '8px', overflow: 'hidden', overflowX: 'auto' }}>
-                            <TableHeader />
-                            <div>
-                                {fallbackItems.map((item, i) => (
-                                    <ItemRow key={item.id} item={item} index={i} />
-                                ))}
-                            </div>
-                        </div>
-                        <div style={{ marginTop: '0.75rem', padding: '0.75rem 1rem', background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '8px' }}>
-                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'rgba(212,175,55,0.7)', fontStyle: 'italic' }}>
-                                ℹ️ These are your starting items from your background. They haven't been saved to your inventory yet. Hover over items to see full details.
-                            </p>
-                        </div>
-                    </>
                 ) : (
                     <div style={{ border: '1px dashed rgba(212,175,55,0.15)', borderRadius: '8px', padding: '3rem', textAlign: 'center' }}>
                         <span style={{ fontSize: '2rem', opacity: 0.2 }}>🎒</span>

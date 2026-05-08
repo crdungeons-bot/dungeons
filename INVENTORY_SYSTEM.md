@@ -109,10 +109,38 @@ function MyComponent({ characterId }) {
 2. ✅ Create ItemTooltip component
 3. ✅ Create useCharacterInventory hook
 4. ✅ Update character-detail-section to use new system
-5. TODO: Update character-view-modal to use new system
-6. TODO: Create UI for adding/removing items from inventory
-7. TODO: Create migration script to populate initial inventories with background equipment
-8. TODO: Update character creation flow to save starting equipment as inventory
+5. ✅ Update character creation to save starting equipment as inventory
+6. ✅ Separate starting gold from items (goes to currency)
+7. TODO: Update character-view-modal to use new system
+8. TODO: Create UI for adding/removing items from inventory
+9. TODO: Create migration script to populate existing characters' inventories
+
+## Starting Equipment
+
+When a character is created:
+- **Items** from background starting equipment are automatically saved to the `inventory` array
+- **Gold** (or other currency) is automatically added to the `currency` object
+- Items are referenced by name (e.g., "Holy Symbol", "Crowbar")
+- All items with `source: 'background'` appear with a "BG" badge
+
+### Background Equipment Example:
+```javascript
+// Acolyte background starting_equipment:
+[
+  { equipment: { name: 'Holy Symbol' }, quantity: 1 },
+  { equipment: { name: 'Prayer Book' }, quantity: 1 },
+  { equipment: { name: 'Gold Pieces' }, quantity: 15 }  // → Goes to currency.gp
+]
+
+// Character document after creation:
+{
+  inventory: [
+    { itemId: 'Holy Symbol', quantity: 1, equipped: false, attuned: false, source: 'background' },
+    { itemId: 'Prayer Book', quantity: 1, equipped: false, attuned: false, source: 'background' }
+  ],
+  currency: { pp: 0, gp: 15, sp: 0, cp: 0 }
+}
+```
 
 ## Database Setup
 

@@ -883,13 +883,15 @@ function FeatScreen({ stats, onAccept }: {
                                 boxShadow: isSelected ? '0 0 15px rgba(93,142,232,0.2)' : 'none',
                             }}
                         >
-                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
                                 <span style={{ fontWeight: '800', fontSize: '0.9rem', color: isSelected ? '#5D8EE8' : '#fff', flex: 1 }}>{feat.name}</span>
                                 {feat.statBonus && (
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '700', background: 'rgba(212,175,55,0.2)', color: 'rgba(212,175,55,0.9)', borderRadius: '999px', padding: '0.1rem 0.5rem' }}>
-                                        {feat.statBonus.type === 'fixed'
+                                    <span style={{ fontSize: '0.6rem', fontWeight: '700', background: 'rgba(212,175,55,0.2)', color: 'rgba(212,175,55,0.9)', borderRadius: '999px', padding: '0.1rem 0.5rem', whiteSpace: 'nowrap' }}>
+                                        {feat.statBonus.type === 'fixed' && feat.statBonus.stat
                                             ? `+${feat.statBonus.amount} ${feat.statBonus.stat.toUpperCase()}`
-                                            : `+${feat.statBonus.amount} choice`
+                                            : feat.statBonus.type === 'choice' && feat.statBonus.options
+                                                ? `+${feat.statBonus.amount} ${feat.statBonus.options.map((s: string) => s.toUpperCase()).join(' or ')}`
+                                                : `+${feat.statBonus.amount}`
                                         }
                                     </span>
                                 )}
@@ -909,16 +911,25 @@ function FeatScreen({ stats, onAccept }: {
 
             {/* Stat Choice (if needed) */}
             {needsStatChoice && selectedFeat && selectedFeat.statBonus && selectedFeat.statBonus.type === 'choice' && (
-                <div style={{ padding: '1rem', background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '10px' }}>
-                    <p style={{ margin: '0 0 0.5rem', fontSize: '0.75rem', fontWeight: '700', color: 'rgba(212,175,55,0.8)' }}>
-                        Choose which ability score to increase by +{selectedFeat.statBonus.amount}:
-                    </p>
-                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                <div style={{ 
+                    padding: '1.25rem', 
+                    background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(240,200,80,0.06) 100%)',
+                    border: '2px solid rgba(212,175,55,0.4)', 
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 20px rgba(212,175,55,0.15)',
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                        <span style={{ fontSize: '1.2rem' }}>⚡</span>
+                        <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: '800', color: 'rgba(212,175,55,1)', letterSpacing: '0.03em' }}>
+                            Choose which ability score to increase by +{selectedFeat.statBonus.amount}:
+                        </p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
                         {selectedFeat.statBonus.options.map(key => {
                             const current = stats[key] ?? 10;
                             const capped = current >= getStatCap(key);
                             const isChosen = statChoice === key;
-                            const statBonus = selectedFeat.statBonus!; // Assert non-null since we checked above
+                            const statBonus = selectedFeat.statBonus!;
 
                             return (
                                 <button
@@ -926,18 +937,43 @@ function FeatScreen({ stats, onAccept }: {
                                     onClick={() => !capped && setStatChoice(key)}
                                     disabled={capped}
                                     style={{
-                                        padding: '0.5rem 0.8rem',
-                                        background: isChosen ? 'rgba(212,175,55,0.2)' : 'rgba(0,0,0,0.3)',
-                                        border: `1.5px solid ${isChosen ? 'rgba(212,175,55,0.8)' : 'rgba(212,175,55,0.2)'}`,
-                                        borderRadius: '8px',
+                                        flex: '1 1 auto',
+                                        minWidth: '120px',
+                                        padding: '0.75rem 1rem',
+                                        background: isChosen 
+                                            ? 'linear-gradient(135deg, rgba(212,175,55,0.3) 0%, rgba(240,200,80,0.2) 100%)'
+                                            : 'rgba(0,0,0,0.4)',
+                                        border: `2px solid ${isChosen ? 'rgba(212,175,55,1)' : 'rgba(212,175,55,0.25)'}`,
+                                        borderRadius: '10px',
                                         cursor: capped ? 'not-allowed' : 'pointer',
                                         opacity: capped ? 0.4 : 1,
-                                        transition: 'all 0.15s',
+                                        transition: 'all 0.2s',
+                                        boxShadow: isChosen ? '0 4px 15px rgba(212,175,55,0.3)' : 'none',
+                                    }}
+                                    onMouseEnter={e => {
+                                        if (!capped && !isChosen) {
+                                            e.currentTarget.style.background = 'rgba(212,175,55,0.12)';
+                                            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)';
+                                        }
+                                    }}
+                                    onMouseLeave={e => {
+                                        if (!capped && !isChosen) {
+                                            e.currentTarget.style.background = 'rgba(0,0,0,0.4)';
+                                            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.25)';
+                                        }
                                     }}
                                 >
-                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: isChosen ? '#FFD700' : 'rgba(244,232,208,0.6)', textTransform: 'uppercase' }}>
-                                        {key} {current} → {current + statBonus.amount}
-                                    </span>
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ fontSize: '0.7rem', fontWeight: '800', color: isChosen ? '#FFD700' : 'rgba(212,175,55,0.7)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.25rem' }}>
+                                            {STAT_LABELS[key]}
+                                        </div>
+                                        <div style={{ fontSize: '1.1rem', fontWeight: '900', color: isChosen ? '#FFD700' : 'rgba(244,232,208,0.8)' }}>
+                                            {current} → {current + statBonus.amount}
+                                        </div>
+                                        <div style={{ fontSize: '0.65rem', color: 'rgba(244,232,208,0.4)', marginTop: '0.15rem' }}>
+                                            {getMod(current)} → {getMod(current + statBonus.amount)}
+                                        </div>
+                                    </div>
                                 </button>
                             );
                         })}

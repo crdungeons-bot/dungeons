@@ -40,6 +40,7 @@ const sidebarGroups: SidebarGroup[] = [
             { label: 'Classes', section: 'classes' },
             { label: 'Spells & Abilities', section: 'spells' },
             { label: 'Backgrounds', section: 'backgrounds' },
+            { label: 'Items', section: 'items' },
             { label: 'Lore Book', section: 'lore' },
         ]
     },

@@ -8,6 +8,7 @@ import ClassDetailSection from '@/components/sections/class-detail-section';
 import RacialAbilitiesSection from '@/components/sections/racial-abilities-section';
 import BackgroundsSection from '@/components/sections/backgrounds-section';
 import SpellsSection from '@/components/sections/spells-section';
+import ItemsSection from '@/components/sections/items-section';
 import DiceRollerSection from '@/components/sections/dice-roller-section';
 import DashboardHomeSection from '@/components/sections/dashboard-home-section';
 import PartiesSection from '@/components/sections/parties-section';
@@ -42,6 +43,7 @@ export default async function Dashboard({
             {section === 'racial-abilities' && <RacialAbilitiesSection />}
             {section === 'backgrounds' && <BackgroundsSection />}
             {section === 'spells' && <SpellsSection />}
+            {section === 'items' && <ItemsSection />}
             {(!section || section === 'home') && <DashboardHomeSection />}
         </div>
     );

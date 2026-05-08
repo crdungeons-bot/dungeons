@@ -7,6 +7,7 @@ export default function Navigation() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [showLogo, setShowLogo] = useState(false);
 
     useEffect(()=> {
         const loggedIn = localStorage.getItem('isLoggedIn');
@@ -15,6 +16,18 @@ export default function Navigation() {
         if (loggedIn === 'true' && storedFirstName) {
             setIsLoggedIn(true);
             setFirstName(storedFirstName);
+        }
+
+        // Check if we should show logo immediately or wait for animation
+        const hasSeenAnimation = sessionStorage.getItem('logoAnimationShown');
+        if (hasSeenAnimation) {
+            setShowLogo(true);
+        } else {
+            // Show logo after hero animation completes (3.5s)
+            const timer = setTimeout(() => {
+                setShowLogo(true);
+            }, 3300);
+            return () => clearTimeout(timer);
         }
     }, []);
 
@@ -54,10 +67,11 @@ export default function Navigation() {
                         style={{ 
                             height: '40px',
                             width: 'auto',
-                            transition: 'opacity 0.2s'
+                            transition: 'opacity 0.5s ease-in',
+                            opacity: showLogo ? 1 : 0
                         }}
-                        onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'}
-                        onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+                        onMouseOver={(e) => e.currentTarget.style.opacity = showLogo ? '0.8' : '0'}
+                        onMouseOut={(e) => e.currentTarget.style.opacity = showLogo ? '1' : '0'}
                     />
                 </Link>
 

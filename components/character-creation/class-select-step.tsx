@@ -81,39 +81,6 @@ function ClassSelectCard({
                 </div>
             )}
 
-            {/* Info button */}
-            <button
-                onClick={onViewDetails}
-                style={{
-                    position: 'absolute',
-                    top: '0.5rem',
-                    left: '0.5rem',
-                    width: '28px',
-                    height: '28px',
-                    borderRadius: '50%',
-                    border: '1px solid rgba(212,175,55,0.5)',
-                    backgroundColor: 'rgba(10,5,2,0.85)',
-                    color: 'var(--color-gold)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.9rem',
-                    lineHeight: 1,
-                    zIndex: 1,
-                    fontWeight: '700',
-                    transition: 'all 0.15s',
-                }}
-                onMouseEnter={e => {
-                    e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.2)';
-                }}
-                onMouseLeave={e => {
-                    e.currentTarget.style.backgroundColor = 'rgba(10,5,2,0.85)';
-                }}
-            >
-                i
-            </button>
-
             {/* Title bar */}
             <div style={{
                 padding: '0.625rem 1rem',
@@ -138,20 +105,48 @@ function ClassSelectCard({
                 </div>
             )}
 
-            {/* Select button */}
+            {/* Action buttons */}
             <div style={{
                 padding: '0.75rem 1rem',
+                display: 'flex',
+                gap: '0.5rem',
             }}>
+                <button
+                    onClick={onViewDetails}
+                    style={{
+                        flex: 1,
+                        padding: '0.65rem',
+                        borderRadius: '0.375rem',
+                        border: '1px solid rgba(212,175,55,0.35)',
+                        color: 'rgba(212,175,55,0.65)',
+                        backgroundColor: 'transparent',
+                        fontSize: '0.8rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                        whiteSpace: 'nowrap',
+                    }}
+                    onMouseEnter={e => {
+                        e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)';
+                        e.currentTarget.style.color = 'var(--color-gold)';
+                    }}
+                    onMouseLeave={e => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = 'rgba(212,175,55,0.65)';
+                    }}
+                >
+                    View Details
+                </button>
                 <button
                     onClick={onSelect}
                     style={{
-                        width: '100%',
+                        flex: 1,
                         padding: '0.65rem',
                         borderRadius: '0.375rem',
                         border: 'none',
                         backgroundColor: isSelected ? 'rgba(212,175,55,0.85)' : 'var(--color-gold)',
                         color: 'var(--color-primary)',
-                        fontSize: '0.85rem',
+                        fontSize: '0.8rem',
                         fontWeight: '700',
                         cursor: 'pointer',
                         transition: 'background-color 0.15s',

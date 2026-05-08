@@ -1,0 +1,124 @@
+# Inventory System - ID-Based Item References
+
+## Overview
+
+The inventory system now uses **ID-based references** to the items database. Instead of storing complete item data in each character document, we store only item IDs and character-specific metadata (quantity, equipped status, etc.). Full item details are fetched from the `dnd-resources.items` collection when needed.
+
+## Architecture
+
+### 1. Character Schema
+```typescript
+{
+  inventory: [
+    {
+      itemId: string,        // Name of item in items collection (e.g., "Longsword")
+      quantity: number,      // How many the character has
+      equipped?: boolean,    // Is it currently equipped?
+      attuned?: boolean,     // Is it attuned (for magic items)?
+      source?: string        // Where it came from (background, purchased, loot, etc.)
+    }
+  ]
+}
+```
+
+### 2. API Endpoints
+
+**`GET /api/characters/[id]/inventory`**
+- Fetches character's inventory references
+- Enriches them with full item details from `dnd-resources.items`
+- Returns merged data with both character-specific fields and database item details
+
+**`PUT /api/characters/[id]/inventory`**
+- Updates entire inventory array (for bulk operations)
+
+**`POST /api/characters/[id]/inventory`**
+- Adds a single item to inventory
+- Auto-increments quantity if item already exists
+
+### 3. Components
+
+**`ItemTooltip` (`components/ui/item-tooltip.tsx`)**
+- Reusable hover tooltip for displaying full item details
+- Shows stats (damage, AC, weight, value), properties, special attributes
+- Color-coded by rarity
+
+**`useCharacterInventory` hook (`hooks/use-character-inventory.ts`)**
+- Fetches and manages enriched inventory data
+- Provides loading and error states
+- Includes `refetch()` method for refreshing data
+
+### 4. Display Components
+
+**Character Detail Section** (`components/sections/character-detail-section.tsx`)
+- Updated `ItemRow` to support both enriched and fallback items
+- Wraps item names in `<ItemTooltip>` for enriched items
+- Shows background starting equipment as fallback when inventory is empty
+
+**Character View Modal** (`components/sections/character-view-modal.tsx`)
+- (TODO: Update to use new inventory system)
+
+## Benefits
+
+1. **Single Source of Truth**: Item stats come from the centralized database
+2. **Easy Updates**: Fix a typo in an item? All characters automatically see the fix
+3. **Smaller Documents**: Character documents only store IDs, not full item data
+4. **Consistent Data**: No drift between characters' copies of the same item
+5. **Rich Tooltips**: Hover any item to see full details without expanding
+
+## Usage Example
+
+### Adding an item to a character:
+```typescript
+await fetch(`/api/characters/${characterId}/inventory`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    itemId: 'Longsword',
+    quantity: 1,
+    equipped: true,
+    source: 'purchased'
+  })
+});
+```
+
+### Displaying inventory with tooltips:
+```tsx
+import { useCharacterInventory } from '@/hooks/use-character-inventory';
+import ItemTooltip from '@/components/ui/item-tooltip';
+
+function MyComponent({ characterId }) {
+  const { data, loading } = useCharacterInventory(characterId);
+  
+  if (loading) return <div>Loading...</div>;
+  
+  return (
+    <div>
+      {data?.inventory.map(item => (
+        <ItemTooltip key={item.itemId} item={item}>
+          <span>{item.name} x{item.quantity}</span>
+        </ItemTooltip>
+      ))}
+    </div>
+  );
+}
+```
+
+## Next Steps
+
+1. ✅ Create inventory API endpoints
+2. ✅ Create ItemTooltip component
+3. ✅ Create useCharacterInventory hook
+4. ✅ Update character-detail-section to use new system
+5. TODO: Update character-view-modal to use new system
+6. TODO: Create UI for adding/removing items from inventory
+7. TODO: Create migration script to populate initial inventories with background equipment
+8. TODO: Update character creation flow to save starting equipment as inventory
+
+## Database Setup
+
+Make sure to seed the items collection:
+```bash
+npm run seed:spells
+```
+
+This populates `dnd-resources.items` with all weapons, armor, gear, tools, and magic items.

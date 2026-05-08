@@ -5,6 +5,8 @@ import Link                             from 'next/link';
 import { STATIC_BACKGROUNDS }           from '@/data/backgrounds';
 import type { SpellEntry }              from '@/data/spells';
 import LevelUpModal                     from '@/components/sections/levelup-modal';
+import { useCharacterInventory, type EnrichedInventoryItem } from '@/hooks/use-character-inventory';
+import ItemTooltip from '@/components/ui/item-tooltip';
 
 /* ═══════════════════════════════════════════════════════════════════
    Types
@@ -961,9 +963,12 @@ const COIN_META = [
 ] as const;
 
 /* ── Table row ── */
-function ItemRow({ item, index }: { item: InventoryItem; index: number }) {
+function ItemRow({ item, index }: { item: EnrichedInventoryItem | InventoryItem; index: number }) {
     const [expanded, setExpanded] = useState(false);
-    const meta = ITEM_CATEGORY_META[item.category];
+    const meta = ITEM_CATEGORY_META[item.category as ItemCategory] ?? ITEM_CATEGORY_META.misc;
+    
+    // Check if this is an enriched item (has full details from database)
+    const isEnriched = 'description' in item && item.description;
 
     return (
         <>
@@ -988,13 +993,21 @@ function ItemRow({ item, index }: { item: InventoryItem; index: number }) {
 
                 {/* Name */}
                 <div style={{ padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
-                    <span style={{ fontSize: '0.85rem', fontWeight: '600', color: item.rarity ? RARITY_COLORS[item.rarity] : '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {item.name}
-                    </span>
+                    {isEnriched ? (
+                        <ItemTooltip item={item as EnrichedInventoryItem}>
+                            <span style={{ fontSize: '0.85rem', fontWeight: '600', color: (item as EnrichedInventoryItem).rarity ? RARITY_COLORS[(item as EnrichedInventoryItem).rarity!] : '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: 'help' }}>
+                                {item.name}
+                            </span>
+                        </ItemTooltip>
+                    ) : (
+                        <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {item.name}
+                        </span>
+                    )}
                     {item.source === 'background' && (
                         <span style={{ fontSize: '0.55rem', fontWeight: '700', letterSpacing: '0.08em', color: 'rgba(212,175,55,0.45)', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '3px', padding: '0.05rem 0.3rem', flexShrink: 0 }}>BG</span>
                     )}
-                    {item.requiresAttunement && (
+                    {'requiresAttunement' in item && item.requiresAttunement && (
                         <span title="Requires Attunement" style={{ fontSize: '0.6rem', color: item.attuned ? 'rgba(160,100,240,0.9)' : 'rgba(160,100,240,0.35)', flexShrink: 0 }}>✦</span>
                     )}
                 </div>
@@ -1076,22 +1089,29 @@ function TableHeader() {
 /* ── Main GearTab ── */
 function GearTab({ char }: { char: CharacterData }) {
     const bgData = STATIC_BACKGROUNDS.find(b => b.index === char.background);
+    
+    // Fetch enriched inventory from API
+    const { data: inventoryData, loading: loadingInventory } = useCharacterInventory(char.id);
 
     // Currency state,   editable inline
     const [currency,    setCurrency]    = useState<Currency>(char.currency);
     const [editCurrency,setEditCurrency]= useState(false);
     const [saving,      setSaving]      = useState(false);
-
-    // Convert background starting equipment to InventoryItem[]
-    const startingItems: InventoryItem[] = useMemo(() =>
-        (bgData?.starting_equipment ?? []).map((e, i) => ({
+    
+    // Use enriched inventory items if available, otherwise show empty
+    const inventoryItems: EnrichedInventoryItem[] = inventoryData?.inventory ?? [];
+    
+    // Fallback: If inventory is empty and character has background equipment, show it as read-only preview
+    const fallbackItems: InventoryItem[] = useMemo(() => {
+        if (inventoryItems.length > 0) return [];
+        return (bgData?.starting_equipment ?? []).map((e, i) => ({
             id:       `bg-${i}`,
             name:     e.equipment.name,
             category: inferCategory(e.equipment.name),
             quantity: e.quantity,
             source:   'background' as const,
-        }))
-   ,  [bgData]);
+        }));
+    }, [bgData, inventoryItems.length]);
 
     async function saveCurrency() {
         setSaving(true);
@@ -1153,22 +1173,35 @@ function GearTab({ char }: { char: CharacterData }) {
             <section>
                 <SectionHead>Inventory</SectionHead>
 
-                {startingItems.length > 0 ? (
+                {loadingInventory ? (
+                    <div style={{ padding: '2rem', textAlign: 'center' }}>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(244,232,208,0.4)' }}>Loading inventory...</p>
+                    </div>
+                ) : inventoryItems.length > 0 ? (
                     <div style={{ border: '1px solid rgba(212,175,55,0.18)', borderRadius: '8px', overflow: 'hidden', overflowX: 'auto' }}>
                         <TableHeader />
                         <div>
-                            {startingItems.map((item, i) => (
-                                <ItemRow key={item.id} item={item} index={i} />
+                            {inventoryItems.map((item, i) => (
+                                <ItemRow key={item.itemId + '-' + i} item={item} index={i} />
                             ))}
                         </div>
-
-                        {/* Empty rows hint */}
-                        <div style={{ padding: '1.5rem', textAlign: 'center', borderTop: '1px dashed rgba(212,175,55,0.1)' }}>
-                            <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(244,232,208,0.2)', fontStyle: 'italic' }}>
-                                Additional items looted or purchased will appear here.
+                    </div>
+                ) : fallbackItems.length > 0 ? (
+                    <>
+                        <div style={{ border: '1px solid rgba(212,175,55,0.18)', borderRadius: '8px', overflow: 'hidden', overflowX: 'auto' }}>
+                            <TableHeader />
+                            <div>
+                                {fallbackItems.map((item, i) => (
+                                    <ItemRow key={item.id} item={item} index={i} />
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ marginTop: '0.75rem', padding: '0.75rem 1rem', background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '8px' }}>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'rgba(212,175,55,0.7)', fontStyle: 'italic' }}>
+                                ℹ️ These are your starting items from your background. They haven't been saved to your inventory yet. Hover over items to see full details.
                             </p>
                         </div>
-                    </div>
+                    </>
                 ) : (
                     <div style={{ border: '1px dashed rgba(212,175,55,0.15)', borderRadius: '8px', padding: '3rem', textAlign: 'center' }}>
                         <span style={{ fontSize: '2rem', opacity: 0.2 }}>🎒</span>

@@ -726,65 +726,113 @@ function ItemRow({ item, index }: { item: InventoryItem; index: number }) {
     return (
         <>
             <div
-                onClick={() => item.description && setExpanded(v => !v)}
+                onClick={() => setExpanded(v => !v)}
                 style={{
-                    display: 'grid',
-                    gridTemplateColumns: '4px 1fr 100px 160px 56px 64px 44px 44px',
+                    display: 'flex',
                     alignItems: 'center',
-                    gap: '0',
-                    minHeight: '42px',
+                    gap: '0.75rem',
+                    padding: '0.75rem 1rem',
                     background: index % 2 === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.08)',
-                    cursor: item.description ? 'pointer' : 'default',
+                    cursor: 'pointer',
                     transition: 'background 0.1s',
                     borderBottom: '1px solid rgba(212,175,55,0.06)',
+                    borderLeft: `3px solid ${meta.color}`,
                 }}
                 onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = 'rgba(212,175,55,0.06)'}
                 onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = index % 2 === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.08)'}
             >
-                <div style={{ alignSelf: 'stretch', background: meta.color, opacity: 0.7 }} />
-                <div style={{ padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
-                    <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {item.name}
-                    </span>
-                    {item.source === 'background' && (
-                        <span style={{ fontSize: '0.55rem', fontWeight: '700', letterSpacing: '0.08em', color: 'rgba(212,175,55,0.45)', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '3px', padding: '0.05rem 0.3rem', flexShrink: 0 }}>BG</span>
-                    )}
+                {/* Name + badges */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff' }}>
+                            {item.name}
+                        </span>
+                        {item.source === 'background' && (
+                            <span style={{ fontSize: '0.55rem', fontWeight: '700', letterSpacing: '0.08em', color: 'rgba(212,175,55,0.45)', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '3px', padding: '0.05rem 0.3rem' }}>BG</span>
+                        )}
+                        {item.equipped && (
+                            <span title="Equipped" style={{ fontSize: '0.7rem', color: 'rgba(80,200,120,0.8)' }}>⚔</span>
+                        )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+                        <span style={{ fontSize: '0.68rem', fontWeight: '700', color: meta.color, background: `${meta.color.replace('0.85', '0.1')}`, border: `1px solid ${meta.color.replace('0.85', '0.2')}`, borderRadius: '4px', padding: '0.1rem 0.4rem' }}>
+                            {meta.label}
+                        </span>
+                        {!expanded && item.description && (
+                            <span style={{ fontSize: '0.65rem', color: 'rgba(244,232,208,0.35)' }}>
+                                Click for details
+                            </span>
+                        )}
+                    </div>
                 </div>
-                <div style={{ padding: '0 0.5rem' }}>
-                    <span style={{ fontSize: '0.68rem', fontWeight: '700', color: meta.color, background: `${meta.color.replace('0.85', '0.1')}`, border: `1px solid ${meta.color.replace('0.85', '0.2')}`, borderRadius: '4px', padding: '0.1rem 0.4rem', whiteSpace: 'nowrap' }}>
-                        {meta.label}
-                    </span>
-                </div>
-                <div style={{ padding: '0 0.5rem', overflow: 'hidden' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'rgba(244,232,208,0.5)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
-                        {item.properties ?? ', '}
-                    </span>
-                </div>
-                <div style={{ padding: '0 0.5rem', textAlign: 'center' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'rgba(244,232,208,0.4)' }}>
-                        {item.weight !== undefined ? `${item.weight} lb` : ', '}
-                    </span>
-                </div>
-                <div style={{ padding: '0 0.5rem', textAlign: 'right' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'rgba(212,175,55,0.65)', whiteSpace: 'nowrap' }}>
-                        {item.value ?? ', '}
-                    </span>
-                </div>
-                <div style={{ padding: '0 0.5rem', textAlign: 'center' }}>
-                    <span style={{ fontSize: '0.82rem', fontWeight: '700', color: 'rgba(244,232,208,0.6)' }}>
+
+                {/* Quantity badge */}
+                <div style={{
+                    background: 'rgba(212,175,55,0.12)',
+                    border: '1px solid rgba(212,175,55,0.3)',
+                    borderRadius: '8px',
+                    padding: '0.5rem 0.75rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    minWidth: '60px',
+                    flexShrink: 0
+                }}>
+                    <span style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-gold)', lineHeight: 1 }}>
                         {item.quantity}
                     </span>
+                    <span style={{ fontSize: '0.6rem', color: 'rgba(212,175,55,0.5)', marginTop: '0.1rem' }}>
+                        QTY
+                    </span>
                 </div>
-                <div style={{ padding: '0 0.5rem', textAlign: 'center' }}>
-                    {item.equipped && <span title="Equipped" style={{ fontSize: '0.75rem', color: 'rgba(80,200,120,0.8)' }}>⚔</span>}
+
+                {/* Expand arrow */}
+                <div style={{
+                    color: 'rgba(212,175,55,0.35)',
+                    fontSize: '0.8rem',
+                    transition: 'transform 0.2s',
+                    transform: expanded ? 'rotate(180deg)' : 'none',
+                    flexShrink: 0
+                }}>
+                    ▾
                 </div>
             </div>
 
-            {expanded && item.description && (
-                <div style={{ gridColumn: '1/-1', padding: '0.6rem 1.25rem 0.75rem', background: 'rgba(212,175,55,0.04)', borderBottom: '1px solid rgba(212,175,55,0.08)', borderLeft: `3px solid ${meta.color}` }}>
-                    <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(244,232,208,0.65)', lineHeight: '1.65', fontStyle: 'italic' }}>
-                        {item.description}
-                    </p>
+            {/* Expanded details */}
+            {expanded && (
+                <div style={{
+                    padding: '1rem 1.25rem',
+                    background: 'rgba(212,175,55,0.04)',
+                    borderBottom: '1px solid rgba(212,175,55,0.1)',
+                    borderLeft: `3px solid ${meta.color}`
+                }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem', marginBottom: item.description ? '0.75rem' : 0 }}>
+                        {item.properties && (
+                            <div>
+                                <p style={{ margin: '0 0 0.2rem', fontSize: '0.6rem', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Properties</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(244,232,208,0.7)' }}>{item.properties}</p>
+                            </div>
+                        )}
+                        {item.weight !== undefined && (
+                            <div>
+                                <p style={{ margin: '0 0 0.2rem', fontSize: '0.6rem', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Weight</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(244,232,208,0.7)' }}>{item.weight} lb</p>
+                            </div>
+                        )}
+                        {item.value && (
+                            <div>
+                                <p style={{ margin: '0 0 0.2rem', fontSize: '0.6rem', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Value</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(212,175,55,0.75)', fontWeight: '600' }}>{item.value}</p>
+                            </div>
+                        )}
+                    </div>
+                    {item.description && (
+                        <div style={{ paddingTop: '0.5rem', borderTop: '1px solid rgba(212,175,55,0.1)' }}>
+                            <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(244,232,208,0.7)', lineHeight: '1.65', fontStyle: 'italic' }}>
+                                {item.description}
+                            </p>
+                        </div>
+                    )}
                 </div>
             )}
         </>

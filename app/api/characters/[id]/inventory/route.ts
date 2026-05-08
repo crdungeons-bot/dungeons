@@ -166,7 +166,7 @@ export async function POST(
             // Item exists, increment quantity
             await db.collection('characters').updateOne(
                 { _id: new ObjectId(id), 'inventory.itemId': itemId },
-                { $inc: { 'inventory.$.quantity': quantity } }
+                { $inc: { 'inventory.$.quantity': quantity } } as any
             );
         } else {
             // Item doesn't exist, add new entry
@@ -182,7 +182,7 @@ export async function POST(
                             source,
                         }
                     }
-                }
+                } as any
             );
         }
 

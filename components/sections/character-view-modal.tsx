@@ -1035,43 +1035,69 @@ export default function CharacterViewModal({
                                 gap: '0',
                                 borderBottom: '1px solid rgba(212,175,55,0.15)',
                                 backgroundColor: 'rgba(0,0,0,0.3)',
-                                overflowX: 'auto'
+                                overflowX: 'auto',
+                                flexShrink: 0
                             }}
                         >
                             {[
-                                { id: 'overview' as Tab, label: 'Overview' },
-                                { id: 'magic' as Tab, label: 'Magic & Abilities' },
-                                { id: 'gear' as Tab, label: 'Gear' },
-                                { id: 'lore' as Tab, label: 'Lore' },
+                                { id: 'overview' as Tab, label: 'Overview', shortLabel: 'Overview' },
+                                { id: 'magic' as Tab, label: 'Spells & Abilities', shortLabel: 'Magic' },
+                                { id: 'gear' as Tab, label: 'Gear', shortLabel: 'Gear' },
+                                { id: 'lore' as Tab, label: 'Lore', shortLabel: 'Lore' },
                             ].map(t => (
                                 <button
                                     key={t.id}
                                     onClick={() => setTab(t.id)}
+                                    className="tab-button"
                                     style={{
-                                        flex: '1 0 auto',
-                                        padding: '0.75rem 1rem',
+                                        flex: '1 1 0',
+                                        minWidth: 'fit-content',
+                                        padding: '0.85rem 1.25rem',
                                         background: tab === t.id ? 'rgba(212,175,55,0.12)' : 'transparent',
                                         border: 'none',
                                         borderBottom: tab === t.id ? '2px solid var(--color-gold)' : '2px solid transparent',
                                         color: tab === t.id ? 'var(--color-gold)' : 'rgba(244,232,208,0.5)',
-                                        fontSize: '0.75rem',
+                                        fontSize: '0.8rem',
                                         fontWeight: '700',
-                                        letterSpacing: '0.04em',
-                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.03em',
                                         cursor: 'pointer',
                                         transition: 'all 0.2s',
                                         whiteSpace: 'nowrap'
                                     }}
                                 >
-                                    {t.label}
+                                    <span className="tab-label-full">{t.label}</span>
+                                    <span className="tab-label-short">{t.shortLabel}</span>
                                 </button>
                             ))}
                         </div>
                         <style>{`
+                            .tab-label-short {
+                                display: none;
+                            }
+                            
                             @media (max-width: 768px) {
-                                .character-view-tabs button {
-                                    padding: 0.5rem 0.75rem !important;
-                                    fontSize: 0.7rem !important;
+                                .character-view-tabs {
+                                    padding: 0 0.5rem;
+                                }
+                                
+                                .tab-button {
+                                    padding: 0.7rem 1rem !important;
+                                    font-size: 0.75rem !important;
+                                }
+                            }
+                            
+                            @media (max-width: 550px) {
+                                .tab-label-full {
+                                    display: none;
+                                }
+                                
+                                .tab-label-short {
+                                    display: inline;
+                                }
+                                
+                                .tab-button {
+                                    padding: 0.65rem 0.85rem !important;
+                                    font-size: 0.72rem !important;
                                 }
                             }
                         `}</style>

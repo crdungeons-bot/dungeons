@@ -23,10 +23,10 @@ export default function Navigation() {
         if (hasSeenAnimation) {
             setShowLogo(true);
         } else {
-            // Show logo after hero animation completes (6s total)
+            // Show logo after hero animation completes (4s total)
             const timer = setTimeout(() => {
                 setShowLogo(true);
-            }, 6000);
+            }, 4000);
             return () => clearTimeout(timer);
         }
     }, []);

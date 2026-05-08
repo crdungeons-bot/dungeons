@@ -14,16 +14,16 @@ export default function Hero() {
             setAnimationComplete(true);
             setShowContent(true);
         } else {
-            // Show content after logo pauses and white fades out
+            // Show content after white fades and logo moves
             const contentTimer = setTimeout(() => {
                 setShowContent(true);
-            }, 5500);
+            }, 3500);
 
             // Mark animation as complete
             const completeTimer = setTimeout(() => {
                 setAnimationComplete(true);
                 sessionStorage.setItem('logoAnimationShown', 'true');
-            }, 6000);
+            }, 4000);
 
             return () => {
                 clearTimeout(contentTimer);
@@ -71,7 +71,7 @@ export default function Hero() {
                 />
             )}
 
-            {/* Flying Logo Animation - only shows on first visit */}
+            {/* Logo appears in center then moves to nav - only shows on first visit */}
             {!animationComplete && (
                 <div 
                     className="logo-container"
@@ -79,6 +79,7 @@ export default function Hero() {
                         position: 'fixed',
                         top: '50vh',
                         left: '50vw',
+                        transform: 'translate(-50%, -50%)',
                         zIndex: 9999,
                         pointerEvents: 'none'
                     }}
@@ -86,7 +87,7 @@ export default function Hero() {
                     <img 
                         src="/dnd-guru-logo-transparent.png" 
                         alt="DND Guru Logo" 
-                        className="logo-flying"
+                        className="logo-shrink-move"
                         style={{ 
                             width: 'clamp(200px, 40vw, 350px)',
                             height: 'auto',
@@ -165,14 +166,11 @@ export default function Hero() {
             </div>
 
             <style jsx>{`
-                @keyframes whiteOverlay {
+                @keyframes whiteFade {
                     0% {
                         opacity: 1;
                     }
-                    10% {
-                        opacity: 1;
-                    }
-                    90% {
+                    50% {
                         opacity: 1;
                     }
                     100% {
@@ -180,17 +178,13 @@ export default function Hero() {
                     }
                 }
 
-                @keyframes logoFly {
+                @keyframes logoShrinkMove {
                     0% {
-                        transform: translate(-150vw, -50%);
+                        transform: translate(-50%, -50%) scale(1);
                         opacity: 1;
                     }
-                    20% {
-                        transform: translate(-50%, -50%);
-                        opacity: 1;
-                    }
-                    70% {
-                        transform: translate(-50%, -50%);
+                    40% {
+                        transform: translate(-50%, -50%) scale(1);
                         opacity: 1;
                     }
                     100% {
@@ -200,25 +194,21 @@ export default function Hero() {
                 }
 
                 .white-overlay {
-                    animation: whiteOverlay 6s ease-out forwards;
+                    animation: whiteFade 4s ease-out forwards;
                 }
 
-                .logo-flying {
-                    animation: logoFly 6s ease-in-out forwards;
+                .logo-shrink-move {
+                    animation: logoShrinkMove 4s ease-in-out forwards;
                 }
 
                 @media (max-width: 768px) {
-                    @keyframes logoFly {
+                    @keyframes logoShrinkMove {
                         0% {
-                            transform: translate(-150vw, -50%);
+                            transform: translate(-50%, -50%) scale(1);
                             opacity: 1;
                         }
-                        20% {
-                            transform: translate(-50%, -50%);
-                            opacity: 1;
-                        }
-                        70% {
-                            transform: translate(-50%, -50%);
+                        40% {
+                            transform: translate(-50%, -50%) scale(1);
                             opacity: 1;
                         }
                         100% {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link                             from 'next/link';
 import { STATIC_BACKGROUNDS }           from '@/data/backgrounds';
 import type { SpellEntry }              from '@/data/spells';
@@ -52,7 +52,7 @@ type CharacterData = {
     proficiencies: string[];
     stats:         Stats;
     story:         Story;
-    feats:         Array<{ name: string; benefit: string; level: number; statChoice: string | null }>;
+    feats?:        Array<{ name: string; benefit: string; level: number; statChoice: string | null }>;
     createdAt:     string;
 };
 
@@ -1407,7 +1407,8 @@ export default function CharacterDetailSection({ id }: { id: string }) {
     const [tab,         setTab]         = useState<Tab>('overview');
     const [showLevelUp, setShowLevelUp] = useState(false);
 
-    useEffect(() => {
+    const fetchCharacter = useCallback(() => {
+        setLoading(true);
         fetch(`/api/characters/${id}`)
             .then(r => r.json())
             .then(data => {
@@ -1417,6 +1418,10 @@ export default function CharacterDetailSection({ id }: { id: string }) {
             .catch(e => setError(e.message))
             .finally(() => setLoading(false));
     }, [id]);
+
+    useEffect(() => {
+        fetchCharacter();
+    }, [fetchCharacter]);
 
     if (loading) return <Skeleton />;
     if (error || !char) return (
@@ -1539,9 +1544,9 @@ export default function CharacterDetailSection({ id }: { id: string }) {
                         stats: char.stats,
                     }}
                     onClose={() => setShowLevelUp(false)}
-                    onComplete={({ level, hp, stats }) => {
-                        setChar(prev => prev ? { ...prev, level, hp, stats } : prev);
+                    onComplete={() => {
                         setShowLevelUp(false);
+                        fetchCharacter(); // Refetch to get the updated character with feat
                     }}
                 />
             )}

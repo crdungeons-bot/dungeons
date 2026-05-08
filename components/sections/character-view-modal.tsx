@@ -49,7 +49,7 @@ type CharacterData = {
     proficiencies: string[];
     stats: Stats;
     story: Story;
-    feats: Array<{ name: string; benefit: string; level: number; statChoice: string | null }>;
+    feats?: Array<{ name: string; benefit: string; level: number; statChoice: string | null }>;
     createdAt: string;
 };
 

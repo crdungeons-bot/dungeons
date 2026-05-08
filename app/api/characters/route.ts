@@ -121,6 +121,7 @@ export async function POST(request: NextRequest) {
             level:      1,
             inventory,
             currency,
+            feats:      [],
             createdAt:  new Date(),
         });
 

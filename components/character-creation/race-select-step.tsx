@@ -24,30 +24,16 @@ type RaceDetail = {
     languages: { index: string; name: string }[];
 };
 
-const RACE_DESCRIPTIONS: Record<string, string> = {
-    dragonborn: 'Proud dragon-blooded warriors with a breath weapon and a fierce, uncompromising sense of honour.',
-    dwarf:      'Stout and unyielding, masters of stone and steel forged by centuries underground.',
-    elf:        'Ancient and graceful, blessed with keen senses, arcane talent, and centuries of hard-won wisdom.',
-    gnome:      'Small in stature, boundless in curiosity,   natural tinkerers with a gift for illusion.',
-    'half-elf': 'Born of two worlds, blending human ambition with elven charm, perception, and longevity.',
-    'half-orc': 'Ferocious and tenacious, they refuse to fall even when death seems certain.',
-    halfling:   'Nimble and uncannily lucky, halflings slip through danger with a cheerful, unshakeable calm.',
-    human:      'Endlessly adaptable and fiercely ambitious,   humans shape the world through sheer determination.',
-    tiefling:   'Marked by infernal heritage, cunning survivors who forge their own fate despite the world\'s suspicion.',
-};
-
 // ── Individual race card ──────────────────────────────────────────────────────
 
 function RaceSelectCard({
     race,
     isSelected,
-    isViewing,
     onViewDetails,
     onSelect,
 }: {
     race: Race;
     isSelected: boolean;
-    isViewing: boolean;
     onViewDetails: () => void;
     onSelect: () => void;
 }) {
@@ -55,7 +41,7 @@ function RaceSelectCard({
 
     return (
         <div style={{
-            border: `2px solid ${isSelected ? 'var(--color-gold)' : isViewing ? 'rgba(212,175,55,0.5)' : 'rgba(212,175,55,0.25)'}`,
+            border: `2px solid ${isSelected ? 'var(--color-gold)' : 'rgba(212,175,55,0.25)'}`,
             borderRadius: '0.5rem',
             backgroundColor: isSelected ? 'rgba(212,175,55,0.07)' : 'var(--color-primary-light)',
             overflow: 'hidden',
@@ -86,6 +72,39 @@ function RaceSelectCard({
                 </div>
             )}
 
+            {/* Info button */}
+            <button
+                onClick={onViewDetails}
+                style={{
+                    position: 'absolute',
+                    top: '0.5rem',
+                    left: '0.5rem',
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    border: '1px solid rgba(212,175,55,0.5)',
+                    backgroundColor: 'rgba(10,5,2,0.85)',
+                    color: 'var(--color-gold)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.9rem',
+                    lineHeight: 1,
+                    zIndex: 1,
+                    fontWeight: '700',
+                    transition: 'all 0.15s',
+                }}
+                onMouseEnter={e => {
+                    e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.2)';
+                }}
+                onMouseLeave={e => {
+                    e.currentTarget.style.backgroundColor = 'rgba(10,5,2,0.85)';
+                }}
+            >
+                i
+            </button>
+
             {/* Title bar */}
             <div style={{
                 padding: '0.625rem 1rem',
@@ -110,71 +129,35 @@ function RaceSelectCard({
                 </div>
             )}
 
-            {/* Description + buttons */}
+            {/* Select button */}
             <div style={{
                 padding: '0.75rem 1rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.75rem',
-                flexGrow: 1,
-                justifyContent: 'space-between',
             }}>
-                <p style={{
-                    color: 'rgba(244,232,208,0.75)',
-                    fontStyle: 'italic',
-                    margin: 0,
-                    fontSize: '0.82rem',
-                    lineHeight: '1.6',
-                }}>
-                    {RACE_DESCRIPTIONS[race.index] ?? 'A proud and storied race with a rich place in the world\'s history.'}
-                </p>
-
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button
-                        onClick={onViewDetails}
-                        style={{
-                            flex: 1,
-                            padding: '0.45rem 0.5rem',
-                            borderRadius: '0.375rem',
-                            border: `1px solid ${isViewing ? 'var(--color-gold)' : 'rgba(212,175,55,0.35)'}`,
-                            color: isViewing ? 'var(--color-gold)' : 'rgba(212,175,55,0.65)',
-                            backgroundColor: isViewing ? 'rgba(212,175,55,0.08)' : 'transparent',
-                            fontSize: '0.78rem',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            transition: 'all 0.15s',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
-                        {isViewing ? 'Viewing ›' : 'View Details'}
-                    </button>
-                    <button
-                        onClick={onSelect}
-                        style={{
-                            flex: 1,
-                            padding: '0.45rem 0.5rem',
-                            borderRadius: '0.375rem',
-                            border: 'none',
-                            backgroundColor: isSelected ? 'rgba(212,175,55,0.85)' : 'var(--color-gold)',
-                            color: 'var(--color-primary)',
-                            fontSize: '0.78rem',
-                            fontWeight: '700',
-                            cursor: 'pointer',
-                            transition: 'background-color 0.15s',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
-                        {isSelected ? '✓ Selected' : 'Select'}
-                    </button>
-                </div>
+                <button
+                    onClick={onSelect}
+                    style={{
+                        width: '100%',
+                        padding: '0.65rem',
+                        borderRadius: '0.375rem',
+                        border: 'none',
+                        backgroundColor: isSelected ? 'rgba(212,175,55,0.85)' : 'var(--color-gold)',
+                        color: 'var(--color-primary)',
+                        fontSize: '0.85rem',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.15s',
+                    }}
+                >
+                    {isSelected ? '✓ Selected' : 'Select'}
+                </button>
             </div>
         </div>
     );
 }
 
-// ── Right-side detail panel ───────────────────────────────────────────────────
+// ── Full-screen detail modal ──────────────────────────────────────────────────
 
-function RaceDetailPanel({
+function RaceDetailModal({
     data,
     isSelected,
     onSelect,
@@ -186,173 +169,242 @@ function RaceDetailPanel({
     onClose: () => void;
 }) {
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-        }}>
-            {/* Image header */}
-            <div style={{
-                height: '240px',
-                flexShrink: 0,
-                position: 'relative',
-                background: `
-                    linear-gradient(to bottom, rgba(10,5,2,0.25) 0%, rgba(10,5,2,0.75) 100%),
-                    url(/images/races/${data.index}.png) center top / cover no-repeat
-                `,
-                backgroundColor: 'var(--color-primary)',
-            }}>
-                {/* Close */}
-                <button
-                    onClick={onClose}
-                    style={{
-                        position: 'absolute',
-                        top: '0.75rem',
-                        right: '0.75rem',
-                        width: '28px',
-                        height: '28px',
-                        borderRadius: '50%',
-                        border: '1px solid rgba(212,175,55,0.5)',
-                        backgroundColor: 'rgba(10,5,2,0.75)',
-                        color: 'var(--color-gold)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '1rem',
-                        lineHeight: 1,
-                    }}
-                >
-                    ×
-                </button>
-
-                {/* Name overlay */}
+        <div
+            style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.85)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                zIndex: 1000,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '1rem',
+                overflow: 'auto',
+            }}
+            onClick={onClose}
+        >
+            <div
+                style={{
+                    backgroundColor: 'var(--color-primary)',
+                    border: '2px solid var(--color-gold)',
+                    borderRadius: '0.75rem',
+                    maxWidth: '800px',
+                    width: '100%',
+                    maxHeight: '90vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+                }}
+                onClick={e => e.stopPropagation()}
+            >
+                {/* Image header */}
                 <div style={{
-                    position: 'absolute',
-                    bottom: '1rem',
-                    left: '1.25rem',
-                    right: '3rem',
+                    height: '280px',
+                    flexShrink: 0,
+                    position: 'relative',
+                    background: `
+                        linear-gradient(to bottom, rgba(10,5,2,0.25) 0%, rgba(10,5,2,0.75) 100%),
+                        url(/images/races/${data.index}.png) center top / cover no-repeat
+                    `,
+                    backgroundColor: 'var(--color-primary)',
                 }}>
-                    <h2 style={{
-                        color: 'var(--color-gold)',
-                        fontSize: '1.75rem',
-                        fontWeight: '800',
-                        margin: '0 0 0.2rem',
-                        textShadow: '1px 1px 10px rgba(0,0,0,0.95)',
-                    }}>
-                        {data.name}
-                    </h2>
+                    {/* Close button */}
+                    <button
+                        onClick={onClose}
+                        style={{
+                            position: 'absolute',
+                            top: '1rem',
+                            right: '1rem',
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '50%',
+                            border: '1px solid rgba(212,175,55,0.5)',
+                            backgroundColor: 'rgba(10,5,2,0.85)',
+                            color: 'var(--color-gold)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1.25rem',
+                            lineHeight: 1,
+                            transition: 'all 0.15s',
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.2)';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.backgroundColor = 'rgba(10,5,2,0.85)';
+                        }}
+                    >
+                        ×
+                    </button>
+
+                    {/* Name overlay */}
                     <div style={{
-                        display: 'flex',
-                        gap: '0.75rem',
-                        color: 'rgba(244,232,208,0.65)',
-                        fontSize: '0.72rem',
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        fontWeight: '600',
+                        position: 'absolute',
+                        bottom: '1.5rem',
+                        left: '2rem',
+                        right: '4rem',
                     }}>
-                        <span>Speed {data.speed} ft</span>
-                        <span>·</span>
-                        <span>{data.size} size</span>
-                        <span>·</span>
-                        <span>{data.traits.length} traits</span>
+                        <h2 style={{
+                            color: 'var(--color-gold)',
+                            fontSize: '2.25rem',
+                            fontWeight: '800',
+                            margin: '0 0 0.3rem',
+                            textShadow: '2px 2px 12px rgba(0,0,0,0.95)',
+                        }}>
+                            {data.name}
+                        </h2>
+                        <div style={{
+                            display: 'flex',
+                            gap: '1rem',
+                            color: 'rgba(244,232,208,0.7)',
+                            fontSize: '0.85rem',
+                            letterSpacing: '0.08em',
+                            textTransform: 'uppercase',
+                            fontWeight: '600',
+                            textShadow: '1px 1px 6px rgba(0,0,0,0.9)',
+                        }}>
+                            <span>Speed {data.speed} ft</span>
+                            <span>·</span>
+                            <span>{data.size} size</span>
+                            <span>·</span>
+                            <span>{data.traits.length} traits</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Scrollable content */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1.25rem 0' }}>
-                {/* Personality / alignment flavor */}
-                <p style={{
-                    color: 'rgba(244,232,208,0.8)',
-                    fontStyle: 'italic',
-                    fontSize: '0.875rem',
-                    lineHeight: '1.75',
-                    marginBottom: '1.25rem',
-                    borderLeft: '2px solid rgba(212,175,55,0.3)',
-                    paddingLeft: '0.875rem',
-                    margin: '0 0 1.25rem',
-                }}>
-                    {data.alignment}
-                </p>
+                {/* Scrollable content */}
+                <div style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
+                    {/* Personality / alignment flavor */}
+                    <p style={{
+                        color: 'rgba(244,232,208,0.85)',
+                        fontStyle: 'italic',
+                        fontSize: '1rem',
+                        lineHeight: '1.75',
+                        borderLeft: '3px solid rgba(212,175,55,0.4)',
+                        paddingLeft: '1.25rem',
+                        margin: '0 0 2rem',
+                    }}>
+                        {data.alignment}
+                    </p>
 
-                {/* Ability bonuses */}
-                <Section label="Ability Bonuses">
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                        {data.ability_bonuses.map(b => (
-                            <span key={b.ability_score.index} style={{
-                                backgroundColor: 'rgba(212,175,55,0.12)',
-                                border: '1px solid rgba(212,175,55,0.3)',
-                                color: 'var(--color-gold)',
-                                padding: '0.25rem 0.7rem',
-                                borderRadius: '9999px',
-                                fontSize: '0.8rem',
-                                fontWeight: '700',
-                            }}>
-                                {b.ability_score.name} +{b.bonus}
-                            </span>
-                        ))}
-                    </div>
-                </Section>
-
-                {/* Racial traits */}
-                {data.traits.length > 0 && (
-                    <Section label="Racial Traits">
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                            {data.traits.map(t => (
-                                <div key={t.index} style={{
-                                    padding: '0.3rem 0.7rem',
-                                    backgroundColor: 'rgba(212,175,55,0.05)',
-                                    border: '1px solid rgba(212,175,55,0.1)',
-                                    borderRadius: '0.25rem',
-                                    color: 'rgba(244,232,208,0.75)',
-                                    fontSize: '0.825rem',
+                    {/* Ability bonuses */}
+                    <Section label="Ability Bonuses">
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            {data.ability_bonuses.map(b => (
+                                <span key={b.ability_score.index} style={{
+                                    backgroundColor: 'rgba(212,175,55,0.12)',
+                                    border: '1px solid rgba(212,175,55,0.3)',
+                                    color: 'var(--color-gold)',
+                                    padding: '0.4rem 0.9rem',
+                                    borderRadius: '9999px',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '700',
                                 }}>
-                                    {t.name}
-                                </div>
+                                    {b.ability_score.name} +{b.bonus}
+                                </span>
                             ))}
                         </div>
                     </Section>
-                )}
 
-                {/* Languages */}
-                <Section label="Languages">
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
-                        {data.languages.map(l => (
-                            <span key={l.index} style={{
-                                backgroundColor: 'rgba(74,124,89,0.15)',
-                                border: '1px solid rgba(74,124,89,0.35)',
-                                color: '#86efac',
-                                padding: '0.2rem 0.6rem',
-                                borderRadius: '9999px',
-                                fontSize: '0.775rem',
-                            }}>
-                                {l.name}
-                            </span>
-                        ))}
-                    </div>
-                </Section>
-            </div>
+                    {/* Racial traits */}
+                    {data.traits.length > 0 && (
+                        <Section label="Racial Traits">
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                                {data.traits.map(t => (
+                                    <div key={t.index} style={{
+                                        padding: '0.5rem 1rem',
+                                        backgroundColor: 'rgba(212,175,55,0.05)',
+                                        border: '1px solid rgba(212,175,55,0.1)',
+                                        borderRadius: '0.375rem',
+                                        color: 'rgba(244,232,208,0.8)',
+                                        fontSize: '0.9rem',
+                                    }}>
+                                        {t.name}
+                                    </div>
+                                ))}
+                            </div>
+                        </Section>
+                    )}
 
-            {/* Select button */}
-            <div style={{ padding: '1rem 1.25rem', flexShrink: 0 }}>
-                <button
-                    onClick={onSelect}
-                    style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        borderRadius: '0.375rem',
-                        border: isSelected ? '2px solid var(--color-gold)' : 'none',
-                        backgroundColor: isSelected ? 'rgba(212,175,55,0.1)' : 'var(--color-gold)',
-                        color: isSelected ? 'var(--color-gold)' : 'var(--color-primary)',
-                        fontWeight: '700',
-                        fontSize: '0.95rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.15s',
-                    }}
-                >
-                    {isSelected ? `✓ ${data.name} Selected` : `Select ${data.name}`}
-                </button>
+                    {/* Languages */}
+                    <Section label="Languages">
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            {data.languages.map(l => (
+                                <span key={l.index} style={{
+                                    backgroundColor: 'rgba(74,124,89,0.15)',
+                                    border: '1px solid rgba(74,124,89,0.35)',
+                                    color: '#86efac',
+                                    padding: '0.3rem 0.8rem',
+                                    borderRadius: '9999px',
+                                    fontSize: '0.85rem',
+                                }}>
+                                    {l.name}
+                                </span>
+                            ))}
+                        </div>
+                    </Section>
+                </div>
+
+                {/* Action buttons */}
+                <div style={{
+                    padding: '1.5rem 2rem',
+                    borderTop: '1px solid rgba(212,175,55,0.2)',
+                    display: 'flex',
+                    gap: '1rem',
+                    flexShrink: 0,
+                }}>
+                    <button
+                        onClick={onClose}
+                        style={{
+                            flex: 1,
+                            padding: '0.85rem',
+                            borderRadius: '0.375rem',
+                            border: '1px solid rgba(212,175,55,0.3)',
+                            backgroundColor: 'transparent',
+                            color: 'rgba(212,175,55,0.7)',
+                            fontWeight: '600',
+                            fontSize: '0.95rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s',
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.05)';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                    >
+                        Close
+                    </button>
+                    <button
+                        onClick={() => {
+                            onSelect();
+                            onClose();
+                        }}
+                        style={{
+                            flex: 2,
+                            padding: '0.85rem',
+                            borderRadius: '0.375rem',
+                            border: isSelected ? '2px solid var(--color-gold)' : 'none',
+                            backgroundColor: isSelected ? 'rgba(212,175,55,0.1)' : 'var(--color-gold)',
+                            color: isSelected ? 'var(--color-gold)' : 'var(--color-primary)',
+                            fontWeight: '700',
+                            fontSize: '1rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s',
+                        }}
+                    >
+                        {isSelected ? `✓ ${data.name} Selected` : `Select ${data.name}`}
+                    </button>
+                </div>
             </div>
         </div>
     );
@@ -376,28 +428,6 @@ function Section({ label, children }: { label: string; children: React.ReactNode
     );
 }
 
-// ── Skeleton / loading state ──────────────────────────────────────────────────
-
-function PanelSkeleton() {
-    return (
-        <div style={{
-            padding: '1.25rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.75rem',
-        }}>
-            {[240, 60, 80, 120, 80].map((h, i) => (
-                <div key={i} style={{
-                    height: `${h}px`,
-                    borderRadius: '0.375rem',
-                    backgroundColor: 'rgba(212,175,55,0.06)',
-                    animation: 'pulse 1.5s ease-in-out infinite',
-                }} />
-            ))}
-        </div>
-    );
-}
-
 // ── Main exported component ───────────────────────────────────────────────────
 
 export default function RaceSelectStep({
@@ -412,15 +442,15 @@ export default function RaceSelectStep({
 }) {
     const router = useRouter();
 
-    // Which race's panel is open (can differ from selected)
-    const [viewingRace, setViewingRace] = useState<string | null>(preselect ?? null);
+    // Which race's modal is open
+    const [viewingRace, setViewingRace] = useState<string | null>(null);
     const [viewingData, setViewingData] = useState<RaceDetail | null>(null);
     const [loadingDetail, setLoadingDetail] = useState(false);
 
     // The confirmed selection
     const [selectedRace, setSelectedRace] = useState<string | null>(preselect ?? null);
 
-    // Fetch detail data whenever the panel race changes
+    // Fetch detail data whenever the modal race changes
     useEffect(() => {
         if (!viewingRace) {
             setViewingData(null);
@@ -436,9 +466,6 @@ export default function RaceSelectStep({
             .catch(() => setLoadingDetail(false));
     }, [viewingRace]);
 
-    const togglePanel = (index: string) =>
-        setViewingRace(prev => (prev === index ? null : index));
-
     const selectedRaceName = races.find(r => r.index === selectedRace)?.name;
 
     const handleContinue = () => {
@@ -449,182 +476,140 @@ export default function RaceSelectStep({
         router.push(`/create-character?${params.toString()}`);
     };
 
-    const panelOpen = viewingRace !== null;
-
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-            {/* Grid + panel row */}
-            <div style={{ display: 'flex', flex: 1, minHeight: 0 }} className="race-select-container">
+        <>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                 {/* Race grid */}
-                <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }} className="race-grid-container">
+                <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
                     <div style={{
                         display: 'grid',
-                        gridTemplateColumns: panelOpen
-                            ? 'repeat(auto-fill, minmax(170px, 1fr))'
-                            : 'repeat(auto-fill, minmax(210px, 1fr))',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
                         gap: '1rem',
-                        transition: 'grid-template-columns 0.25s',
                     }} className="race-grid">
                         {races.map(race => (
                             <RaceSelectCard
                                 key={race.index}
                                 race={race}
                                 isSelected={selectedRace === race.index}
-                                isViewing={viewingRace === race.index}
-                                onViewDetails={() => togglePanel(race.index)}
-                                onSelect={() => {
-                                    setSelectedRace(race.index);
-                                    // Auto-open details when selecting so user can confirm
-                                    if (viewingRace !== race.index) setViewingRace(race.index);
-                                }}
+                                onViewDetails={() => setViewingRace(race.index)}
+                                onSelect={() => setSelectedRace(race.index)}
                             />
                         ))}
                     </div>
                 </div>
 
-                {/* Detail panel */}
-                {panelOpen && (
+                {/* Sticky footer,   appears when a race is confirmed */}
+                {selectedRace && (
                     <div style={{
-                        width: '360px',
                         flexShrink: 0,
-                        borderLeft: '1px solid rgba(212,175,55,0.2)',
-                        backgroundColor: 'var(--color-primary-dark)',
-                        overflowY: 'auto',
+                        borderTop: '1px solid rgba(212,175,55,0.25)',
+                        backgroundColor: 'rgba(10,5,2,0.92)',
+                        backdropFilter: 'blur(16px)',
+                        WebkitBackdropFilter: 'blur(16px)',
+                        padding: '0.875rem 1.5rem',
                         display: 'flex',
-                        flexDirection: 'column',
-                    }} className="race-detail-panel">
-                        {loadingDetail || !viewingData
-                            ? <PanelSkeleton />
-                            : (
-                                <RaceDetailPanel
-                                    data={viewingData}
-                                    isSelected={selectedRace === viewingData.index}
-                                    onSelect={() => setSelectedRace(viewingData.index)}
-                                    onClose={() => setViewingRace(null)}
-                                />
-                            )
-                        }
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: '1rem',
+                    }} className="race-footer">
+                        <div>
+                            <p style={{
+                                color: 'rgba(212,175,55,0.5)',
+                                fontSize: '0.62rem',
+                                fontWeight: '800',
+                                letterSpacing: '0.14em',
+                                textTransform: 'uppercase',
+                                margin: '0 0 0.15rem',
+                            }}>
+                                Race Selected
+                            </p>
+                            <p style={{
+                                color: 'var(--color-gold)',
+                                fontWeight: '700',
+                                fontSize: '1.05rem',
+                                margin: 0,
+                            }}>
+                                {selectedRaceName}
+                            </p>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }} className="race-footer-buttons">
+                            <button
+                                onClick={() => setSelectedRace(null)}
+                                style={{
+                                    padding: '0.6rem 1rem',
+                                    borderRadius: '0.375rem',
+                                    border: '1px solid rgba(212,175,55,0.25)',
+                                    backgroundColor: 'transparent',
+                                    color: 'rgba(212,175,55,0.5)',
+                                    fontSize: '0.8rem',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Clear
+                            </button>
+                            <button
+                                onClick={handleContinue}
+                                style={{
+                                    padding: '0.7rem 1.75rem',
+                                    borderRadius: '0.375rem',
+                                    border: 'none',
+                                    backgroundColor: 'var(--color-gold)',
+                                    color: 'var(--color-primary)',
+                                    fontWeight: '700',
+                                    fontSize: '0.95rem',
+                                    letterSpacing: '0.04em',
+                                    cursor: 'pointer',
+                                    whiteSpace: 'nowrap',
+                                }}
+                            >
+                                Continue to Class &#8594;
+                            </button>
+                        </div>
                     </div>
                 )}
+
+                <style jsx>{`
+                    @media (max-width: 768px) {
+                        .race-grid {
+                            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+                            gap: 0.75rem !important;
+                        }
+                        
+                        .race-footer {
+                            flex-direction: column !important;
+                            align-items: stretch !important;
+                            padding: 0.75rem 1rem !important;
+                            gap: 0.75rem !important;
+                        }
+                        
+                        .race-footer > div:first-child {
+                            text-align: center;
+                        }
+                        
+                        .race-footer-buttons {
+                            width: 100%;
+                            flex-direction: column !important;
+                            gap: 0.5rem !important;
+                        }
+                        
+                        .race-footer-buttons button {
+                            width: 100% !important;
+                            padding: 0.75rem 1rem !important;
+                        }
+                    }
+                `}</style>
             </div>
 
-            {/* Sticky footer,   appears when a race is confirmed */}
-            {selectedRace && (
-                <div style={{
-                    flexShrink: 0,
-                    borderTop: '1px solid rgba(212,175,55,0.25)',
-                    backgroundColor: 'rgba(10,5,2,0.92)',
-                    backdropFilter: 'blur(16px)',
-                    WebkitBackdropFilter: 'blur(16px)',
-                    padding: '0.875rem 1.5rem',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '1rem',
-                }} className="race-footer">
-                    <div>
-                        <p style={{
-                            color: 'rgba(212,175,55,0.5)',
-                            fontSize: '0.62rem',
-                            fontWeight: '800',
-                            letterSpacing: '0.14em',
-                            textTransform: 'uppercase',
-                            margin: '0 0 0.15rem',
-                        }}>
-                            Race Selected
-                        </p>
-                        <p style={{
-                            color: 'var(--color-gold)',
-                            fontWeight: '700',
-                            fontSize: '1.05rem',
-                            margin: 0,
-                        }}>
-                            {selectedRaceName}
-                        </p>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }} className="race-footer-buttons">
-                        <button
-                            onClick={() => setSelectedRace(null)}
-                            style={{
-                                padding: '0.6rem 1rem',
-                                borderRadius: '0.375rem',
-                                border: '1px solid rgba(212,175,55,0.25)',
-                                backgroundColor: 'transparent',
-                                color: 'rgba(212,175,55,0.5)',
-                                fontSize: '0.8rem',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Clear
-                        </button>
-                        <button
-                            onClick={handleContinue}
-                            style={{
-                                padding: '0.7rem 1.75rem',
-                                borderRadius: '0.375rem',
-                                border: 'none',
-                                backgroundColor: 'var(--color-gold)',
-                                color: 'var(--color-primary)',
-                                fontWeight: '700',
-                                fontSize: '0.95rem',
-                                letterSpacing: '0.04em',
-                                cursor: 'pointer',
-                                whiteSpace: 'nowrap',
-                            }}
-                        >
-                            Continue to Class &#8594;
-                        </button>
-                    </div>
-                </div>
+            {/* Full-screen modal */}
+            {viewingRace && viewingData && !loadingDetail && (
+                <RaceDetailModal
+                    data={viewingData}
+                    isSelected={selectedRace === viewingData.index}
+                    onSelect={() => setSelectedRace(viewingData.index)}
+                    onClose={() => setViewingRace(null)}
+                />
             )}
-
-            <style jsx>{`
-                @media (max-width: 768px) {
-                    .race-select-container {
-                        flex-direction: column !important;
-                    }
-                    
-                    .race-grid-container {
-                        padding: 1rem !important;
-                        max-height: ${panelOpen ? '40vh' : 'none'} !important;
-                    }
-                    
-                    .race-grid {
-                        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
-                        gap: 0.75rem !important;
-                    }
-                    
-                    .race-detail-panel {
-                        width: 100% !important;
-                        max-height: 50vh !important;
-                        border-left: none !important;
-                        border-top: 1px solid rgba(212,175,55,0.2) !important;
-                    }
-                    
-                    .race-footer {
-                        flex-direction: column !important;
-                        align-items: stretch !important;
-                        padding: 0.75rem 1rem !important;
-                        gap: 0.75rem !important;
-                    }
-                    
-                    .race-footer > div:first-child {
-                        text-align: center;
-                    }
-                    
-                    .race-footer-buttons {
-                        width: 100%;
-                        flex-direction: column !important;
-                        gap: 0.5rem !important;
-                    }
-                    
-                    .race-footer-buttons button {
-                        width: 100% !important;
-                        padding: 0.75rem 1rem !important;
-                    }
-                }
-            `}</style>
-        </div>
+        </>
     );
 }

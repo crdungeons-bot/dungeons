@@ -17,13 +17,13 @@ export default function Hero() {
             // Show content after white fades and logo moves
             const contentTimer = setTimeout(() => {
                 setShowContent(true);
-            }, 3500);
+            }, 2200);
 
             // Mark animation as complete
             const completeTimer = setTimeout(() => {
                 setAnimationComplete(true);
                 sessionStorage.setItem('logoAnimationShown', 'true');
-            }, 4000);
+            }, 2500);
 
             return () => {
                 clearTimeout(contentTimer);
@@ -74,12 +74,15 @@ export default function Hero() {
             {/* Logo appears in center then moves to nav - only shows on first visit */}
             {!animationComplete && (
                 <div 
-                    className="logo-container"
                     style={{
                         position: 'fixed',
-                        top: '50vh',
-                        left: '50vw',
-                        transform: 'translate(-50%, -50%)',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         zIndex: 9999,
                         pointerEvents: 'none'
                     }}
@@ -170,7 +173,7 @@ export default function Hero() {
                     0% {
                         opacity: 1;
                     }
-                    50% {
+                    40% {
                         opacity: 1;
                     }
                     100% {
@@ -180,11 +183,11 @@ export default function Hero() {
 
                 @keyframes logoShrinkMove {
                     0% {
-                        transform: translate(-50%, -50%) scale(1);
+                        transform: translate(0, 0) scale(1);
                         opacity: 1;
                     }
-                    40% {
-                        transform: translate(-50%, -50%) scale(1);
+                    30% {
+                        transform: translate(0, 0) scale(1);
                         opacity: 1;
                     }
                     100% {
@@ -194,21 +197,21 @@ export default function Hero() {
                 }
 
                 .white-overlay {
-                    animation: whiteFade 4s ease-out forwards;
+                    animation: whiteFade 2.5s ease-out forwards;
                 }
 
                 .logo-shrink-move {
-                    animation: logoShrinkMove 4s ease-in-out forwards;
+                    animation: logoShrinkMove 2.5s ease-in-out forwards;
                 }
 
                 @media (max-width: 768px) {
                     @keyframes logoShrinkMove {
                         0% {
-                            transform: translate(-50%, -50%) scale(1);
+                            transform: translate(0, 0) scale(1);
                             opacity: 1;
                         }
-                        40% {
-                            transform: translate(-50%, -50%) scale(1);
+                        30% {
+                            transform: translate(0, 0) scale(1);
                             opacity: 1;
                         }
                         100% {

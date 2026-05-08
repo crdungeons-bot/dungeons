@@ -7,6 +7,7 @@ import type { SpellEntry }              from '@/data/spells';
 import LevelUpModal                     from '@/components/sections/levelup-modal';
 import { useCharacterInventory, type EnrichedInventoryItem } from '@/hooks/use-character-inventory';
 import ItemTooltip from '@/components/ui/item-tooltip';
+import AddItemModal from '@/components/ui/add-item-modal';
 
 /* ═══════════════════════════════════════════════════════════════════
    Types
@@ -51,6 +52,7 @@ type CharacterData = {
     proficiencies: string[];
     stats:         Stats;
     story:         Story;
+    feats:         Array<{ name: string; benefit: string; level: number; statChoice: string | null }>;
     createdAt:     string;
 };
 
@@ -880,6 +882,40 @@ function OverviewTab({ char }: { char: CharacterData }) {
                 </div>
             </section>
 
+            {/* Feats */}
+            {char.feats && char.feats.length > 0 && (
+                <section>
+                    <SectionHead>Feats</SectionHead>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {char.feats.map((feat: { name: string; benefit: string; level: number; statChoice: string | null }, idx: number) => (
+                            <div key={idx} style={{
+                                padding: '1rem 1.25rem',
+                                background: 'rgba(93,142,232,0.06)',
+                                border: '1px solid rgba(93,142,232,0.2)',
+                                borderRadius: '10px',
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                                    <span style={{ fontWeight: '800', fontSize: '0.95rem', color: '#5D8EE8' }}>
+                                        {feat.name}
+                                    </span>
+                                    <span style={{ fontSize: '0.65rem', fontWeight: '700', background: 'rgba(212,175,55,0.2)', color: 'rgba(212,175,55,0.9)', borderRadius: '999px', padding: '0.1rem 0.5rem' }}>
+                                        Level {feat.level}
+                                    </span>
+                                    {feat.statChoice && (
+                                        <span style={{ fontSize: '0.65rem', fontWeight: '700', background: 'rgba(80,200,100,0.2)', color: 'rgba(80,200,100,0.9)', borderRadius: '999px', padding: '0.1rem 0.5rem' }}>
+                                            +1 {feat.statChoice.toUpperCase()}
+                                        </span>
+                                    )}
+                                </div>
+                                <p style={{ margin: 0, fontSize: '0.82rem', lineHeight: '1.65', color: 'rgba(244,232,208,0.7)' }}>
+                                    {feat.benefit}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
             {/* Identity quick-view */}
             <section>
                 <SectionHead>Identity</SectionHead>
@@ -1089,12 +1125,15 @@ function TableHeader() {
 /* ── Main GearTab ── */
 function GearTab({ char }: { char: CharacterData }) {
     // Fetch enriched inventory from API
-    const { data: inventoryData, loading: loadingInventory } = useCharacterInventory(char.id);
+    const { data: inventoryData, loading: loadingInventory, refetch } = useCharacterInventory(char.id);
 
     // Currency state,   editable inline
     const [currency,    setCurrency]    = useState<Currency>(char.currency);
     const [editCurrency,setEditCurrency]= useState(false);
     const [saving,      setSaving]      = useState(false);
+    
+    // Add item modal state
+    const [showAddItemModal, setShowAddItemModal] = useState(false);
     
     // Use enriched inventory items
     const inventoryItems: EnrichedInventoryItem[] = inventoryData?.inventory ?? [];
@@ -1157,7 +1196,29 @@ function GearTab({ char }: { char: CharacterData }) {
 
             {/* ── Inventory table ── */}
             <section>
-                <SectionHead>Inventory</SectionHead>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.85rem' }}>
+                    <SectionHead>Inventory</SectionHead>
+                    <button
+                        onClick={() => setShowAddItemModal(true)}
+                        style={{
+                            marginLeft: 'auto',
+                            padding: '0.5rem 1rem',
+                            background: 'rgba(212,175,55,0.15)',
+                            border: '1.5px solid rgba(212,175,55,0.5)',
+                            borderRadius: '8px',
+                            color: 'var(--color-gold)',
+                            fontSize: '0.85rem',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.4rem',
+                        }}
+                    >
+                        <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>+</span>
+                        Add Item
+                    </button>
+                </div>
 
                 {loadingInventory ? (
                     <div style={{ padding: '2rem', textAlign: 'center' }}>
@@ -1179,6 +1240,18 @@ function GearTab({ char }: { char: CharacterData }) {
                             Your pack is empty.
                         </p>
                     </div>
+                )}
+
+                {/* Add Item Modal */}
+                {showAddItemModal && (
+                    <AddItemModal
+                        characterId={char.id}
+                        onClose={() => setShowAddItemModal(false)}
+                        onItemAdded={() => {
+                            refetch();
+                            setShowAddItemModal(false);
+                        }}
+                    />
                 )}
 
                 {/* Item type legend */}

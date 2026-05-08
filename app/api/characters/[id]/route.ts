@@ -20,6 +20,7 @@ function mapCharacter(character: Record<string, unknown>) {
         proficiencies: character.proficiencies  ?? [],
         stats:         character.stats          ?? {},
         story:         character.story          ?? {},
+        feats:         character.feats          ?? [],
         createdAt:     character.createdAt,
     };
 }
@@ -65,19 +66,36 @@ export async function PATCH(
     try {
         const body   = await request.json();
         const update: Record<string, unknown> = {};
+        const pushOperations: Record<string, unknown> = {};
 
         if (body.level    !== undefined) update.level    = body.level;
         if (body.hp       !== undefined) update.hp       = body.hp;
         if (body.stats    !== undefined) update.stats    = body.stats;
         if (body.currency !== undefined) update.currency = body.currency;
 
+        // If a feat was selected during level-up, add it to the feats array
+        if (body.feat) {
+            pushOperations.feats = {
+                name:       body.feat.name,
+                benefit:    body.feat.benefit,
+                level:      body.feat.level,
+                statChoice: body.feat.statChoice ?? null,
+            };
+        }
+
         const client = await clientPromise;
         const db     = client.db('dnd-app');
 
-        await db.collection('characters').updateOne(
-            { _id: new ObjectId(id) },
-            { $set: update },
-        );
+        const operations: Record<string, unknown> = {};
+        if (Object.keys(update).length > 0) operations.$set = update;
+        if (Object.keys(pushOperations).length > 0) operations.$push = pushOperations as Record<string, unknown>;
+
+        if (Object.keys(operations).length > 0) {
+            await db.collection('characters').updateOne(
+                { _id: new ObjectId(id) },
+                operations as typeof operations,
+            );
+        }
 
         const updated = await db
             .collection('characters')

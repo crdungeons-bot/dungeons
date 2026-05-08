@@ -111,9 +111,34 @@ function MyComponent({ characterId }) {
 4. ✅ Update character-detail-section to use new system
 5. ✅ Update character creation to save starting equipment as inventory
 6. ✅ Separate starting gold from items (goes to currency)
-7. TODO: Update character-view-modal to use new system
-8. TODO: Create UI for adding/removing items from inventory
-9. TODO: Create migration script to populate existing characters' inventories
+7. ✅ Create Add Item modal with search & custom item creation
+8. TODO: Update character-view-modal to use new system (partially done)
+9. TODO: Add ability to remove/edit items
+10. TODO: Create migration script to populate existing characters' inventories
+
+## Adding Items
+
+Users can add items to their inventory from the Gear tab:
+
+### Search for Items
+1. Click "+ Add Item" button
+2. Search for items by name or description
+3. Results show up to 20 matches from the items database
+4. Click "+ Add" to add the item to inventory
+
+### Create Custom Items
+For homebrew or unique items:
+1. Click "+ Add Item" button
+2. Search for an item - if not found, click "Create Custom Item"
+3. Or click "Create Custom Item" from the initial modal
+4. Fill in:
+   - **Name** (required)
+   - **Category** (weapon, armor, tool, misc, etc.)
+   - **Description** (optional)
+   - **Quantity** (default 1)
+5. Click "Add to Inventory"
+
+Custom items are stored by name and won't be enriched from database (they'll show basic info only).
 
 ## Starting Equipment
 

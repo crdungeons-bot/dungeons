@@ -13,6 +13,7 @@ import { config }     from 'dotenv';
 import { resolve }    from 'path';
 import SPELLS_AND_ABILITIES from '../data/spells.js';
 import ITEMS                from './items-data.js';
+import { FEATS }            from './feats-data.js';
 
 // Load .env.local (Next.js convention) so MONGODB_URI is available when
 // running this script outside of the Next.js server process.
@@ -112,43 +113,8 @@ async function seedFeats(db: ReturnType<MongoClient['db']>) {
 
     const collection = db.collection(col);
 
-    // Representative SRD feats,   full data to be added later
-    const sampleFeats = [
-        { name: 'Alert',           prerequisite: null,          benefit: '+5 to initiative. Cannot be surprised while conscious. Enemies gain no benefit from being hidden when attacking you.' },
-        { name: 'Athlete',         prerequisite: null,          benefit: '+1 STR or DEX. Climbing costs no extra movement. Standing up costs only 5 ft of movement. Running long jump only needs 5 ft run-up.' },
-        { name: 'Actor',           prerequisite: null,          benefit: '+1 CHA. Advantage on Deception and Performance when trying to pass as someone else. Can mimic speech or sounds you\'ve heard.' },
-        { name: 'Charger',         prerequisite: null,          benefit: 'After Dash action, bonus action melee attack (+5 dmg) or shove up to 10 ft.' },
-        { name: 'Dual Wielder',    prerequisite: null,          benefit: '+1 AC while dual wielding. Can dual-wield non-Light weapons. Can draw/stow two weapons at once.' },
-        { name: 'Durable',         prerequisite: null,          benefit: '+1 CON. Minimum roll when spending Hit Dice equals twice your CON modifier (min 2).' },
-        { name: 'Elemental Adept', prerequisite: 'Spellcasting',benefit: 'Spells of chosen damage type ignore resistance. Treat 1s on damage dice as 2s.' },
-        { name: 'Grappler',        prerequisite: 'STR 13+',     benefit: 'Advantage on attack rolls against creatures you\'ve grappled. Can pin a grappled creature (both restrained).' },
-        { name: 'Great Weapon Master', prerequisite: null,      benefit: 'Heavy weapon crit or kill → bonus action attack. Take -5 attack for +10 damage.' },
-        { name: 'Healer',          prerequisite: null,          benefit: 'Stabilize at 1 HP with healer\'s kit. Use healer\'s kit to heal 1d6+4+max-HD HP (once per creature per short rest).' },
-        { name: 'Keen Mind',       prerequisite: null,          benefit: '+1 INT. Always know N/S/E/W and hours to sunset/sunrise. Perfect memory for past month.' },
-        { name: 'Linguist',        prerequisite: null,          benefit: '+1 INT. Learn 3 languages. Can create written ciphers.' },
-        { name: 'Lucky',           prerequisite: null,          benefit: '3 luck points per long rest. Spend to reroll attack/ability/saving throw,   pick either result.' },
-        { name: 'Mage Slayer',     prerequisite: null,          benefit: 'Reaction attack when adjacent creature casts. Disadvantage on concentration saves from your damage. Advantage vs spells while within 5 ft of caster.' },
-        { name: 'Magic Initiate',  prerequisite: null,          benefit: 'Learn 2 cantrips and 1 1st-level spell (cast once per long rest without slot) from one class list.' },
-        { name: 'Mounted Combatant', prerequisite: null,        benefit: 'Advantage vs unmounted creatures smaller than mount. Force attacks targeting mount to target you. Mount auto-succeeds DEX saves vs area effects (half dmg on fail = none; fail = half).' },
-        { name: 'Observant',       prerequisite: null,          benefit: '+1 INT or WIS. If you see lips move, can lip-read. +5 to passive Perception and Insight.' },
-        { name: 'Polearm Master',  prerequisite: null,          benefit: 'Bonus action attack with polearm butt (1d4). Reaction attack when creature enters your reach.' },
-        { name: 'Resilient',       prerequisite: null,          benefit: '+1 to chosen ability. Proficiency in saving throws with that ability.' },
-        { name: 'Ritual Caster',   prerequisite: 'INT or WIS 13+', benefit: 'Choose a class. Learn 2 rituals from that class. Can learn more rituals from spellbooks. Cast rituals as rituals only.' },
-        { name: 'Savage Attacker', prerequisite: null,          benefit: 'Once per turn reroll melee damage dice and use either result.' },
-        { name: 'Sentinel',        prerequisite: null,          benefit: 'Opportunity attacks stop movement. Opportunity attacks on Disengage. Reaction attack when adjacent ally is attacked.' },
-        { name: 'Sharpshooter',    prerequisite: null,          benefit: 'No disadvantage at long range. Ignore half/three-quarters cover. -5 attack for +10 damage.' },
-        { name: 'Shield Master',   prerequisite: null,          benefit: 'Bonus action shove when you attack. Add shield AC to DEX save vs single-target spell. No damage on successful save (instead of half).' },
-        { name: 'Skilled',         prerequisite: null,          benefit: 'Proficiency in any 3 skills or tools.' },
-        { name: 'Skulker',         prerequisite: 'DEX 13+',     benefit: 'Can hide when lightly obscured. Missing a ranged attack doesn\'t reveal your location. Dim light doesn\'t impose Perception disadvantage.' },
-        { name: 'Spell Sniper',    prerequisite: 'Spellcasting',benefit: 'Double range of attack-roll spells. Ignore half/three-quarters cover. Learn one attack-roll cantrip.' },
-        { name: 'Tavern Brawler',  prerequisite: null,          benefit: '+1 STR or CON. Improvised weapons and unarmed strikes deal 1d4. Bonus action grapple after unarmed/improvised hit.' },
-        { name: 'Tough',           prerequisite: null,          benefit: '+2 HP per level (including current, retroactive).' },
-        { name: 'War Caster',      prerequisite: 'Spellcasting',benefit: 'Advantage on concentration saves. Somatic components with hands full. Cast spell as opportunity attack.' },
-        { name: 'Weapon Master',   prerequisite: null,          benefit: '+1 STR or DEX. Proficiency with 4 weapons of your choice.' },
-    ];
-
-    await collection.insertMany(sampleFeats);
-    log(`Inserted ${sampleFeats.length} feats`);
+    await collection.insertMany(FEATS);
+    log(`Inserted ${FEATS.length} feats`);
 
     await collection.createIndex({ name: 1 },                           { name: 'name' });
     await collection.createIndex({ prerequisite: 1 },                   { name: 'prerequisite' });

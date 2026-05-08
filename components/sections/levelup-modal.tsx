@@ -55,12 +55,40 @@ export type LevelUpCharacter = {
     stats: Stats;
 };
 
-type Step = 'announce' | 'hp' | 'asi' | 'features' | 'summary';
+type Step = 'announce' | 'hp' | 'asi-choice' | 'asi' | 'feat' | 'features' | 'summary';
 
 type LevelUpResult = {
     level: number;
     hp: number;
     stats: Stats;
+    feat?: {
+        name: string;
+        benefit: string;
+        statChoice: StatKey | null; // Allow null for feats without stat choices
+    };
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   Feat types
+═══════════════════════════════════════════════════════════════════ */
+
+type FeatStatBonus = {
+    type: 'fixed';
+    stat: StatKey;
+    amount: number;
+} | {
+    type: 'choice';
+    options: StatKey[];
+    amount: number;
+};
+
+type FeatEntry = {
+    name: string;
+    prerequisite: string | null;
+    benefit: string;
+    statBonus?: FeatStatBonus;
+    proficiencies?: string[];
+    languages?: number;
 };
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -497,7 +525,105 @@ function HPScreen({ char, newLevel, onAccept }: {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Step 3: Ability Score Improvement
+   Step 3a: ASI or Feat Choice
+═══════════════════════════════════════════════════════════════════ */
+
+function ASIChoiceScreen({ onChoice }: {
+    onChoice: (choice: 'asi' | 'feat') => void;
+}) {
+    return (
+        <div style={{ padding: '2.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', animation: 'lu-fade-in 0.4s ease-out' }}>
+            <div style={{ textAlign: 'center' }}>
+                <p style={{ margin: '0 0 0.3rem', fontSize: '0.62rem', fontWeight: '800', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>
+                    Choose Your Path
+                </p>
+                <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '700', color: '#fff', marginBottom: '0.5rem' }}>
+                    Ability Score Improvement
+                </p>
+                <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(244,232,208,0.5)', fontStyle: 'italic', lineHeight: 1.6 }}>
+                    Your training has reached a milestone. You may choose to enhance your raw abilities or learn a specialized feat that grants unique capabilities.
+                </p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {/* ASI Option */}
+                <button
+                    onClick={() => onChoice('asi')}
+                    style={{
+                        padding: '1.5rem',
+                        background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(240,200,80,0.04) 100%)',
+                        border: '2px solid rgba(212,175,55,0.3)',
+                        borderRadius: '12px',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={e => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(240,200,80,0.08) 100%)';
+                        e.currentTarget.style.borderColor = 'rgba(212,175,55,0.6)';
+                        e.currentTarget.style.boxShadow = '0 4px 20px rgba(212,175,55,0.15)';
+                    }}
+                    onMouseLeave={e => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(240,200,80,0.04) 100%)';
+                        e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)';
+                        e.currentTarget.style.boxShadow = 'none';
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                        <div style={{ fontSize: '2rem', lineHeight: 1 }}>⬆️</div>
+                        <div style={{ flex: 1 }}>
+                            <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '800', color: '#FFD700', marginBottom: '0.5rem' }}>
+                                Increase Ability Scores
+                            </p>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(244,232,208,0.7)', lineHeight: 1.5 }}>
+                                Improve your raw potential. Increase one ability score by +2, or two different ability scores by +1 each.
+                            </p>
+                        </div>
+                    </div>
+                </button>
+
+                {/* Feat Option */}
+                <button
+                    onClick={() => onChoice('feat')}
+                    style={{
+                        padding: '1.5rem',
+                        background: 'linear-gradient(135deg, rgba(93,142,232,0.08) 0%, rgba(120,160,240,0.04) 100%)',
+                        border: '2px solid rgba(93,142,232,0.3)',
+                        borderRadius: '12px',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={e => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(93,142,232,0.15) 0%, rgba(120,160,240,0.08) 100%)';
+                        e.currentTarget.style.borderColor = 'rgba(93,142,232,0.6)';
+                        e.currentTarget.style.boxShadow = '0 4px 20px rgba(93,142,232,0.15)';
+                    }}
+                    onMouseLeave={e => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(93,142,232,0.08) 0%, rgba(120,160,240,0.04) 100%)';
+                        e.currentTarget.style.borderColor = 'rgba(93,142,232,0.3)';
+                        e.currentTarget.style.boxShadow = 'none';
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                        <div style={{ fontSize: '2rem', lineHeight: 1 }}>✨</div>
+                        <div style={{ flex: 1 }}>
+                            <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '800', color: '#5D8EE8', marginBottom: '0.5rem' }}>
+                                Gain a Feat
+                            </p>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(244,232,208,0.7)', lineHeight: 1.5 }}>
+                                Learn a specialized technique or talent that grants unique abilities and capabilities. Some feats also provide ability score bonuses.
+                            </p>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Step 3b: Ability Score Improvement
 ═══════════════════════════════════════════════════════════════════ */
 
 function ASIScreen({ stats, onAccept }: {
@@ -650,6 +776,201 @@ function ASIScreen({ stats, onAccept }: {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   Step 3c: Feat Selection
+═══════════════════════════════════════════════════════════════════ */
+
+function FeatScreen({ stats, onAccept }: {
+    stats: Stats;
+    onAccept: (selectedFeat: FeatEntry, statChoice: StatKey | null, newStats: Stats) => void;
+}) {
+    const [feats, setFeats] = useState<FeatEntry[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedFeat, setSelectedFeat] = useState<FeatEntry | null>(null);
+    const [statChoice, setStatChoice] = useState<StatKey | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        fetch('/api/resources/feats')
+            .then(r => r.json())
+            .then(data => {
+                setFeats(data.feats ?? []);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    const filteredFeats = useMemo(() => {
+        if (!searchQuery.trim()) return feats;
+        const q = searchQuery.toLowerCase();
+        return feats.filter(f =>
+            f.name.toLowerCase().includes(q) ||
+            f.benefit.toLowerCase().includes(q)
+        );
+    }, [feats, searchQuery]);
+
+    const hasPrimalChampion = stats.str > 20 || stats.con > 20;
+    const getStatCap = (key: StatKey) => (hasPrimalChampion && (key === 'str' || key === 'con')) ? 24 : 20;
+
+    const newStats = useMemo((): Stats => {
+        const s = { ...stats };
+        if (selectedFeat?.statBonus) {
+            if (selectedFeat.statBonus.type === 'fixed') {
+                const key = selectedFeat.statBonus.stat;
+                s[key] = Math.min(getStatCap(key), s[key] + selectedFeat.statBonus.amount);
+            } else if (selectedFeat.statBonus.type === 'choice' && statChoice) {
+                s[statChoice] = Math.min(getStatCap(statChoice), s[statChoice] + selectedFeat.statBonus.amount);
+            }
+        }
+        return s;
+    }, [stats, selectedFeat, statChoice, getStatCap]);
+
+    const needsStatChoice = selectedFeat?.statBonus?.type === 'choice';
+    const isValid = selectedFeat && (!needsStatChoice || statChoice !== null);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '2rem', textAlign: 'center', animation: 'lu-fade-in 0.4s ease-out' }}>
+                <p style={{ margin: '0 0 0.3rem', fontSize: '0.62rem', fontWeight: '800', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Loading Feats</p>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(244,232,208,0.35)', fontStyle: 'italic' }}>Consulting the archives…</p>
+            </div>
+        );
+    }
+
+    return (
+        <div style={{ padding: '1.5rem 1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1rem', animation: 'lu-fade-in 0.4s ease-out', maxHeight: '80vh', overflow: 'hidden' }}>
+
+            <div style={{ textAlign: 'center' }}>
+                <p style={{ margin: '0 0 0.3rem', fontSize: '0.62rem', fontWeight: '800', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Choose a Feat</p>
+                <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: '700', color: '#fff' }}>Select a specialized talent</p>
+            </div>
+
+            {/* Search */}
+            <input
+                type="text"
+                placeholder="Search feats..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                style={{
+                    padding: '0.65rem 1rem',
+                    background: 'rgba(0,0,0,0.4)',
+                    border: '1px solid rgba(212,175,55,0.2)',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontSize: '0.85rem',
+                }}
+            />
+
+            {/* Feat List */}
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingRight: '0.25rem', maxHeight: '300px' }}>
+                {filteredFeats.map(feat => {
+                    const isSelected = selectedFeat?.name === feat.name;
+                    const meetsPrereq = !feat.prerequisite || feat.prerequisite === 'null';
+                    
+                    return (
+                        <button
+                            key={feat.name}
+                            onClick={() => { setSelectedFeat(feat); setStatChoice(null); }}
+                            disabled={!meetsPrereq}
+                            style={{
+                                padding: '0.9rem 1rem',
+                                background: isSelected ? 'rgba(93,142,232,0.12)' : 'rgba(0,0,0,0.3)',
+                                border: `1.5px solid ${isSelected ? 'rgba(93,142,232,0.6)' : 'rgba(212,175,55,0.15)'}`,
+                                borderRadius: '10px',
+                                cursor: meetsPrereq ? 'pointer' : 'not-allowed',
+                                textAlign: 'left',
+                                opacity: meetsPrereq ? 1 : 0.4,
+                                transition: 'all 0.15s',
+                                boxShadow: isSelected ? '0 0 15px rgba(93,142,232,0.2)' : 'none',
+                            }}
+                        >
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                                <span style={{ fontWeight: '800', fontSize: '0.9rem', color: isSelected ? '#5D8EE8' : '#fff', flex: 1 }}>{feat.name}</span>
+                                {feat.statBonus && (
+                                    <span style={{ fontSize: '0.6rem', fontWeight: '700', background: 'rgba(212,175,55,0.2)', color: 'rgba(212,175,55,0.9)', borderRadius: '999px', padding: '0.1rem 0.5rem' }}>
+                                        {feat.statBonus.type === 'fixed'
+                                            ? `+${feat.statBonus.amount} ${feat.statBonus.stat.toUpperCase()}`
+                                            : `+${feat.statBonus.amount} choice`
+                                        }
+                                    </span>
+                                )}
+                            </div>
+                            {feat.prerequisite && feat.prerequisite !== 'null' && (
+                                <p style={{ margin: '0 0 0.4rem', fontSize: '0.65rem', color: 'rgba(244,232,208,0.4)', fontStyle: 'italic' }}>
+                                    Prerequisite: {feat.prerequisite}
+                                </p>
+                            )}
+                            <p style={{ margin: 0, fontSize: '0.75rem', lineHeight: '1.5', color: 'rgba(244,232,208,0.6)' }}>
+                                {feat.benefit.slice(0, 120)}{feat.benefit.length > 120 ? '…' : ''}
+                            </p>
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Stat Choice (if needed) */}
+            {needsStatChoice && selectedFeat && selectedFeat.statBonus && selectedFeat.statBonus.type === 'choice' && (
+                <div style={{ padding: '1rem', background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '10px' }}>
+                    <p style={{ margin: '0 0 0.5rem', fontSize: '0.75rem', fontWeight: '700', color: 'rgba(212,175,55,0.8)' }}>
+                        Choose which ability score to increase by +{selectedFeat.statBonus.amount}:
+                    </p>
+                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                        {selectedFeat.statBonus.options.map(key => {
+                            const current = stats[key] ?? 10;
+                            const capped = current >= getStatCap(key);
+                            const isChosen = statChoice === key;
+                            const statBonus = selectedFeat.statBonus!; // Assert non-null since we checked above
+
+                            return (
+                                <button
+                                    key={key}
+                                    onClick={() => !capped && setStatChoice(key)}
+                                    disabled={capped}
+                                    style={{
+                                        padding: '0.5rem 0.8rem',
+                                        background: isChosen ? 'rgba(212,175,55,0.2)' : 'rgba(0,0,0,0.3)',
+                                        border: `1.5px solid ${isChosen ? 'rgba(212,175,55,0.8)' : 'rgba(212,175,55,0.2)'}`,
+                                        borderRadius: '8px',
+                                        cursor: capped ? 'not-allowed' : 'pointer',
+                                        opacity: capped ? 0.4 : 1,
+                                        transition: 'all 0.15s',
+                                    }}
+                                >
+                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: isChosen ? '#FFD700' : 'rgba(244,232,208,0.6)', textTransform: 'uppercase' }}>
+                                        {key} {current} → {current + statBonus.amount}
+                                    </span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
+            {/* Confirm Button */}
+            <button
+                onClick={() => isValid && selectedFeat && onAccept(selectedFeat, statChoice, newStats)}
+                disabled={!isValid}
+                style={{
+                    padding: '0.8rem',
+                    background: isValid
+                        ? 'linear-gradient(135deg, rgba(93,142,232,0.9) 0%, rgba(120,160,240,0.9) 50%, rgba(93,142,232,0.9) 100%)'
+                        : 'rgba(255,255,255,0.05)',
+                    border: 'none',
+                    borderRadius: '10px',
+                    color: isValid ? '#0d1a30' : 'rgba(255,255,255,0.2)',
+                    fontSize: '0.9rem',
+                    fontWeight: '800',
+                    cursor: isValid ? 'pointer' : 'not-allowed',
+                    boxShadow: isValid ? '0 4px 20px rgba(93,142,232,0.3)' : 'none',
+                    transition: 'all 0.2s',
+                }}
+            >
+                {isValid ? `Confirm ${selectedFeat!.name} →` : needsStatChoice ? 'Choose ability score' : 'Select a feat'}
+            </button>
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Step 4: New Features
 ═══════════════════════════════════════════════════════════════════ */
 
@@ -771,7 +1092,7 @@ function FeaturesScreen({ charClass, charRace, newLevel, onNext, onFeaturesLoade
    Step 5: Summary + Confirm
 ═══════════════════════════════════════════════════════════════════ */
 
-function SummaryScreen({ char, newLevel, hpGain, newHp, statsChanged, newStats, newFeatureCount, onConfirm, saving }: {
+function SummaryScreen({ char, newLevel, hpGain, newHp, statsChanged, newStats, newFeatureCount, selectedFeat, onConfirm, saving }: {
     char: LevelUpCharacter;
     newLevel: number;
     hpGain: number;
@@ -779,6 +1100,7 @@ function SummaryScreen({ char, newLevel, hpGain, newHp, statsChanged, newStats, 
     statsChanged: boolean;
     newStats: Stats;
     newFeatureCount: number;
+    selectedFeat: { name: string; benefit: string; statChoice: StatKey | null } | null;
     onConfirm: () => void;
     saving: boolean;
 }) {
@@ -807,6 +1129,19 @@ function SummaryScreen({ char, newLevel, hpGain, newHp, statsChanged, newStats, 
                     </div>
                 </div>
 
+                {/* Feat */}
+                {selectedFeat && (
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', padding: '0.8rem 1rem', background: 'rgba(93,142,232,0.07)', border: '1px solid rgba(93,142,232,0.2)', borderRadius: '9px' }}>
+                        <span style={{ fontSize: '1.1rem' }}>✨</span>
+                        <div style={{ flex: 1 }}>
+                            <p style={{ margin: 0, fontSize: '0.88rem', fontWeight: '700', color: '#fff' }}>Feat: {selectedFeat.name}</p>
+                            <p style={{ margin: '0.2rem 0 0', fontSize: '0.73rem', color: 'rgba(244,232,208,0.45)', lineHeight: 1.5 }}>
+                                {selectedFeat.benefit.slice(0, 100)}{selectedFeat.benefit.length > 100 ? '…' : ''}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {/* ASI changes */}
                 {changedStats.map(k => (
                     <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.8rem 1rem', background: 'rgba(212,175,55,0.07)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '9px' }}>
@@ -817,6 +1152,7 @@ function SummaryScreen({ char, newLevel, hpGain, newHp, statsChanged, newStats, 
                             </p>
                             <p style={{ margin: 0, fontSize: '0.73rem', color: 'rgba(244,232,208,0.45)' }}>
                                 Modifier {getMod(char.stats[k])} → {getMod(newStats[k])}
+                                {selectedFeat && changedStats.length === 1 && ' (from feat)'}
                             </p>
                         </div>
                     </div>
@@ -902,6 +1238,7 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
     const [step,         setStep]         = useState<Step>('announce');
     const [hpGain,       setHpGain]       = useState(0);
     const [newStats,     setNewStats]     = useState<Stats>(initialStats);
+    const [selectedFeat, setSelectedFeat] = useState<{ name: string; benefit: string; statChoice: StatKey | null } | null>(null);
     const [saving,       setSaving]       = useState(false);
     const [featureCount, setFeatureCount] = useState(0);
 
@@ -913,7 +1250,7 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
 
     const stepFlow: Step[] = useMemo(() => {
         const flow: Step[] = ['announce', 'hp'];
-        if (isAsiLevel) flow.push('asi');
+        if (isAsiLevel) flow.push('asi-choice');
         flow.push('features', 'summary');
         return flow;
     }, [isAsiLevel]);
@@ -926,14 +1263,27 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
     const handleConfirm = async () => {
         setSaving(true);
         try {
+            const payload: Record<string, unknown> = {
+                level: newLevel,
+                hp: newHp,
+                stats: newStats,
+            };
+            if (selectedFeat) {
+                payload.feat = {
+                    name: selectedFeat.name,
+                    benefit: selectedFeat.benefit,
+                    level: newLevel,
+                    statChoice: selectedFeat.statChoice,
+                };
+            }
             const res = await fetch(`/api/characters/${char.id}`, {
                 method:  'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ level: newLevel, hp: newHp, stats: newStats }),
+                body:    JSON.stringify(payload),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error ?? 'Save failed');
-            onComplete({ level: newLevel, hp: newHp, stats: newStats });
+            onComplete({ level: newLevel, hp: newHp, stats: newStats, feat: selectedFeat ?? undefined });
         } catch (e) {
             console.error(e);
             setSaving(false);
@@ -988,14 +1338,14 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
                 {/* Step indicator (skip for announce) */}
                 {step !== 'announce' && (
                     <div style={{ padding: '1rem 1.5rem 0', display: 'flex', gap: '0.4rem', justifyContent: 'center' }}>
-                        {stepFlow.filter(s => s !== 'announce').map((s, i) => (
+                        {stepFlow.filter(s => s !== 'announce' && s !== 'asi-choice').map((s, i) => (
                             <div key={s} style={{
                                 height:       '3px',
                                 flex:         1,
                                 borderRadius: '999px',
                                 background:   stepFlow.indexOf(step) > stepFlow.indexOf(s)
                                     ? 'rgba(212,175,55,0.8)'
-                                    : step === s
+                                    : step === s || (step === 'asi' && s === 'asi') || (step === 'feat' && s === 'asi') || (step === 'asi-choice' && s === 'hp')
                                         ? 'rgba(212,175,55,0.5)'
                                         : 'rgba(255,255,255,0.07)',
                                 transition:   'background 0.3s',
@@ -1016,10 +1366,28 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
                         onAccept={gain => { setHpGain(gain); goNext(); }}
                     />
                 )}
+                {step === 'asi-choice' && (
+                    <ASIChoiceScreen
+                        onChoice={choice => {
+                            if (choice === 'asi') setStep('asi');
+                            else if (choice === 'feat') setStep('feat');
+                        }}
+                    />
+                )}
                 {step === 'asi' && (
                     <ASIScreen
                         stats={newStats}
                         onAccept={s => { setNewStats(s); goNext(); }}
+                    />
+                )}
+                {step === 'feat' && (
+                    <FeatScreen
+                        stats={newStats}
+                        onAccept={(feat, statChoice, stats) => {
+                            setSelectedFeat({ name: feat.name, benefit: feat.benefit, statChoice });
+                            setNewStats(stats);
+                            goNext();
+                        }}
                     />
                 )}
                 {step === 'features' && (
@@ -1040,6 +1408,7 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
                         statsChanged={statsChanged}
                         newStats={newStats}
                         newFeatureCount={featureCount}
+                        selectedFeat={selectedFeat}
                         onConfirm={handleConfirm}
                         saving={saving}
                     />

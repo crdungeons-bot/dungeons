@@ -793,11 +793,22 @@ function FeatScreen({ stats, onAccept }: {
         fetch('/api/resources/feats')
             .then(r => r.json())
             .then(data => {
+                console.log('Fetched feats:', data.feats?.length);
+                console.log('Sample feat (Athlete):', data.feats?.find((f: FeatEntry) => f.name === 'Athlete'));
                 setFeats(data.feats ?? []);
                 setLoading(false);
             })
             .catch(() => setLoading(false));
     }, []);
+
+    useEffect(() => {
+        if (selectedFeat) {
+            console.log('Selected feat:', selectedFeat.name);
+            console.log('Has statBonus?', !!selectedFeat.statBonus);
+            console.log('StatBonus type:', selectedFeat.statBonus?.type);
+            console.log('StatBonus options:', selectedFeat.statBonus?.type === 'choice' ? selectedFeat.statBonus.options : 'N/A');
+        }
+    }, [selectedFeat]);
 
     const filteredFeats = useMemo(() => {
         if (!searchQuery.trim()) return feats;
@@ -827,6 +838,8 @@ function FeatScreen({ stats, onAccept }: {
     const needsStatChoice = selectedFeat?.statBonus?.type === 'choice';
     const isValid = selectedFeat && (!needsStatChoice || statChoice !== null);
 
+    console.log('needsStatChoice:', needsStatChoice, 'isValid:', isValid, 'statChoice:', statChoice);
+
     if (loading) {
         return (
             <div style={{ padding: '2rem', textAlign: 'center', animation: 'lu-fade-in 0.4s ease-out' }}>
@@ -837,7 +850,7 @@ function FeatScreen({ stats, onAccept }: {
     }
 
     return (
-        <div style={{ padding: '1.5rem 1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1rem', animation: 'lu-fade-in 0.4s ease-out', maxHeight: '80vh', overflow: 'hidden' }}>
+        <div style={{ padding: '1.5rem 1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1rem', animation: 'lu-fade-in 0.4s ease-out', maxHeight: '85vh', overflow: 'hidden' }}>
 
             <div style={{ textAlign: 'center' }}>
                 <p style={{ margin: '0 0 0.3rem', fontSize: '0.62rem', fontWeight: '800', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Choose a Feat</p>
@@ -860,9 +873,11 @@ function FeatScreen({ stats, onAccept }: {
                 }}
             />
 
-            {/* Feat List */}
-            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingRight: '0.25rem', maxHeight: '300px' }}>
-                {filteredFeats.map(feat => {
+            {/* Scrollable container for feat list */}
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', minHeight: 0 }}>
+                {/* Feat List */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {filteredFeats.map(feat => {
                     const isSelected = selectedFeat?.name === feat.name;
                     const meetsPrereq = !feat.prerequisite || feat.prerequisite === 'null';
                     
@@ -906,82 +921,84 @@ function FeatScreen({ stats, onAccept }: {
                             </p>
                         </button>
                     );
-                })}
+                    })}
+                </div>
+
+                {/* Stat Choice (if needed) - Inside scroll container */}
+                {needsStatChoice && selectedFeat && selectedFeat.statBonus && selectedFeat.statBonus.type === 'choice' && (
+                    <div style={{ 
+                        padding: '1.25rem', 
+                        background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(240,200,80,0.06) 100%)',
+                        border: '2px solid rgba(212,175,55,0.4)', 
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 20px rgba(212,175,55,0.15)',
+                        marginTop: '0.5rem',
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                            <span style={{ fontSize: '1.2rem' }}>⚡</span>
+                            <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: '800', color: 'rgba(212,175,55,1)', letterSpacing: '0.03em' }}>
+                                Choose which ability score to increase by +{selectedFeat.statBonus.amount}:
+                            </p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                            {selectedFeat.statBonus.options.map(key => {
+                                const current = stats[key] ?? 10;
+                                const capped = current >= getStatCap(key);
+                                const isChosen = statChoice === key;
+                                const statBonus = selectedFeat.statBonus!;
+
+                                return (
+                                    <button
+                                        key={key}
+                                        onClick={() => !capped && setStatChoice(key)}
+                                        disabled={capped}
+                                        style={{
+                                            flex: '1 1 auto',
+                                            minWidth: '120px',
+                                            padding: '0.75rem 1rem',
+                                            background: isChosen 
+                                                ? 'linear-gradient(135deg, rgba(212,175,55,0.3) 0%, rgba(240,200,80,0.2) 100%)'
+                                                : 'rgba(0,0,0,0.4)',
+                                            border: `2px solid ${isChosen ? 'rgba(212,175,55,1)' : 'rgba(212,175,55,0.25)'}`,
+                                            borderRadius: '10px',
+                                            cursor: capped ? 'not-allowed' : 'pointer',
+                                            opacity: capped ? 0.4 : 1,
+                                            transition: 'all 0.2s',
+                                            boxShadow: isChosen ? '0 4px 15px rgba(212,175,55,0.3)' : 'none',
+                                        }}
+                                        onMouseEnter={e => {
+                                            if (!capped && !isChosen) {
+                                                e.currentTarget.style.background = 'rgba(212,175,55,0.12)';
+                                                e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)';
+                                            }
+                                        }}
+                                        onMouseLeave={e => {
+                                            if (!capped && !isChosen) {
+                                                e.currentTarget.style.background = 'rgba(0,0,0,0.4)';
+                                                e.currentTarget.style.borderColor = 'rgba(212,175,55,0.25)';
+                                            }
+                                        }}
+                                    >
+                                        <div style={{ textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.7rem', fontWeight: '800', color: isChosen ? '#FFD700' : 'rgba(212,175,55,0.7)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.25rem' }}>
+                                                {STAT_LABELS[key]}
+                                            </div>
+                                            <div style={{ fontSize: '1.1rem', fontWeight: '900', color: isChosen ? '#FFD700' : 'rgba(244,232,208,0.8)' }}>
+                                                {current} → {current + statBonus.amount}
+                                            </div>
+                                            <div style={{ fontSize: '0.65rem', color: 'rgba(244,232,208,0.4)', marginTop: '0.15rem' }}>
+                                                {getMod(current)} → {getMod(current + statBonus.amount)}
+                                            </div>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
             </div>
 
-            {/* Stat Choice (if needed) */}
-            {needsStatChoice && selectedFeat && selectedFeat.statBonus && selectedFeat.statBonus.type === 'choice' && (
-                <div style={{ 
-                    padding: '1.25rem', 
-                    background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(240,200,80,0.06) 100%)',
-                    border: '2px solid rgba(212,175,55,0.4)', 
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 20px rgba(212,175,55,0.15)',
-                }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                        <span style={{ fontSize: '1.2rem' }}>⚡</span>
-                        <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: '800', color: 'rgba(212,175,55,1)', letterSpacing: '0.03em' }}>
-                            Choose which ability score to increase by +{selectedFeat.statBonus.amount}:
-                        </p>
-                    </div>
-                    <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
-                        {selectedFeat.statBonus.options.map(key => {
-                            const current = stats[key] ?? 10;
-                            const capped = current >= getStatCap(key);
-                            const isChosen = statChoice === key;
-                            const statBonus = selectedFeat.statBonus!;
-
-                            return (
-                                <button
-                                    key={key}
-                                    onClick={() => !capped && setStatChoice(key)}
-                                    disabled={capped}
-                                    style={{
-                                        flex: '1 1 auto',
-                                        minWidth: '120px',
-                                        padding: '0.75rem 1rem',
-                                        background: isChosen 
-                                            ? 'linear-gradient(135deg, rgba(212,175,55,0.3) 0%, rgba(240,200,80,0.2) 100%)'
-                                            : 'rgba(0,0,0,0.4)',
-                                        border: `2px solid ${isChosen ? 'rgba(212,175,55,1)' : 'rgba(212,175,55,0.25)'}`,
-                                        borderRadius: '10px',
-                                        cursor: capped ? 'not-allowed' : 'pointer',
-                                        opacity: capped ? 0.4 : 1,
-                                        transition: 'all 0.2s',
-                                        boxShadow: isChosen ? '0 4px 15px rgba(212,175,55,0.3)' : 'none',
-                                    }}
-                                    onMouseEnter={e => {
-                                        if (!capped && !isChosen) {
-                                            e.currentTarget.style.background = 'rgba(212,175,55,0.12)';
-                                            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)';
-                                        }
-                                    }}
-                                    onMouseLeave={e => {
-                                        if (!capped && !isChosen) {
-                                            e.currentTarget.style.background = 'rgba(0,0,0,0.4)';
-                                            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.25)';
-                                        }
-                                    }}
-                                >
-                                    <div style={{ textAlign: 'center' }}>
-                                        <div style={{ fontSize: '0.7rem', fontWeight: '800', color: isChosen ? '#FFD700' : 'rgba(212,175,55,0.7)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.25rem' }}>
-                                            {STAT_LABELS[key]}
-                                        </div>
-                                        <div style={{ fontSize: '1.1rem', fontWeight: '900', color: isChosen ? '#FFD700' : 'rgba(244,232,208,0.8)' }}>
-                                            {current} → {current + statBonus.amount}
-                                        </div>
-                                        <div style={{ fontSize: '0.65rem', color: 'rgba(244,232,208,0.4)', marginTop: '0.15rem' }}>
-                                            {getMod(current)} → {getMod(current + statBonus.amount)}
-                                        </div>
-                                    </div>
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-            )}
-
-            {/* Confirm Button */}
+            {/* Confirm Button - Outside scroll container, always visible */}
             <button
                 onClick={() => isValid && selectedFeat && onAccept(selectedFeat, statChoice, newStats)}
                 disabled={!isValid}

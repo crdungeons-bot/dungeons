@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { STATIC_BACKGROUNDS } from '@/data/backgrounds';
+import type { SpellEntry } from '@/data/spells';
 
 /* ═══════════════════════════════════════════════════════════════════
    Types
@@ -153,121 +154,708 @@ function StoryBlock({ label, content }: { label: string; content?: string }) {
    Tab Content Components
 ═══════════════════════════════════════════════════════════════════ */
 
-function OverviewTab({ char }: { char: CharacterData }) {
-    const bg = STATIC_BACKGROUNDS.find(b => b.index === char.background);
-    const alignInfo = ALIGNMENTS[char.alignment] || { label: fmt(char.alignment), desc: '' };
+// Combat stats helpers
+const RACE_SPEED: Record<string, number> = {
+    dwarf: 25, gnome: 25, halfling: 25,
+};
+
+const UNARMORED_BONUS: Record<string, (s: Stats) => number> = {
+    barbarian: s => Math.floor((s.con - 10) / 2),
+    monk: s => Math.floor((s.wis - 10) / 2),
+};
+
+function calcAC(charClass: string, stats: Stats): number {
+    const dexMod = Math.floor((stats.dex - 10) / 2);
+    const extra = UNARMORED_BONUS[charClass]?.(stats) ?? 0;
+    return 10 + dexMod + extra;
+}
+
+function profBonus(level: number): string {
+    return `+${Math.ceil(level / 4) + 1}`;
+}
+
+type CombatStat = { label: string; value: string; sub?: string; accent: string };
+
+function CombatStatsBar({ char }: { char: CharacterData }) {
+    const stats = char.stats;
+    const hasStats = stats && Object.keys(stats).length > 0;
+
+    const dexMod = hasStats ? Math.floor((stats.dex - 10) / 2) : 0;
+    const initStr = dexMod >= 0 ? `+${dexMod}` : `${dexMod}`;
+    const speed = RACE_SPEED[char.race] ?? 30;
+    const ac = hasStats ? calcAC(char.class, stats) : 10;
+
+    const combatStats: CombatStat[] = [
+        {
+            label: 'Max HP',
+            value: char.hp !== null ? `${char.hp}` : ', ',
+            sub: 'Hit Points',
+            accent: 'rgba(220,80,80,0.85)',
+        },
+        {
+            label: 'AC',
+            value: hasStats ? `${ac}` : ', ',
+            sub: char.class === 'barbarian' ? 'Unarmored (CON)' : char.class === 'monk' ? 'Unarmored (WIS)' : 'Unarmored',
+            accent: 'rgba(93,142,232,0.85)',
+        },
+        {
+            label: 'Speed',
+            value: `${speed}`,
+            sub: 'feet / turn',
+            accent: 'rgba(80,200,120,0.85)',
+        },
+        {
+            label: 'Initiative',
+            value: hasStats ? initStr : ', ',
+            sub: 'DEX modifier',
+            accent: dexMod >= 0 ? 'rgba(240,200,80,0.85)' : 'rgba(220,80,80,0.85)',
+        },
+        {
+            label: 'Prof. Bonus',
+            value: profBonus(char.level),
+            sub: `Level ${char.level}`,
+            accent: 'rgba(160,100,240,0.85)',
+        },
+    ];
 
     return (
-        <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {/* Stats */}
-            <div>
-                <SectionHead>Ability Scores</SectionHead>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: '0.75rem' }}>
-                    {STAT_DEFS.map(def => <StatBlock key={def.key} def={def} value={char.stats[def.key]} />)}
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            {combatStats.map(stat => (
+                <div
+                    key={stat.label}
+                    style={{
+                        flex: '1 1 80px',
+                        minWidth: '72px',
+                        background: `${stat.accent.replace('0.85', '0.06')}`,
+                        border: `1px solid ${stat.accent.replace('0.85', '0.22')}`,
+                        borderRadius: '10px',
+                        padding: '0.55rem 0.7rem 0.5rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '0.05rem',
+                        textAlign: 'center',
+                    }}
+                >
+                    <span style={{
+                        fontSize: '0.55rem',
+                        fontWeight: '800',
+                        letterSpacing: '0.14em',
+                        textTransform: 'uppercase',
+                        color: stat.accent,
+                        opacity: 0.75,
+                        whiteSpace: 'nowrap',
+                    }}>
+                        {stat.label}
+                    </span>
+                    <span style={{
+                        fontSize: '1.6rem',
+                        fontWeight: '900',
+                        lineHeight: 1,
+                        color: '#fff',
+                        marginTop: '0.1rem',
+                    }}>
+                        {stat.value}
+                    </span>
+                    {stat.sub && (
+                        <span style={{
+                            fontSize: '0.6rem',
+                            color: 'rgba(244,232,208,0.3)',
+                            marginTop: '0.1rem',
+                            whiteSpace: 'nowrap',
+                        }}>
+                            {stat.sub}
+                        </span>
+                    )}
                 </div>
-            </div>
+            ))}
+        </div>
+    );
+}
 
-            {/* Skills */}
-            <div>
-                <SectionHead>Proficiencies & Skills</SectionHead>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
+function OverviewTab({ char }: { char: CharacterData }) {
+    const profSet = new Set(char.proficiencies);
+    const hasStats = char.stats && Object.keys(char.stats).length > 0;
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '1.75rem 2rem' }}>
+            {/* Ability Scores */}
+            {hasStats ? (
+                <section>
+                    <SectionHead>Ability Scores</SectionHead>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: '0.6rem' }} className="ability-scores-grid">
+                        {STAT_DEFS.map(def => (
+                            <StatBlock key={def.key} def={def} value={char.stats[def.key] ?? 10} />
+                        ))}
+                    </div>
+                </section>
+            ) : (
+                <section>
+                    <SectionHead>Ability Scores</SectionHead>
+                    <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(244,232,208,0.3)', fontStyle: 'italic' }}>No ability scores recorded.</p>
+                </section>
+            )}
+
+            {/* Combat Stats bar */}
+            <section>
+                <SectionHead>Combat Stats</SectionHead>
+                <CombatStatsBar char={char} />
+            </section>
+
+            {/* Skill Proficiencies */}
+            <section>
+                <SectionHead>Skill Proficiencies</SectionHead>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0 1.5rem' }}>
                     {SKILL_GROUPS.map(group => (
                         <div key={group.ability}>
-                            <p style={{ margin: '0 0 0.5rem', fontSize: '0.7rem', fontWeight: '800', letterSpacing: '0.1em', color: group.color }}>{group.ability}</p>
-                            {group.skills.map(skill => (
-                                <SkillRow
-                                    key={skill.index}
-                                    name={skill.name}
-                                    proficient={char.proficiencies.includes(skill.index)}
-                                    color={group.color}
-                                />
+                            <p style={{ margin: '0.6rem 0 0.2rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.13em', textTransform: 'uppercase', color: group.color, opacity: 0.85 }}>{group.ability}</p>
+                            {group.skills.map(s => (
+                                <SkillRow key={s.index} name={s.name} proficient={profSet.has(s.index)} color={group.color} />
                             ))}
                         </div>
                     ))}
                 </div>
-            </div>
+            </section>
 
-            {/* Basic Info */}
-            <div>
-                <SectionHead>Character Info</SectionHead>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                    <div>
-                        <p style={{ margin: '0 0 0.25rem', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>HP</p>
-                        <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#fff' }}>{char.hp || '—'}</p>
-                    </div>
-                    <div>
-                        <p style={{ margin: '0 0 0.25rem', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Alignment</p>
-                        <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#fff' }}>{alignInfo.label}</p>
-                        {alignInfo.desc && <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'rgba(244,232,208,0.5)', fontStyle: 'italic' }}>{alignInfo.desc}</p>}
-                    </div>
-                    <div>
-                        <p style={{ margin: '0 0 0.25rem', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Background</p>
-                        <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#fff' }}>{fmt(char.background)}</p>
-                        {bg && <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'rgba(244,232,208,0.5)', fontStyle: 'italic' }}>{bg.feature.name}</p>}
-                    </div>
-                    {char.age && (
-                        <div>
-                            <p style={{ margin: '0 0 0.25rem', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Age</p>
-                            <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#fff' }}>{char.age}</p>
+            {/* Identity quick-view */}
+            <section>
+                <SectionHead>Identity</SectionHead>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))', gap: '0.6rem' }}>
+                    {[
+                        { label: 'Race', value: fmt(char.race) },
+                        { label: 'Class', value: fmt(char.class) },
+                        { label: 'Background', value: fmt(char.background) },
+                        { label: 'Alignment', value: fmt(char.alignment) },
+                        { label: 'Level', value: `Level ${char.level}` },
+                    ].map(item => (
+                        <div key={item.label} style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(212,175,55,0.14)', borderRadius: '9px', padding: '0.75rem 1rem' }}>
+                            <p style={{ margin: '0 0 0.2rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>{item.label}</p>
+                            <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: '700', color: '#fff' }}>{item.value}</p>
                         </div>
-                    )}
-                    {char.height && (
-                        <div>
-                            <p style={{ margin: '0 0 0.25rem', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Height</p>
-                            <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#fff' }}>{char.height}</p>
-                        </div>
-                    )}
-                    {char.weight && (
-                        <div>
-                            <p style={{ margin: '0 0 0.25rem', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Weight</p>
-                            <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#fff' }}>{char.weight}</p>
-                        </div>
-                    )}
+                    ))}
                 </div>
-            </div>
+            </section>
+            
+            <style>{`
+                @media (max-width: 768px) {
+                    .ability-scores-grid {
+                        grid-template-columns: repeat(3, 1fr) !important;
+                    }
+                }
+                @media (max-width: 480px) {
+                    .ability-scores-grid {
+                        grid-template-columns: repeat(2, 1fr) !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }
 
 function LoreTab({ char }: { char: CharacterData }) {
-    const hasAnyStory = char.story.backstory || char.story.personality || char.story.ideals || char.story.bonds || char.story.flaws || char.story.appearance;
-
-    if (!hasAnyStory) {
-        return (
-            <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-                <p style={{ color: 'rgba(244,232,208,0.35)', fontSize: '0.95rem', fontStyle: 'italic' }}>No story details available.</p>
-            </div>
-        );
-    }
+    const bgData = STATIC_BACKGROUNDS.find(b => b.index === char.background);
+    const alignment = ALIGNMENTS[char.alignment];
+    const hasPhysical = char.height || char.weight || char.age;
+    const story = char.story;
+    const hasStory = story && Object.values(story).some(v => v && v.trim().length > 0);
 
     return (
-        <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <StoryBlock label="Backstory" content={char.story.backstory} />
-            <StoryBlock label="Personality Traits" content={char.story.personality} />
-            <StoryBlock label="Ideals" content={char.story.ideals} />
-            <StoryBlock label="Bonds" content={char.story.bonds} />
-            <StoryBlock label="Flaws" content={char.story.flaws} />
-            <StoryBlock label="Appearance" content={char.story.appearance} />
+        <div style={{ padding: '1.75rem 2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {/* Story */}
+            {hasStory ? (
+                <>
+                    {story.backstory && (
+                        <section>
+                            <SectionHead>Backstory</SectionHead>
+                            <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(212,175,55,0.14)', borderRadius: '10px', padding: '1.25rem 1.5rem' }}>
+                                <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: '1.8', color: 'rgba(244,232,208,0.8)', fontStyle: 'italic' }}>{story.backstory}</p>
+                            </div>
+                        </section>
+                    )}
+                    {(story.personality || story.ideals || story.bonds || story.flaws) && (
+                        <section>
+                            <SectionHead>Character Traits</SectionHead>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: '1rem' }}>
+                                <StoryBlock label="Personality" content={story.personality} />
+                                <StoryBlock label="Ideals" content={story.ideals} />
+                                <StoryBlock label="Bonds" content={story.bonds} />
+                                <StoryBlock label="Flaws" content={story.flaws} />
+                            </div>
+                        </section>
+                    )}
+                    {story.appearance && (
+                        <section>
+                            <SectionHead>Appearance</SectionHead>
+                            <StoryBlock label="Appearance" content={story.appearance} />
+                        </section>
+                    )}
+                </>
+            ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '40vh', gap: '1rem', textAlign: 'center', padding: '2rem' }}>
+                    <span style={{ fontSize: '2.5rem', opacity: 0.2 }}>📜</span>
+                    <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(244,232,208,0.3)', fontStyle: 'italic', maxWidth: '300px', lineHeight: '1.6' }}>No story details available.</p>
+                </div>
+            )}
+
+            {/* Physical Traits */}
+            {hasPhysical && (
+                <section>
+                    <SectionHead>Physical Traits</SectionHead>
+                    <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                        {char.height && <div style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(212,175,55,0.14)', borderRadius: '9px', padding: '0.7rem 1.1rem' }}><p style={{ margin: '0 0 0.15rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Height</p><p style={{ margin: 0, fontSize: '0.9rem', fontWeight: '700', color: '#fff' }}>{char.height}</p></div>}
+                        {char.weight && <div style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(212,175,55,0.14)', borderRadius: '9px', padding: '0.7rem 1.1rem' }}><p style={{ margin: '0 0 0.15rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Weight</p><p style={{ margin: 0, fontSize: '0.9rem', fontWeight: '700', color: '#fff' }}>{char.weight}</p></div>}
+                        {char.age && <div style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(212,175,55,0.14)', borderRadius: '9px', padding: '0.7rem 1.1rem' }}><p style={{ margin: '0 0 0.15rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Age</p><p style={{ margin: 0, fontSize: '0.9rem', fontWeight: '700', color: '#fff' }}>{char.age}</p></div>}
+                    </div>
+                </section>
+            )}
+
+            {/* Alignment */}
+            {alignment && (
+                <section>
+                    <SectionHead>Alignment</SectionHead>
+                    <div style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '10px', padding: '1rem 1.25rem' }}>
+                        <p style={{ margin: '0 0 0.4rem', fontSize: '0.95rem', fontWeight: '700', color: 'var(--color-gold)' }}>{alignment.label}</p>
+                        <p style={{ margin: 0, fontSize: '0.85rem', lineHeight: '1.65', color: 'rgba(244,232,208,0.65)', fontStyle: 'italic' }}>{alignment.desc}</p>
+                    </div>
+                </section>
+            )}
+
+            {/* Background Feature */}
+            {bgData && (
+                <section>
+                    <SectionHead>Background Feature, {bgData.name}</SectionHead>
+                    <div style={{ background: 'rgba(212,175,55,0.04)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '10px', padding: '1rem 1.25rem' }}>
+                        <p style={{ margin: '0 0 0.4rem', fontSize: '0.9rem', fontWeight: '700', color: 'var(--color-gold)' }}>{bgData.feature.name}</p>
+                        {bgData.feature.desc.map((d, i) => (
+                            <p key={i} style={{ margin: i === 0 ? 0 : '0.5rem 0 0', fontSize: '0.85rem', lineHeight: '1.7', color: 'rgba(244,232,208,0.7)', fontStyle: 'italic', borderLeft: '2px solid rgba(212,175,55,0.25)', paddingLeft: '0.75rem' }}>{d}</p>
+                        ))}
+                    </div>
+                </section>
+            )}
         </div>
     );
 }
 
-function GearTab({ char }: { char: CharacterData }) {
+// Spell/Magic Tab - Simplified read-only version
+const FULL_CASTERS = new Set(['wizard', 'sorcerer', 'cleric', 'druid', 'bard', 'warlock']);
+const HALF_CASTERS = new Set(['paladin', 'ranger']);
+
+const FULL_SLOT_TABLE: Record<number, number> = {
+    1: 1, 2: 1, 3: 2, 4: 2, 5: 3, 6: 3, 7: 4, 8: 4, 9: 5, 10: 5,
+    11: 6, 12: 6, 13: 7, 14: 7, 15: 8, 16: 8, 17: 9, 18: 9, 19: 9, 20: 9,
+};
+
+const HALF_SLOT_TABLE: Record<number, number> = {
+    1: 0, 2: 1, 3: 1, 4: 1, 5: 2, 6: 2, 7: 3, 8: 3, 9: 4, 10: 4,
+    11: 5, 12: 5, 13: 5, 14: 5, 15: 5, 16: 5, 17: 5, 18: 5, 19: 5, 20: 5,
+};
+
+function maxSpellLevel(charClass: string, charLevel: number): number {
+    if (FULL_CASTERS.has(charClass)) return FULL_SLOT_TABLE[charLevel] ?? 1;
+    if (HALF_CASTERS.has(charClass)) return HALF_SLOT_TABLE[charLevel] ?? 0;
+    return 0;
+}
+
+const SCHOOL_COLORS: Record<string, string> = {
+    abjuration: 'rgba(80,180,240,0.85)', conjuration: 'rgba(130,200,80,0.85)',
+    divination: 'rgba(240,230,80,0.85)', enchantment: 'rgba(240,80,160,0.85)',
+    evocation: 'rgba(240,120,60,0.85)', illusion: 'rgba(160,100,240,0.85)',
+    necromancy: 'rgba(80,200,140,0.85)', transmutation: 'rgba(240,180,60,0.85)',
+};
+
+const TYPE_BG: Record<string, string> = {
+    'class-ability': 'rgba(212,175,55,0.07)',
+    'racial-ability': 'rgba(80,200,100,0.07)',
+    'spell': 'rgba(93,142,232,0.07)',
+};
+const TYPE_BORDER: Record<string, string> = {
+    'class-ability': 'rgba(212,175,55,0.18)',
+    'racial-ability': 'rgba(80,200,100,0.18)',
+    'spell': 'rgba(93,142,232,0.18)',
+};
+
+function MagicCard({ entry }: { entry: SpellEntry }) {
+    const [expanded, setExpanded] = useState(false);
+    const type = entry.type ?? 'spell';
+
     return (
-        <div style={{ padding: '2rem' }}>
-            <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(244,232,208,0.4)' }}>
-                <p style={{ fontSize: '0.95rem', fontStyle: 'italic' }}>Gear information not available in party view.</p>
+        <div
+            onClick={() => setExpanded(v => !v)}
+            style={{
+                background: TYPE_BG[type],
+                border: `1px solid ${TYPE_BORDER[type]}`,
+                borderRadius: '9px',
+                padding: '0.75rem 1rem',
+                cursor: 'pointer',
+                transition: 'opacity 0.15s, border-color 0.15s',
+            }}
+        >
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ flex: 1, minWidth: '120px', fontSize: '0.88rem', fontWeight: '700', color: '#fff', lineHeight: '1.3' }}>
+                    {entry.name}
+                </span>
+                <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', flexWrap: 'wrap', flexShrink: 0 }}>
+                    {type === 'spell' && entry.level !== undefined && (
+                        <span style={{ fontSize: '0.6rem', fontWeight: '800', background: 'rgba(93,142,232,0.2)', color: 'rgba(93,142,232,0.9)', borderRadius: '999px', padding: '0.05rem 0.4rem' }}>
+                            {entry.level === 0 ? 'Cantrip' : `Lv ${entry.level}`}
+                        </span>
+                    )}
+                    {entry.school && (
+                        <span style={{ fontSize: '0.6rem', fontWeight: '700', background: `${SCHOOL_COLORS[entry.school] ?? 'rgba(200,200,200,0.2)'}33`, color: SCHOOL_COLORS[entry.school] ?? 'rgba(200,200,200,0.7)', borderRadius: '999px', padding: '0.05rem 0.4rem' }}>
+                            {fmt(entry.school)}
+                        </span>
+                    )}
+                    <span style={{ fontSize: '0.62rem', color: 'rgba(244,232,208,0.4)', whiteSpace: 'nowrap' }}>{fmt(entry.actionType)}</span>
+                    {entry.concentration && (
+                        <span style={{ fontSize: '0.58rem', fontWeight: '800', color: 'rgba(240,180,60,0.85)', border: '1px solid rgba(240,180,60,0.3)', borderRadius: '4px', padding: '0.02rem 0.25rem' }}>C</span>
+                    )}
+                    {entry.ritual && (
+                        <span style={{ fontSize: '0.58rem', fontWeight: '800', color: 'rgba(160,100,240,0.85)', border: '1px solid rgba(160,100,240,0.3)', borderRadius: '4px', padding: '0.02rem 0.25rem' }}>R</span>
+                    )}
+                    <span style={{ fontSize: '0.7rem', color: 'rgba(212,175,55,0.35)', transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'none' }}>▾</span>
+                </div>
             </div>
+
+            {!expanded && (
+                <p style={{ margin: '0.35rem 0 0', fontSize: '0.77rem', color: 'rgba(244,232,208,0.5)', lineHeight: '1.5', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                    {entry.description.replace(/\*\*/g, '').replace(/\n/g, ' ')}
+                </p>
+            )}
+
+            {expanded && (
+                <div style={{ marginTop: '0.65rem', borderTop: `1px solid ${TYPE_BORDER[type]}`, paddingTop: '0.65rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {type === 'spell' && (entry.range || entry.duration || entry.components) && (
+                        <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                            {entry.range && <MiniStat label="Range" val={entry.range} />}
+                            {entry.duration && <MiniStat label="Duration" val={entry.duration} />}
+                            {entry.components && <MiniStat label="Components" val={entry.components.map(c => c.toUpperCase()).join(', ') + (entry.material ? ` (${entry.material})` : '')} />}
+                        </div>
+                    )}
+                    {type !== 'spell' && entry.recharge && (
+                        <MiniStat label="Recharge" val={fmt(entry.recharge)} />
+                    )}
+                    <p style={{ margin: 0, fontSize: '0.82rem', lineHeight: '1.7', color: 'rgba(244,232,208,0.75)', whiteSpace: 'pre-line' }}>
+                        {entry.description.replace(/\*\*(.*?)\*\*/g, '$1')}
+                    </p>
+                    {(entry.cantripUpgrade || entry.higherLevelSlot || entry.upgrades) && (
+                        <div style={{ padding: '0.45rem 0.7rem', background: 'rgba(212,175,55,0.05)', border: '1px solid rgba(212,175,55,0.13)', borderRadius: '6px' }}>
+                            <p style={{ margin: '0 0 0.1rem', fontSize: '0.55rem', fontWeight: '800', letterSpacing: '0.13em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>At Higher Levels</p>
+                            <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(244,232,208,0.6)', lineHeight: '1.55' }}>
+                                {entry.cantripUpgrade ?? entry.higherLevelSlot ?? entry.upgrades}
+                            </p>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
+
+function MiniStat({ label, val }: { label: string; val: string }) {
+    return (
+        <div>
+            <p style={{ margin: '0 0 0.08rem', fontSize: '0.55rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.4)' }}>{label}</p>
+            <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(244,232,208,0.7)' }}>{val}</p>
+        </div>
+    );
+}
+
+function MagicGroupHeader({ title, count, color }: { title: string; count: number; color: string }) {
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1.5rem 0 0.6rem' }}>
+            <span style={{ fontSize: '0.6rem', fontWeight: '800', letterSpacing: '0.15em', textTransform: 'uppercase', color, whiteSpace: 'nowrap' }}>{title}</span>
+            <div style={{ flex: 1, height: '1px', background: `${color}33` }} />
+            <span style={{ fontSize: '0.65rem', color: `${color}88`, fontWeight: '700' }}>{count}</span>
         </div>
     );
 }
 
 function MagicTab({ char }: { char: CharacterData }) {
-    return (
-        <div style={{ padding: '2rem' }}>
-            <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(244,232,208,0.4)' }}>
-                <p style={{ fontSize: '0.95rem', fontStyle: 'italic' }}>Magic & abilities information not available in party view.</p>
+    const charClass = char.class;
+    const charRace = char.race;
+    const charLevel = char.level ?? 1;
+    const maxSlot = maxSpellLevel(charClass, charLevel);
+    const isCaster = FULL_CASTERS.has(charClass) || HALF_CASTERS.has(charClass);
+
+    const [allEntries, setAllEntries] = useState<SpellEntry[]>([]);
+    const [loadingMagic, setLoadingMagic] = useState(true);
+
+    useEffect(() => {
+        setLoadingMagic(true);
+        fetch(`/api/resources/spells-abilities?class=${encodeURIComponent(charClass)}&race=${encodeURIComponent(charRace)}`)
+            .then(r => r.json())
+            .then(data => { setAllEntries(data.entries ?? []); setLoadingMagic(false); })
+            .catch(() => setLoadingMagic(false));
+    }, [charClass, charRace]);
+
+    const { racialAbilities, classAbilities, cantrips, spellsByLevel } = useMemo(() => {
+        const racial: SpellEntry[] = [];
+        const clsAbil: SpellEntry[] = [];
+        const cant: SpellEntry[] = [];
+        const byLvl: Record<number, SpellEntry[]> = {};
+
+        for (const e of allEntries) {
+            const type = e.type ?? 'spell';
+            if (type === 'racial-ability') {
+                if (e.races?.includes(charRace) && (e.levelGained ?? 1) <= charLevel) racial.push(e);
+                continue;
+            }
+            if (type === 'class-ability') {
+                if (e.classes?.includes(charClass) && (e.levelGained ?? 1) <= charLevel) clsAbil.push(e);
+                continue;
+            }
+            if (!e.classes?.includes(charClass)) continue;
+            if (e.level === 0) { cant.push(e); continue; }
+            if (!isCaster) continue;
+            if ((e.level ?? 99) <= maxSlot) {
+                if (!byLvl[e.level!]) byLvl[e.level!] = [];
+                byLvl[e.level!].push(e);
+            }
+        }
+        return { racialAbilities: racial, classAbilities: clsAbil, cantrips: cant, spellsByLevel: byLvl };
+    }, [allEntries, charClass, charRace, charLevel, maxSlot, isCaster]);
+
+    const spellLevels = Object.keys(spellsByLevel).map(Number).sort((a, b) => a - b);
+
+    if (loadingMagic) {
+        return (
+            <div style={{ padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+                {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} style={{ height: '60px', background: 'rgba(212,175,55,0.04)', borderRadius: '10px', border: '1px solid rgba(212,175,55,0.08)', animation: 'pulse 1.5s ease-in-out infinite', animationDelay: `${i * 0.08}s` }} />
+                ))}
             </div>
+        );
+    }
+
+    const totalAbilities = racialAbilities.length + classAbilities.length + cantrips.length + spellLevels.reduce((s, l) => s + spellsByLevel[l].length, 0);
+
+    if (totalAbilities === 0) {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '40vh', gap: '1rem', textAlign: 'center', padding: '2rem' }}>
+                <span style={{ fontSize: '2.5rem', opacity: 0.2 }}>🔮</span>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(244,232,208,0.3)', fontStyle: 'italic' }}>No spells or abilities found for this character.</p>
+            </div>
+        );
+    }
+
+    return (
+        <div style={{ padding: '0.75rem 2rem 4rem' }}>
+            {racialAbilities.length > 0 && (
+                <section>
+                    <MagicGroupHeader title={`Racial Abilities, ${fmt(charRace)}`} count={racialAbilities.length} color="rgba(80,200,100,0.8)" />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        {racialAbilities.map((e, i) => <MagicCard key={`r-${i}`} entry={e} />)}
+                    </div>
+                </section>
+            )}
+
+            {classAbilities.length > 0 && (
+                <section>
+                    <MagicGroupHeader title={`${fmt(charClass)} Abilities, Level ${charLevel}`} count={classAbilities.length} color="rgba(212,175,55,0.8)" />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        {classAbilities.map((e, i) => <MagicCard key={`c-${i}`} entry={e} />)}
+                    </div>
+                </section>
+            )}
+
+            {isCaster && cantrips.length > 0 && (
+                <section>
+                    <MagicGroupHeader title="Cantrips" count={cantrips.length} color="rgba(93,142,232,0.8)" />
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: '0.4rem' }}>
+                        {cantrips.map((e, i) => <MagicCard key={`ct-${i}`} entry={e} />)}
+                    </div>
+                </section>
+            )}
+
+            {isCaster && spellLevels.map(lvl => (
+                <section key={lvl}>
+                    <MagicGroupHeader
+                        title={`${lvl === 1 ? '1st' : lvl === 2 ? '2nd' : lvl === 3 ? '3rd' : `${lvl}th`}-Level Spells`}
+                        count={spellsByLevel[lvl].length}
+                        color="rgba(93,142,232,0.8)"
+                    />
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: '0.4rem' }}>
+                        {spellsByLevel[lvl].map((e, i) => <MagicCard key={`s${lvl}-${i}`} entry={e} />)}
+                    </div>
+                </section>
+            ))}
+        </div>
+    );
+}
+
+// Gear Tab - View only version
+const ITEM_CATEGORY_META: Record<ItemCategory, { label: string; color: string }> = {
+    weapon: { label: 'Weapon', color: 'rgba(228,90,74,0.85)' },
+    armor: { label: 'Armor', color: 'rgba(93,142,232,0.85)' },
+    shield: { label: 'Shield', color: 'rgba(80,180,200,0.85)' },
+    magic: { label: 'Magic Item', color: 'rgba(160,100,240,0.85)' },
+    potion: { label: 'Potion', color: 'rgba(80,200,120,0.85)' },
+    scroll: { label: 'Scroll', color: 'rgba(240,220,80,0.85)' },
+    tool: { label: 'Tool', color: 'rgba(180,140,80,0.85)' },
+    clothing: { label: 'Clothing', color: 'rgba(200,120,180,0.85)' },
+    trinket: { label: 'Trinket', color: 'rgba(160,180,160,0.85)' },
+    ammunition: { label: 'Ammunition', color: 'rgba(200,160,80,0.85)' },
+    misc: { label: 'Misc', color: 'rgba(140,140,140,0.85)' },
+};
+
+const COIN_META = [
+    { key: 'pp' as const, label: 'Platinum', abbr: 'PP', color: 'rgba(180,210,240,0.9)', bg: 'rgba(180,210,240,0.08)', border: 'rgba(180,210,240,0.25)', worth: '10 gp' },
+    { key: 'gp' as const, label: 'Gold', abbr: 'GP', color: 'rgba(212,175,55,0.95)', bg: 'rgba(212,175,55,0.08)', border: 'rgba(212,175,55,0.3)', worth: '1 gp' },
+    { key: 'sp' as const, label: 'Silver', abbr: 'SP', color: 'rgba(200,200,200,0.9)', bg: 'rgba(200,200,200,0.06)', border: 'rgba(200,200,200,0.2)', worth: '0.1 gp' },
+    { key: 'cp' as const, label: 'Copper', abbr: 'CP', color: 'rgba(200,130,80,0.9)', bg: 'rgba(200,130,80,0.06)', border: 'rgba(200,130,80,0.2)', worth: '0.01 gp' },
+] as const;
+
+function inferCategory(name: string): ItemCategory {
+    const n = name.toLowerCase();
+    if (/sword|dagger|axe|mace|spear|staff|club|rapier|bow|crossbow|lance|flail|halberd|pike|trident|whip|morningstar|warhammer|battleaxe|longsword|shortsword|handaxe|greataxe|greatsword|scimitar|sickle|javelin|glaive/.test(n)) return 'weapon';
+    if (/armor|mail|plate|breastplate|studded|padded|ringmail|splint|cuirass/.test(n)) return 'armor';
+    if (/shield/.test(n)) return 'shield';
+    if (/potion|elixir/.test(n)) return 'potion';
+    if (/scroll/.test(n)) return 'scroll';
+    if (/tool|kit|instrument|thieves|disguise|forgery|herbalism|poisoner|navigator|cartographer|mason|smith|cobbler|cook|glassblower|jeweler|leatherworker|carpenter|weaver/.test(n)) return 'tool';
+    if (/cloak|clothes|robe|boots|gloves|hat|hood|mantle|vestment|cap/.test(n)) return 'clothing';
+    if (/arrow|bolt|bullet|dart|sling/.test(n)) return 'ammunition';
+    if (/trinket|bauble|charm|token|keepsake/.test(n)) return 'trinket';
+    return 'misc';
+}
+
+function ItemRow({ item, index }: { item: InventoryItem; index: number }) {
+    const [expanded, setExpanded] = useState(false);
+    const meta = ITEM_CATEGORY_META[item.category];
+
+    return (
+        <>
+            <div
+                onClick={() => item.description && setExpanded(v => !v)}
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: '4px 1fr 100px 160px 56px 64px 44px 44px',
+                    alignItems: 'center',
+                    gap: '0',
+                    minHeight: '42px',
+                    background: index % 2 === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.08)',
+                    cursor: item.description ? 'pointer' : 'default',
+                    transition: 'background 0.1s',
+                    borderBottom: '1px solid rgba(212,175,55,0.06)',
+                }}
+                onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = 'rgba(212,175,55,0.06)'}
+                onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = index % 2 === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.08)'}
+            >
+                <div style={{ alignSelf: 'stretch', background: meta.color, opacity: 0.7 }} />
+                <div style={{ padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
+                    <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {item.name}
+                    </span>
+                    {item.source === 'background' && (
+                        <span style={{ fontSize: '0.55rem', fontWeight: '700', letterSpacing: '0.08em', color: 'rgba(212,175,55,0.45)', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '3px', padding: '0.05rem 0.3rem', flexShrink: 0 }}>BG</span>
+                    )}
+                </div>
+                <div style={{ padding: '0 0.5rem' }}>
+                    <span style={{ fontSize: '0.68rem', fontWeight: '700', color: meta.color, background: `${meta.color.replace('0.85', '0.1')}`, border: `1px solid ${meta.color.replace('0.85', '0.2')}`, borderRadius: '4px', padding: '0.1rem 0.4rem', whiteSpace: 'nowrap' }}>
+                        {meta.label}
+                    </span>
+                </div>
+                <div style={{ padding: '0 0.5rem', overflow: 'hidden' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'rgba(244,232,208,0.5)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
+                        {item.properties ?? ', '}
+                    </span>
+                </div>
+                <div style={{ padding: '0 0.5rem', textAlign: 'center' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'rgba(244,232,208,0.4)' }}>
+                        {item.weight !== undefined ? `${item.weight} lb` : ', '}
+                    </span>
+                </div>
+                <div style={{ padding: '0 0.5rem', textAlign: 'right' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'rgba(212,175,55,0.65)', whiteSpace: 'nowrap' }}>
+                        {item.value ?? ', '}
+                    </span>
+                </div>
+                <div style={{ padding: '0 0.5rem', textAlign: 'center' }}>
+                    <span style={{ fontSize: '0.82rem', fontWeight: '700', color: 'rgba(244,232,208,0.6)' }}>
+                        {item.quantity}
+                    </span>
+                </div>
+                <div style={{ padding: '0 0.5rem', textAlign: 'center' }}>
+                    {item.equipped && <span title="Equipped" style={{ fontSize: '0.75rem', color: 'rgba(80,200,120,0.8)' }}>⚔</span>}
+                </div>
+            </div>
+
+            {expanded && item.description && (
+                <div style={{ gridColumn: '1/-1', padding: '0.6rem 1.25rem 0.75rem', background: 'rgba(212,175,55,0.04)', borderBottom: '1px solid rgba(212,175,55,0.08)', borderLeft: `3px solid ${meta.color}` }}>
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(244,232,208,0.65)', lineHeight: '1.65', fontStyle: 'italic' }}>
+                        {item.description}
+                    </p>
+                </div>
+            )}
+        </>
+    );
+}
+
+function GearTab({ char }: { char: CharacterData }) {
+    const bgData = STATIC_BACKGROUNDS.find(b => b.index === char.background);
+    const currency = char.currency;
+
+    const startingItems: InventoryItem[] = useMemo(() =>
+        (bgData?.starting_equipment ?? []).map((e, i) => ({
+            id: `bg-${i}`,
+            name: e.equipment.name,
+            category: inferCategory(e.equipment.name),
+            quantity: e.quantity,
+            source: 'background' as const,
+        }))
+        , [bgData]);
+
+    return (
+        <div style={{ padding: '1.5rem 2rem 4rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {/* Currency (read-only) */}
+            <section>
+                <SectionHead>Currency</SectionHead>
+                <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
+                    {COIN_META.map(coin => (
+                        <div key={coin.key} style={{ flex: '1 1 90px', minWidth: '90px', background: coin.bg, border: `1px solid ${coin.border}`, borderRadius: '10px', padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                                <span style={{ fontSize: '0.6rem', fontWeight: '800', letterSpacing: '0.14em', textTransform: 'uppercase', color: coin.color, opacity: 0.8 }}>{coin.label}</span>
+                                <span style={{ fontSize: '0.58rem', color: 'rgba(244,232,208,0.25)' }}>{coin.worth}</span>
+                            </div>
+                            <span style={{ fontSize: '1.6rem', fontWeight: '900', color: coin.color, lineHeight: 1 }}>
+                                {currency[coin.key].toLocaleString()}
+                            </span>
+                            <span style={{ fontSize: '0.7rem', fontWeight: '800', color: coin.color, opacity: 0.55 }}>{coin.abbr}</span>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* Inventory (read-only) */}
+            <section>
+                <SectionHead>Inventory</SectionHead>
+                {startingItems.length > 0 ? (
+                    <div style={{ border: '1px solid rgba(212,175,55,0.18)', borderRadius: '8px', overflow: 'hidden', overflowX: 'auto' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '4px 1fr 100px 160px 56px 64px 44px 44px', background: 'rgba(0,0,0,0.4)', borderBottom: '1px solid rgba(212,175,55,0.2)', borderRadius: '8px 8px 0 0', position: 'sticky', top: 0, zIndex: 2 }}>
+                            <div />
+                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Item Name</div>
+                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Type</div>
+                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)' }}>Properties</div>
+                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)', textAlign: 'center' }}>Wt.</div>
+                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)', textAlign: 'right' }}>Value</div>
+                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)', textAlign: 'center' }}>Qty</div>
+                            <div style={{ padding: '0.45rem 0.5rem', fontSize: '0.58rem', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.45)', textAlign: 'center' }}>⚔</div>
+                        </div>
+                        <div>
+                            {startingItems.map((item, i) => (
+                                <ItemRow key={item.id} item={item} index={i} />
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    <div style={{ border: '1px dashed rgba(212,175,55,0.15)', borderRadius: '8px', padding: '3rem', textAlign: 'center' }}>
+                        <span style={{ fontSize: '2rem', opacity: 0.2 }}>🎒</span>
+                        <p style={{ margin: '0.75rem 0 0', fontSize: '0.82rem', color: 'rgba(244,232,208,0.25)', fontStyle: 'italic' }}>
+                            Pack is empty.
+                        </p>
+                    </div>
+                )}
+            </section>
         </div>
     );
 }
@@ -440,13 +1028,16 @@ export default function CharacterViewModal({
                         </div>
 
                         {/* Tabs */}
-                        <div style={{
-                            display: 'flex',
-                            gap: '0',
-                            borderBottom: '1px solid rgba(212,175,55,0.15)',
-                            backgroundColor: 'rgba(0,0,0,0.3)',
-                            overflowX: 'auto'
-                        }}>
+                        <div 
+                            className="character-view-tabs"
+                            style={{
+                                display: 'flex',
+                                gap: '0',
+                                borderBottom: '1px solid rgba(212,175,55,0.15)',
+                                backgroundColor: 'rgba(0,0,0,0.3)',
+                                overflowX: 'auto'
+                            }}
+                        >
                             {[
                                 { id: 'overview' as Tab, label: 'Overview' },
                                 { id: 'magic' as Tab, label: 'Magic & Abilities' },
@@ -458,14 +1049,14 @@ export default function CharacterViewModal({
                                     onClick={() => setTab(t.id)}
                                     style={{
                                         flex: '1 0 auto',
-                                        padding: '1rem 1.5rem',
+                                        padding: '0.75rem 1rem',
                                         background: tab === t.id ? 'rgba(212,175,55,0.12)' : 'transparent',
                                         border: 'none',
                                         borderBottom: tab === t.id ? '2px solid var(--color-gold)' : '2px solid transparent',
                                         color: tab === t.id ? 'var(--color-gold)' : 'rgba(244,232,208,0.5)',
-                                        fontSize: '0.8rem',
+                                        fontSize: '0.75rem',
                                         fontWeight: '700',
-                                        letterSpacing: '0.05em',
+                                        letterSpacing: '0.04em',
                                         textTransform: 'uppercase',
                                         cursor: 'pointer',
                                         transition: 'all 0.2s',
@@ -476,6 +1067,14 @@ export default function CharacterViewModal({
                                 </button>
                             ))}
                         </div>
+                        <style>{`
+                            @media (max-width: 768px) {
+                                .character-view-tabs button {
+                                    padding: 0.5rem 0.75rem !important;
+                                    fontSize: 0.7rem !important;
+                                }
+                            }
+                        `}</style>
 
                         {/* Tab Content */}
                         <div style={{ flex: 1, overflowY: 'auto' }}>

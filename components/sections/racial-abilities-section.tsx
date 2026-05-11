@@ -1,5 +1,6 @@
-import { RacesResponse, RaceDetail } from '@/types';
+import { RaceDetail } from '@/types';
 import TraitAccordion from '@/components/ui/trait-tooltip';
+import clientPromise from '@/lib/mongo';
 
 type TraitDetail = {
     index: string;
@@ -9,14 +10,14 @@ type TraitDetail = {
 };
 
 export default async function RacialAbilitiesSection() {
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    // Fetch races directly from database
+    const client = await clientPromise;
+    const collection = client.db('dnd-resources').collection('races');
     
-    // Step 1: get the race list
-    const listRes = await fetch(`${BASE_URL}/api/resources/races`, { cache: 'force-cache' });
-    const list: RacesResponse = await listRes.json();
-
-    // Step 2: fetch all race details in parallel to get their trait lists
-    const raceDetails: RaceDetail[] = list.results;
+    const raceDetails = await collection
+        .find({}, { projection: { _id: 0 } })
+        .sort({ name: 1 })
+        .toArray() as RaceDetail[];
 
     // Step 3: collect every unique trait index across all races
     const traitIndexSet = new Set<string>();

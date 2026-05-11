@@ -1,17 +1,22 @@
 import { Navigation, Card } from "@/components";
-import { DndClass, ClassesResponse } from "@/types";
+import { ClassDetail } from "@/types";
+import clientPromise from "@/lib/mongo";
 
 export default async function Classes() {
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/resources/classes`, { cache: 'force-cache' });
-    const data: ClassesResponse = await response.json();
+    const client = await clientPromise;
+    const collection = client.db('dnd-resources').collection('classes');
+    
+    const classes = await collection
+        .find({}, { projection: { _id: 0 } })
+        .sort({ name: 1 })
+        .toArray();
 
     return (
         <div>
             <Navigation />
-            <h1>D&D Classes ({data.count} total)</h1>
+            <h1>D&D Classes ({classes.length} total)</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-                {data.results.map((dndClass: DndClass) => (
+                {(classes as ClassDetail[]).map((dndClass) => (
                     <Card
                         key={dndClass.index}
                         title={dndClass.name}

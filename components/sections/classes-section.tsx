@@ -1,5 +1,6 @@
 import { Card } from '@/components';
-import { DndClass, ClassesResponse } from '@/types';
+import { ClassDetail } from '@/types';
+import clientPromise from '@/lib/mongo';
 
 const CLASS_DESCRIPTIONS: Record<string, string> = {
     barbarian: 'Primal rage made flesh,   nearly impossible to kill and devastating up close.',
@@ -17,8 +18,13 @@ const CLASS_DESCRIPTIONS: Record<string, string> = {
 };
 
 export default async function ClassesSection() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/resources/classes`, { cache: 'force-cache' });
-    const data: ClassesResponse = await response.json();
+    const client = await clientPromise;
+    const collection = client.db('dnd-resources').collection('classes');
+    
+    const classes = await collection
+        .find({}, { projection: { _id: 0 } })
+        .sort({ name: 1 })
+        .toArray();
 
     return (
         <div style={{ padding: '2rem' }}>
@@ -34,12 +40,12 @@ export default async function ClassesSection() {
                     Resources
                 </p>
                 <h1 style={{ color: 'var(--color-gold)', margin: 0 }}>
-                    Classes ({data.count})
+                    Classes ({classes.length})
                 </h1>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {data.results.map((dndClass: DndClass) => (
+                {(classes as ClassDetail[]).map((dndClass) => (
                     <Card
                         key={dndClass.index}
                         title={dndClass.name}

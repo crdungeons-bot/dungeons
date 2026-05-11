@@ -1,5 +1,6 @@
 import { Card } from '@/components';
-import { Race, RacesResponse } from '@/types';
+import { RaceDetail } from '@/types';
+import clientPromise from '@/lib/mongo';
 
 const RACE_DESCRIPTIONS: Record<string, string> = {
     dragonborn: 'Proud dragon-blooded warriors with a breath weapon and a fierce, uncompromising sense of honour.',
@@ -14,8 +15,13 @@ const RACE_DESCRIPTIONS: Record<string, string> = {
 };
 
 export default async function RacesSection() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/resources/races`, { cache: 'force-cache' });
-    const data: RacesResponse = await response.json();
+    const client = await clientPromise;
+    const collection = client.db('dnd-resources').collection('races');
+    
+    const races = await collection
+        .find({}, { projection: { _id: 0 } })
+        .sort({ name: 1 })
+        .toArray();
 
     return (
         <div style={{ padding: '2rem' }}>
@@ -31,12 +37,12 @@ export default async function RacesSection() {
                     Resources
                 </p>
                 <h1 style={{ color: 'var(--color-gold)', margin: 0 }}>
-                    Races ({data.count})
+                    Races ({races.length})
                 </h1>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {data.results.map((race: Race) => (
+                {(races as RaceDetail[]).map((race) => (
                     <Card
                         key={race.index}
                         title={race.name}

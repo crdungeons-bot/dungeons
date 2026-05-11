@@ -6,11 +6,6 @@ export type DndClass = {
     url: string;
 };
 
-export type ClassesResponse = {
-    count: number;
-    results: DndClass[];
-};
-
 export type Proficiency = {
     index: string;
     name: string;
@@ -47,4 +42,9 @@ export type ClassDetail = {
     proficiencies: Proficiency[];
     saving_throws: SavingThrow[];
     starting_equipment: StartingEquipment[];
+};
+
+export type ClassesResponse = {
+    count: number;
+    results: ClassDetail[];
 };

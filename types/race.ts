@@ -5,11 +5,6 @@ export type Race = {
   url: string;
 };
 
-export type RacesResponse = {
-  count: number;
-  results: Race[];
-};
-
 export type AbilityBonus = {
   ability_score: {
     index: string;
@@ -40,4 +35,9 @@ export type RaceDetail = {
   ability_bonuses: AbilityBonus[];
   traits: Trait[];
   languages: Language[];
+};
+
+export type RacesResponse = {
+  count: number;
+  results: RaceDetail[];
 };

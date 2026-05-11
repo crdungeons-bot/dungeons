@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId }                  from 'mongodb';
 import clientPromise                 from '@/lib/mongo';
+import { getSpellSlots }             from '@/data/spell-slots';
 
 /* ── shared helper ── */
 function mapCharacter(character: Record<string, unknown>) {
@@ -21,6 +22,7 @@ function mapCharacter(character: Record<string, unknown>) {
         stats:         character.stats          ?? {},
         story:         character.story          ?? {},
         feats:         character.feats          ?? [],
+        spellSlots:    character.spellSlots     ?? null,
         createdAt:     character.createdAt,
     };
 }
@@ -81,6 +83,19 @@ export async function PATCH(
                 level:      body.feat.level,
                 statChoice: body.feat.statChoice ?? null,
             };
+        }
+
+        // Recalculate spell slots if level changed
+        if (body.level !== undefined) {
+            const client = await clientPromise;
+            const db     = client.db('dnd-app');
+            const character = await db.collection('characters').findOne({ _id: new ObjectId(id) });
+            
+            if (character) {
+                const charClass = character.class as string;
+                const newSpellSlots = getSpellSlots(charClass, body.level);
+                update.spellSlots = newSpellSlots;
+            }
         }
 
         const client = await clientPromise;

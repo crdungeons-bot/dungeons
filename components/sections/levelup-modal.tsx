@@ -794,7 +794,10 @@ function FeatScreen({ stats, onAccept }: {
             .then(r => r.json())
             .then(data => {
                 console.log('Fetched feats:', data.feats?.length);
-                console.log('Sample feat (Athlete):', data.feats?.find((f: FeatEntry) => f.name === 'Athlete'));
+                const athlete = data.feats?.find((f: FeatEntry) => f.name === 'Athlete');
+                console.log('Sample feat (Athlete):', athlete);
+                console.log('Athlete statBonus:', athlete?.statBonus);
+                console.log('Athlete full JSON:', JSON.stringify(athlete, null, 2));
                 setFeats(data.feats ?? []);
                 setLoading(false);
             })

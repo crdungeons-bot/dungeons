@@ -4,7 +4,10 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link                             from 'next/link';
 import { STATIC_BACKGROUNDS }           from '@/data/backgrounds';
 import type { SpellEntry }              from '@/data/spells';
+import type { SpellSlots, PactMagicSlots } from '@/data/spell-slots';
+import { usesPactMagic }                from '@/data/spell-slots';
 import LevelUpModal                     from '@/components/sections/levelup-modal';
+import SpellSlotsDisplay                from '@/components/ui/spell-slots-display';
 import { useCharacterInventory, type EnrichedInventoryItem } from '@/hooks/use-character-inventory';
 import ItemTooltip from '@/components/ui/item-tooltip';
 import AddItemModal from '@/components/ui/add-item-modal';
@@ -53,6 +56,7 @@ type CharacterData = {
     stats:         Stats;
     story:         Story;
     feats?:        Array<{ name: string; benefit: string; level: number; statChoice: string | null }>;
+    spellSlots:    SpellSlots | PactMagicSlots | null;
     createdAt:     string;
 };
 
@@ -764,6 +768,15 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
 
             {/* ── Content ── */}
             <div style={{ padding: '0.75rem 2rem 4rem' }}>
+
+                {/* Spell Slots */}
+                <section style={{ marginBottom: '2rem' }}>
+                    <SpellSlotsDisplay
+                        spellSlots={char.spellSlots}
+                        className=""
+                        isPactMagic={usesPactMagic(char.class)}
+                    />
+                </section>
 
                 {/* Racial abilities */}
                 {fRacial.length > 0 && (

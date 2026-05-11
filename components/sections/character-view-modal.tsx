@@ -3,8 +3,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { STATIC_BACKGROUNDS } from '@/data/backgrounds';
 import type { SpellEntry } from '@/data/spells';
+import type { SpellSlots, PactMagicSlots } from '@/data/spell-slots';
+import { usesPactMagic } from '@/data/spell-slots';
 import { useCharacterInventory, type EnrichedInventoryItem } from '@/hooks/use-character-inventory';
 import ItemTooltip from '@/components/ui/item-tooltip';
+import SpellSlotsDisplay from '@/components/ui/spell-slots-display';
 
 /* ═══════════════════════════════════════════════════════════════════
    Types
@@ -50,6 +53,7 @@ type CharacterData = {
     stats: Stats;
     story: Story;
     feats?: Array<{ name: string; benefit: string; level: number; statChoice: string | null }>;
+    spellSlots: SpellSlots | PactMagicSlots | null;
     createdAt: string;
 };
 
@@ -677,6 +681,15 @@ function MagicTab({ char }: { char: CharacterData }) {
 
     return (
         <div style={{ padding: '0.75rem 2rem 4rem' }}>
+            {/* Spell Slots */}
+            <section style={{ marginBottom: '2rem' }}>
+                <SpellSlotsDisplay
+                    spellSlots={char.spellSlots}
+                    className=""
+                    isPactMagic={usesPactMagic(char.class)}
+                />
+            </section>
+
             {racialAbilities.length > 0 && (
                 <section>
                     <MagicGroupHeader title={`Racial Abilities, ${fmt(charRace)}`} count={racialAbilities.length} color="rgba(80,200,100,0.8)" />

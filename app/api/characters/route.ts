@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId }                  from 'mongodb';
 import clientPromise                 from '@/lib/mongo';
 import { STATIC_BACKGROUNDS }        from '@/data/backgrounds';
+import { getSpellSlots }             from '@/data/spell-slots';
 
 export async function GET(request: NextRequest) {
     const userId = request.nextUrl.searchParams.get('userId');
@@ -104,6 +105,9 @@ export async function POST(request: NextRequest) {
             }
         }
 
+        // Calculate spell slots based on class and level
+        const spellSlots = getSpellSlots(dndClass, 1);
+
         const result = await appDb.collection('characters').insertOne({
             userId: new ObjectId(userId),
             name:       name.trim(),
@@ -122,6 +126,7 @@ export async function POST(request: NextRequest) {
             inventory,
             currency,
             feats:      [],
+            spellSlots: spellSlots,
             createdAt:  new Date(),
         });
 

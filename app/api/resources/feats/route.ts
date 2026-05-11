@@ -34,6 +34,12 @@ export async function GET(request: NextRequest) {
             .sort({ name: 1 })
             .toArray();
 
+        // Debug logging
+        const athlete = feats.find((f: any) => f.name === 'Athlete');
+        if (athlete) {
+            console.log('[API] Athlete feat from DB:', JSON.stringify(athlete, null, 2));
+        }
+
         return NextResponse.json(
             { feats, total: feats.length },
             { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } },

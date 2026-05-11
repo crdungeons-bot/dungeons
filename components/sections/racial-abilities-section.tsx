@@ -17,7 +17,7 @@ export default async function RacialAbilitiesSection() {
     const raceDetails = await collection
         .find({}, { projection: { _id: 0 } })
         .sort({ name: 1 })
-        .toArray() as RaceDetail[];
+        .toArray() as unknown as RaceDetail[];
 
     // Step 3: collect every unique trait index across all races
     const traitIndexSet = new Set<string>();

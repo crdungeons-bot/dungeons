@@ -1,0 +1,346 @@
+{
+    "barbarian": {
+        "subclass_level": 3,
+        "subclasses": [
+            {
+                "name": "Path of the Ancestral Guardian",
+                "description": "Calls upon ancestral spirits to protect allies and hinder foes with spectral warriors from beyond."
+            },
+            {
+                "name": "Path of the Berserker",
+                "description": "Channels raw fury into devastating attacks, entering a frenzied rage that overwhelms enemies through relentless aggression."
+            },
+            {
+                "name": "Path of the Storm Herald",
+                "description": "Harnesses primal elemental power, surrounding themselves with desert heat, sea storms, or tundra cold."
+            },
+            {
+                "name": "Path of the Totem Warrior",
+                "description": "Bonds with animal spirits, gaining bear resilience, eagle perception, or wolf pack tactics in battle."
+            },
+            {
+                "name": "Path of the Zealot",
+                "description": "Warrior fueled by divine fury, dealing extra radiant damage and becoming nearly impossible to kill."
+            }
+        ]
+    },
+    "bard": {
+        "subclass_level": 3,
+        "subclasses": [
+            {
+                "name": "College of Glamour",
+                "description": "Wields fey magic to charm and inspire, cloaking allies in protective majesty and beguiling enemies."
+            },
+            {
+                "name": "College of Lore",
+                "description": "Master of knowledge and versatile magic, cutting down foes with words and stealing spells from others."
+            },
+            {
+                "name": "College of Swords",
+                "description": "Combines blade work with bardic magic, performing deadly flourishes that entertain and devastate simultaneously."
+            },
+            {
+                "name": "College of Valor",
+                "description": "Warrior-poet who inspires allies in combat, granting battle magic and fighting alongside the party."
+            },
+            {
+                "name": "College of Whispers",
+                "description": "Manipulator who uses secrets and fear as weapons, impersonating others and striking with psychic vengeance."
+            }
+        ]
+    },
+    "cleric": {
+        "subclass_level": 1,
+        "subclasses": [
+            {
+                "name": "Forge Domain",
+                "description": "Master of fire and metal, blessing equipment and conjuring searing flames in worship of craftsmanship."
+            },
+            {
+                "name": "Grave Domain",
+                "description": "Guardian of life's threshold, denying undeath and ensuring enemies and allies meet death at proper time."
+            },
+            {
+                "name": "Knowledge Domain",
+                "description": "Seeker of truth and learning, reading minds and speaking all languages in pursuit of wisdom."
+            },
+            {
+                "name": "Life Domain",
+                "description": "Premier healer who restores vitality with unmatched efficiency, keeping allies alive through divine restoration."
+            },
+            {
+                "name": "Light Domain",
+                "description": "Wields radiant fire to banish darkness, burning enemies and protecting allies with brilliant flames."
+            },
+            {
+                "name": "Nature Domain",
+                "description": "Bridge between civilization and wilderness, commanding plants and animals while channeling nature's divine power."
+            },
+            {
+                "name": "Tempest Domain",
+                "description": "Storm caller who commands thunder and lightning, dealing maximum damage and repelling foes with divine winds."
+            },
+            {
+                "name": "Trickery Domain",
+                "description": "Deceptive agent of chaos, creating illusions and duplicates while blessing allies with stealth and misdirection."
+            },
+            {
+                "name": "War Domain",
+                "description": "Divine warrior granting extra attacks and weapon blessings, leading allies with martial prowess and holy strikes."
+            }
+        ]
+    },
+    "druid": {
+        "subclass_level": 2,
+        "subclasses": [
+            {
+                "name": "Circle of Dreams",
+                "description": "Fey-touched healer who restores allies from range and teleports through hidden pathways of the Feywild."
+            },
+            {
+                "name": "Circle of the Land",
+                "description": "Draws power from terrain, recovering spell slots and casting environment-specific magic tied to their homeland."
+            },
+            {
+                "name": "Circle of the Moon",
+                "description": "Supreme shapeshifter taking powerful beast forms, fighting as animals with enhanced combat wild shapes."
+            },
+            {
+                "name": "Circle of the Shepherd",
+                "description": "Summons and empowers spirits and beasts, surrounding themselves with protective animal totems and superior conjurations."
+            }
+        ]
+    },
+    "fighter": {
+        "subclass_level": 3,
+        "subclasses": [
+            {
+                "name": "Arcane Archer",
+                "description": "Elven archer weaving magic into arrows, unleashing supernatural shots that seek, explode, or bind targets."
+            },
+            {
+                "name": "Battle Master",
+                "description": "Tactical combatant who executes calculated maneuvers, controlling battlefield through precision strikes and clever techniques."
+            },
+            {
+                "name": "Cavalier",
+                "description": "Mounted knight and stalwart defender, protecting allies by marking enemies and excelling in opportunity attacks."
+            },
+            {
+                "name": "Champion",
+                "description": "Perfect warrior achieving physical peak through enhanced criticals, remarkable athletics, and pure martial prowess."
+            },
+            {
+                "name": "Eldritch Knight",
+                "description": "Blends weapon and spell, bonding with armaments and weaving evocation and abjuration magic into combat."
+            },
+            {
+                "name": "Samurai",
+                "description": "Disciplined warrior granting themselves advantage through fighting spirit, striking with elegant precision and unwavering resolve."
+            }
+        ]
+    },
+    "monk": {
+        "subclass_level": 3,
+        "subclasses": [
+            {
+                "name": "Way of the Drunken Master",
+                "description": "Unpredictable fighter using swaying movements, redirecting attacks and stumbling between foes with deceptive grace."
+            },
+            {
+                "name": "Way of the Four Elements",
+                "description": "Channels elemental power through ki, casting spell-like disciplines to control fire, water, air, and earth."
+            },
+            {
+                "name": "Way of the Kensei",
+                "description": "Weapon master treating blades as extensions of self, turning any weapon into a monk weapon."
+            },
+            {
+                "name": "Way of the Open Hand",
+                "description": "Quintessential monk mastering unarmed combat, manipulating ki to heal, harm, or perform incredible physical feats."
+            },
+            {
+                "name": "Way of Shadow",
+                "description": "Ninja employing stealth and deception, teleporting through shadows and passing unseen using darkness itself."
+            },
+            {
+                "name": "Way of the Sun Soul",
+                "description": "Channels radiant ki into searing bolts and burning strikes, projecting light as destructive ranged energy."
+            }
+        ]
+    },
+    "paladin": {
+        "subclass_level": 3,
+        "subclasses": [
+            {
+                "name": "Oath of the Ancients",
+                "description": "Guardian of light and life, wielding fey magic to protect nature and kindle hope against darkness."
+            },
+            {
+                "name": "Oath of Conquest",
+                "description": "Dominating warrior crushing enemies' will, spreading fear and ruling conquered foes through overwhelming power."
+            },
+            {
+                "name": "Oath of Devotion",
+                "description": "Ideal knight upholding justice and honor, shining with sacred light while protecting the innocent."
+            },
+            {
+                "name": "Oath of Redemption",
+                "description": "Seeks peace over violence, protecting allies and offering enemies redemption through mercy and nonlethal options."
+            },
+            {
+                "name": "Oath of Vengeance",
+                "description": "Relentless hunter sworn to punish wrongdoers, channeling divine wrath to hunt down and destroy their quarry."
+            }
+        ]
+    },
+    "ranger": {
+        "subclass_level": 3,
+        "subclasses": [
+            {
+                "name": "Beast Master Conclave",
+                "description": "Bonds with animal companion, fighting alongside loyal beast that grows stronger as partnership deepens."
+            },
+            {
+                "name": "Gloom Stalker Conclave",
+                "description": "Deadly ambusher thriving in darkness, invisible to darkvision and striking first with devastating surprise attacks."
+            },
+            {
+                "name": "Horizon Walker Conclave",
+                "description": "Planar guardian detecting portals and striking across dimensions, teleporting and dealing force damage to extraplanar threats."
+            },
+            {
+                "name": "Hunter Conclave",
+                "description": "Versatile slayer choosing combat techniques to hunt single prey, multiple foes, or defend against attacks."
+            },
+            {
+                "name": "Monster Slayer Conclave",
+                "description": "Expert in hunting supernatural threats, gaining protection against magic and sensing creatures' vulnerabilities."
+            }
+        ]
+    },
+    "rogue": {
+        "subclass_level": 3,
+        "subclasses": [
+            {
+                "name": "Arcane Trickster",
+                "description": "Blends illusion magic with thievery, using mage hand and enchantments to misdirect and deceive."
+            },
+            {
+                "name": "Assassin",
+                "description": "Master of disguise and death, gaining advantage on initiative and dealing automatic criticals to surprised targets."
+            },
+            {
+                "name": "Inquisitive",
+                "description": "Detective uncovering lies and weaknesses, gaining insight bonuses and using perception to land sneak attacks."
+            },
+            {
+                "name": "Mastermind",
+                "description": "Tactician granting allies advantage, mimicking accents and knowing two languages, excelling in manipulation and planning."
+            },
+            {
+                "name": "Scout",
+                "description": "Skirmisher with superior mobility and nature skills, excelling at hit-and-run tactics and wilderness survival."
+            },
+            {
+                "name": "Swashbuckler",
+                "description": "Charismatic duelist gaining sneak attack through panache, moving freely without provoking opportunity attacks in melee."
+            },
+            {
+                "name": "Thief",
+                "description": "Quick-fingered burglar with fast hands, climbing speed, and ability to use magical items regardless of restrictions."
+            }
+        ]
+    },
+    "sorcerer": {
+        "subclass_level": 1,
+        "subclasses": [
+            {
+                "name": "Draconic Bloodline",
+                "description": "Dragon-blooded caster with natural armor, bonus damage to chosen element, and eventual wings."
+            },
+            {
+                "name": "Divine Soul",
+                "description": "Touched by gods, accessing cleric spells alongside sorcerer list and channeling divine healing or destructive energy."
+            },
+            {
+                "name": "Shadow Magic",
+                "description": "Darkness incarnate seeing in magical dark, summoning shadow hound, and resurrecting through death's defiance."
+            },
+            {
+                "name": "Storm Sorcery",
+                "description": "Tempest-born caster flying after casting spells and dealing thunder or lightning damage to nearby attackers."
+            },
+            {
+                "name": "Wild Magic",
+                "description": "Chaos incarnate triggering random magical surges, bending luck with advantage or disadvantage through wild tides."
+            }
+        ]
+    },
+    "warlock": {
+        "subclass_level": 1,
+        "subclasses": [
+            {
+                "name": "Archfey",
+                "description": "Pact with fey lord granting charm abilities, misty escape, and power to dominate creatures' wills."
+            },
+            {
+                "name": "Celestial",
+                "description": "Blessed by heavenly being, adding radiant damage to attacks and healing allies through celestial resilience."
+            },
+            {
+                "name": "Fiend",
+                "description": "Devil's bargain granting temporary hit points on kills, resistance to damage, and ability to hurl foes."
+            },
+            {
+                "name": "Great Old One",
+                "description": "Alien pact enabling telepathy, reflecting mental attacks, and creating thralls from shattered minds."
+            },
+            {
+                "name": "Hexblade",
+                "description": "Sentient weapon pact enabling charisma-based attacks, bonus damage curses, and summoning shadowy specter servant."
+            }
+        ]
+    },
+    "wizard": {
+        "subclass_level": 2,
+        "subclasses": [
+            {
+                "name": "School of Abjuration",
+                "description": "Master of protective magic, creating arcane wards that absorb damage and dispel hostile spells."
+            },
+            {
+                "name": "School of Conjuration",
+                "description": "Summons creatures and objects from thin air, teleporting short distances and creating permanent minor items."
+            },
+            {
+                "name": "School of Divination",
+                "description": "Sees future through portents, manipulating fate by replacing rolls and gaining superior initiative."
+            },
+            {
+                "name": "School of Enchantment",
+                "description": "Mind controller splitting enchantments between targets, charming multiple creatures, and altering memories."
+            },
+            {
+                "name": "School of Evocation",
+                "description": "Destructive caster shaping explosive spells to protect allies, overchanneling magic for maximum damage."
+            },
+            {
+                "name": "School of Illusion",
+                "description": "Reality bender making illusions partially real, becoming invisible and crafting believable false visions."
+            },
+            {
+                "name": "School of Necromancy",
+                "description": "Commands undead armies, regaining health from kills and eventually becoming lich-like through undead thralls."
+            },
+            {
+                "name": "School of Transmutation",
+                "description": "Matter manipulator changing objects' properties, transmuting materials, and eventually transforming into other creatures."
+            },
+            {
+                "name": "School of War Magic",
+                "description": "Combat mage boosting defense when casting, deflecting attacks, and maintaining concentration through arcane deflection."
+            }
+        ]
+    }
+}

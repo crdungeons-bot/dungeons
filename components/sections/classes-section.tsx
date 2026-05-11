@@ -24,7 +24,7 @@ export default async function ClassesSection() {
     const classes = await collection
         .find({}, { projection: { _id: 0 } })
         .sort({ name: 1 })
-        .toArray();
+        .toArray() as unknown as ClassDetail[];
 
     return (
         <div style={{ padding: '2rem' }}>
@@ -45,7 +45,7 @@ export default async function ClassesSection() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {(classes as ClassDetail[]).map((dndClass) => (
+                {classes.map((dndClass) => (
                     <Card
                         key={dndClass.index}
                         title={dndClass.name}

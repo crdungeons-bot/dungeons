@@ -9,14 +9,14 @@ export default async function Classes() {
     const classes = await collection
         .find({}, { projection: { _id: 0 } })
         .sort({ name: 1 })
-        .toArray();
+        .toArray() as unknown as ClassDetail[];
 
     return (
         <div>
             <Navigation />
             <h1>D&D Classes ({classes.length} total)</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-                {(classes as ClassDetail[]).map((dndClass) => (
+                {classes.map((dndClass) => (
                     <Card
                         key={dndClass.index}
                         title={dndClass.name}

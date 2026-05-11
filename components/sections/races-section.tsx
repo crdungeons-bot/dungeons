@@ -21,7 +21,7 @@ export default async function RacesSection() {
     const races = await collection
         .find({}, { projection: { _id: 0 } })
         .sort({ name: 1 })
-        .toArray();
+        .toArray() as unknown as RaceDetail[];
 
     return (
         <div style={{ padding: '2rem' }}>
@@ -42,7 +42,7 @@ export default async function RacesSection() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {(races as RaceDetail[]).map((race) => (
+                {races.map((race) => (
                     <Card
                         key={race.index}
                         title={race.name}

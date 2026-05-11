@@ -33,10 +33,12 @@ export default async function CreateCharacterPage({
     const params = await searchParams;
     const currentStep = Number(params.step ?? '1');
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
     // Steps 1–2 need the full list; step 4 needs race+class detail; others need nothing
     const listUrl =
-        currentStep === 2 ? 'https://www.dnd5eapi.co/api/classes' :
-                            'https://www.dnd5eapi.co/api/races';
+        currentStep === 2 ? `${BASE_URL}/api/resources/classes` :
+                            `${BASE_URL}/api/resources/races`;
 
     const data: ApiList = currentStep <= 2
         ? await fetch(listUrl, { cache: 'force-cache' }).then(r => r.json())
@@ -45,8 +47,8 @@ export default async function CreateCharacterPage({
     // For the proficiency step, fetch race + class detail in parallel
     const [raceApiData, classApiData] = currentStep === 4 && params.race && params.class
         ? await Promise.all([
-            fetch(`https://www.dnd5eapi.co/api/races/${params.race}`,   { cache: 'force-cache' }).then(r => r.json()),
-            fetch(`https://www.dnd5eapi.co/api/classes/${params.class}`, { cache: 'force-cache' }).then(r => r.json()),
+            fetch(`${BASE_URL}/api/resources/races?index=${params.race}`,   { cache: 'force-cache' }).then(r => r.json()).then(d => d.results[0]),
+            fetch(`${BASE_URL}/api/resources/classes?index=${params.class}`, { cache: 'force-cache' }).then(r => r.json()).then(d => d.results[0]),
           ])
         : [null, null];
 

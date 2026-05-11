@@ -14,7 +14,7 @@ const RACE_DESCRIPTIONS: Record<string, string> = {
 };
 
 export default async function RacesSection() {
-    const response = await fetch('https://www.dnd5eapi.co/api/races');
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/resources/races`, { cache: 'force-cache' });
     const data: RacesResponse = await response.json();
 
     return (

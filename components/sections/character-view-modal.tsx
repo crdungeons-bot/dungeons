@@ -7,7 +7,7 @@ import type { SpellSlots, PactMagicSlots } from '@/data/spell-slots';
 import { usesPactMagic } from '@/data/spell-slots';
 import { useCharacterInventory, type EnrichedInventoryItem } from '@/hooks/use-character-inventory';
 import ItemTooltip from '@/components/ui/item-tooltip';
-import SpellSlotsDisplay from '@/components/ui/spell-slots-display';
+import SpellcastingStats from '@/components/ui/spellcasting-stats';
 
 /* ═══════════════════════════════════════════════════════════════════
    Types
@@ -681,11 +681,13 @@ function MagicTab({ char }: { char: CharacterData }) {
 
     return (
         <div style={{ padding: '0.75rem 2rem 4rem' }}>
-            {/* Spell Slots */}
+            {/* Spellcasting Stats */}
             <section style={{ marginBottom: '2rem' }}>
-                <SpellSlotsDisplay
+                <SpellcastingStats
                     spellSlots={char.spellSlots}
-                    className=""
+                    charClass={char.class}
+                    charLevel={char.level}
+                    stats={char.stats}
                     isPactMagic={usesPactMagic(char.class)}
                 />
             </section>

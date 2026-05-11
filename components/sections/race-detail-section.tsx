@@ -5,10 +5,13 @@ import TraitHoverBadge from '@/components/ui/trait-hover-badge';
 type TraitDetail = { index: string; name: string; desc: string[] };
 
 export default async function RaceDetailSection({ race }: { race: string }) {
-    const response = await fetch(`https://www.dnd5eapi.co/api/races/${race}`);
-    const data: RaceDetail = await response.json();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    
+    const response = await fetch(`${BASE_URL}/api/resources/races?index=${race}`, { cache: 'force-cache' });
+    const responseData = await response.json();
+    const data: RaceDetail = responseData.results[0];
 
-    // Fetch descriptions for every trait in parallel
+    // Fetch descriptions for every trait in parallel (still from external API for now)
     const traitDetails: TraitDetail[] = await Promise.all(
         data.traits.map((t) =>
             fetch(`https://www.dnd5eapi.co/api/traits/${t.index}`).then((r) => r.json())

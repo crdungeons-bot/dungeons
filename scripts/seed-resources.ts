@@ -14,6 +14,8 @@ import { resolve }    from 'path';
 import SPELLS_AND_ABILITIES from '../data/spells.js';
 import ITEMS                from './items-data.js';
 import { FEATS }            from './feats-data.js';
+import RACES                from './races-data.js';
+import CLASSES              from './classes-data.js';
 
 // Load .env.local (Next.js convention) so MONGODB_URI is available when
 // running this script outside of the Next.js server process.
@@ -124,6 +126,48 @@ async function seedFeats(db: ReturnType<MongoClient['db']>) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   Seed races
+═══════════════════════════════════════════════════════════════════ */
+
+async function seedRaces(db: ReturnType<MongoClient['db']>) {
+    const col = 'races';
+    await dropIfExists(db, col);
+
+    const collection = db.collection(col);
+
+    await collection.insertMany(RACES as object[]);
+    log(`Inserted ${RACES.length} races`);
+
+    await collection.createIndex({ index: 1 },                          { name: 'index', unique: true });
+    await collection.createIndex({ name: 1 },                           { name: 'name' });
+    await collection.createIndex({ size: 1 },                           { name: 'size' });
+    await collection.createIndex({ name: 'text', alignment: 'text' },   { name: 'text_search' });
+
+    log('Indexes created for races');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Seed classes
+═══════════════════════════════════════════════════════════════════ */
+
+async function seedClasses(db: ReturnType<MongoClient['db']>) {
+    const col = 'classes';
+    await dropIfExists(db, col);
+
+    const collection = db.collection(col);
+
+    await collection.insertMany(CLASSES as object[]);
+    log(`Inserted ${CLASSES.length} classes`);
+
+    await collection.createIndex({ index: 1 },                          { name: 'index', unique: true });
+    await collection.createIndex({ name: 1 },                           { name: 'name' });
+    await collection.createIndex({ hit_die: 1 },                        { name: 'hit_die' });
+    await collection.createIndex({ name: 'text' },                      { name: 'text_search' });
+
+    log('Indexes created for classes');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Main
 ═══════════════════════════════════════════════════════════════════ */
 
@@ -145,6 +189,12 @@ async function main() {
 
         console.log('\n─── feats ──────────────────────────────────────────');
         await seedFeats(db);
+
+        console.log('\n─── races ──────────────────────────────────────────');
+        await seedRaces(db);
+
+        console.log('\n─── classes ────────────────────────────────────────');
+        await seedClasses(db);
 
         console.log('\n✅  Seed complete.\n');
     } finally {

@@ -29,6 +29,9 @@ yarn-error.log*
 .env*.local
 .env
 
+# scripts temporary data
+scripts/*.json
+
 # vercel
 .vercel
 

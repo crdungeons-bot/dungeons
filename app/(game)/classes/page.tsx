@@ -3,7 +3,7 @@ import { DndClass, ClassesResponse } from "@/types";
 
 export default async function Classes() {
 
-    const response = await fetch('https://www.dnd5eapi.co/api/classes');
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/resources/classes`, { cache: 'force-cache' });
     const data: ClassesResponse = await response.json();
 
     return (

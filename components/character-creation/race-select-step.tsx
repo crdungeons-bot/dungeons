@@ -456,10 +456,10 @@ export default function RaceSelectStep({
             return;
         }
         setLoadingDetail(true);
-        fetch(`https://www.dnd5eapi.co/api/races/${viewingRace}`)
+        fetch(`/api/resources/races?index=${viewingRace}`)
             .then(r => r.json())
-            .then((d: RaceDetail) => {
-                setViewingData(d);
+            .then((d: { results: RaceDetail[] }) => {
+                setViewingData(d.results[0]);
                 setLoadingDetail(false);
             })
             .catch(() => setLoadingDetail(false));

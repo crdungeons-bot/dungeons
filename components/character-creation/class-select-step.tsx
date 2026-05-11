@@ -465,9 +465,12 @@ export default function ClassSelectStep({
     useEffect(() => {
         if (!viewingClass) { setViewingData(null); return; }
         setLoadingDetail(true);
-        fetch(`https://www.dnd5eapi.co/api/classes/${viewingClass}`)
+        fetch(`/api/resources/classes?index=${viewingClass}`)
             .then(r => r.json())
-            .then((d: ClassDetail) => { setViewingData(d); setLoadingDetail(false); })
+            .then((d: { results: ClassDetail[] }) => {
+                setViewingData(d.results[0]);
+                setLoadingDetail(false);
+            })
             .catch(() => setLoadingDetail(false));
     }, [viewingClass]);
 

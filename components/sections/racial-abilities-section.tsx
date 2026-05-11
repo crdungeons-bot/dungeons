@@ -9,22 +9,20 @@ type TraitDetail = {
 };
 
 export default async function RacialAbilitiesSection() {
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    
     // Step 1: get the race list
-    const listRes = await fetch('https://www.dnd5eapi.co/api/races');
+    const listRes = await fetch(`${BASE_URL}/api/resources/races`, { cache: 'force-cache' });
     const list: RacesResponse = await listRes.json();
 
     // Step 2: fetch all race details in parallel to get their trait lists
-    const raceDetails: RaceDetail[] = await Promise.all(
-        list.results.map((r) =>
-            fetch(`https://www.dnd5eapi.co/api/races/${r.index}`).then((res) => res.json())
-        )
-    );
+    const raceDetails: RaceDetail[] = list.results;
 
     // Step 3: collect every unique trait index across all races
     const traitIndexSet = new Set<string>();
     raceDetails.forEach((race) => race.traits.forEach((t) => traitIndexSet.add(t.index)));
 
-    // Step 4: fetch all trait details in parallel
+    // Step 4: fetch all trait details in parallel (still from external API for now)
     const traitDetailList: TraitDetail[] = await Promise.all(
         [...traitIndexSet].map((idx) =>
             fetch(`https://www.dnd5eapi.co/api/traits/${idx}`).then((res) => res.json())

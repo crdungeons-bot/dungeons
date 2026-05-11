@@ -3,7 +3,7 @@
 export type DndClass = {
     index: string;
     name: string;
-    url: string;
+    url?: string; // Optional for backwards compatibility
 };
 
 export type Proficiency = {
@@ -42,6 +42,7 @@ export type ClassDetail = {
     proficiencies: Proficiency[];
     saving_throws: SavingThrow[];
     starting_equipment: StartingEquipment[];
+    url?: string; // Optional for backwards compatibility
 };
 
 export type ClassesResponse = {

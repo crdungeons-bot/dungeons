@@ -2,7 +2,7 @@
 export type Race = {
   index: string;
   name: string;
-  url: string;
+  url?: string; // Optional for backwards compatibility
 };
 
 export type AbilityBonus = {
@@ -35,6 +35,7 @@ export type RaceDetail = {
   ability_bonuses: AbilityBonus[];
   traits: Trait[];
   languages: Language[];
+  url?: string; // Optional for backwards compatibility
 };
 
 export type RacesResponse = {

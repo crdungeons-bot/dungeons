@@ -280,8 +280,14 @@ export default function ProficiencyStep({
     }
 
     /* ── Navigation ── */
+    // Determine correct step numbers based on whether class has level 1 subclass
+    const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
+    const needsSubclassStep = dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(dndClass);
+    const prevStepNumber = needsSubclassStep ? '4' : '3'; // Background
+    const nextStepNumber = needsSubclassStep ? '6' : '5'; // Story
+
     function handleBack() {
-        const p = new URLSearchParams({ step: '4' });
+        const p = new URLSearchParams({ step: prevStepNumber });
         if (race)       p.set('race',       race);
         if (dndClass)   p.set('class',      dndClass);
         if (subclass)   p.set('subclass',   subclass);
@@ -296,7 +302,7 @@ export default function ProficiencyStep({
 
     function handleContinue() {
         if (!canContinue) return;
-        const p = new URLSearchParams({ step: '6' });
+        const p = new URLSearchParams({ step: nextStepNumber });
         if (race)       p.set('race',       race);
         if (dndClass)   p.set('class',      dndClass);
         if (subclass)   p.set('subclass',   subclass);

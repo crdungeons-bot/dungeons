@@ -53,6 +53,7 @@ export type LevelUpCharacter = {
     level: number;
     hp: number | null;
     stats: Stats;
+    subclass?: { name: string; class: string; level_chosen: number } | null;
 };
 
 type Step = 'announce' | 'subclass' | 'hp' | 'asi-choice' | 'asi' | 'feat' | 'features' | 'summary';
@@ -736,6 +737,10 @@ function HPScreen({ char, newLevel, onAccept }: {
     const avgRoll     = Math.floor(hitDie / 2) + 1;
     const avgGain     = Math.max(1, avgRoll + conMod);
 
+    const classDisplay = char.subclass
+        ? `${char.class.charAt(0).toUpperCase() + char.class.slice(1)} (${char.subclass.name})`
+        : char.class.charAt(0).toUpperCase() + char.class.slice(1);
+
     const [rolling,   setRolling]   = useState(false);
     const [rolled,    setRolled]    = useState<number | null>(null);
     const [displayNum, setDisplay]  = useState<number>(hitDie);
@@ -772,7 +777,7 @@ function HPScreen({ char, newLevel, onAccept }: {
                     Roll for Hit Points
                 </p>
                 <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '700', color: '#fff' }}>
-                    Level {newLevel} {char.class.charAt(0).toUpperCase() + char.class.slice(1)}
+                    Level {newLevel} {classDisplay}
                 </p>
             </div>
 

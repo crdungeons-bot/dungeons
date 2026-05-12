@@ -92,6 +92,13 @@ export default function Register() {
             } else {
                 setIsError(true);
                 setMessage(data.error || 'Registration failed');
+                
+                // If email already exists, automatically redirect to login after showing message
+                if (response.status === 409) {
+                    setTimeout(() => {
+                        router.push('/login');
+                    }, 3000);
+                }
             }
         } catch (error) {
             setIsError(true);
@@ -242,6 +249,21 @@ export default function Register() {
                                 fontSize: '0.9rem'
                             }}>
                                 {message}
+                                {isError && message.includes('already registered') && (
+                                    <>
+                                        {' '}
+                                        <a 
+                                            href="/login" 
+                                            style={{
+                                                color: 'var(--color-gold)',
+                                                fontWeight: '600',
+                                                textDecoration: 'underline'
+                                            }}
+                                        >
+                                            Go to Login →
+                                        </a>
+                                    </>
+                                )}
                             </div>
                         )}
 

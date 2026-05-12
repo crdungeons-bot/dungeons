@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
         const existingEmail = await usersCollection.findOne({ email });
         if (existingEmail) {
             return NextResponse.json(
-                { error: 'An account with this email already exists' },
+                { error: 'This email is already registered. Please login to your existing account.' },
                 { status: 409 }
             );
         }

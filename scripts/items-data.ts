@@ -546,6 +546,112 @@ const ITEMS: ItemEntry[] = [
 { name:'Pouch',             category:'gear', subcategory:'container', rarity:'mundane', weight:1,   value:'5 sp',    valueCp:50,    description:'A cloth or leather pouch can hold up to 20 sling bullets or 50 blowgun needles, among other things. A filled pouch weighs 1 pound.', source:'PHB' },
 { name:'Quiver',            category:'gear', subcategory:'container', rarity:'mundane', weight:1,   value:'1 gp',    valueCp:100,   description:'A quiver can hold up to 20 arrows. A sturdier version can hold crossbow bolts.', source:'PHB' },
 { name:'Chest',             category:'gear', subcategory:'container', rarity:'mundane', weight:25,  value:'5 gp',    valueCp:500,   description:'A wooden chest with a locking mechanism. Can hold 12 cubic feet of material.', source:'PHB' },
+{ name:'Sack',              category:'gear', subcategory:'container', rarity:'mundane', weight:0.5,  value:'1 cp',    valueCp:1,     description:'A cloth sack that can hold 1 cubic foot or 30 pounds of gear.', source:'PHB' },
+{ name:'Barrel',            category:'gear', subcategory:'container', rarity:'mundane', weight:70,   value:'2 gp',    valueCp:200,   description:'A wooden barrel that can hold 40 gallons of liquid or 4 cubic feet of solid material.', source:'PHB' },
+{ name:'Basket',            category:'gear', subcategory:'container', rarity:'mundane', weight:2,    value:'4 sp',    valueCp:40,    description:'A woven basket that can hold 2 cubic feet or 40 pounds of gear.', source:'PHB' },
+{ name:'Bottle (Glass)',    category:'gear', subcategory:'container', rarity:'mundane', weight:2,    value:'2 gp',    valueCp:200,   description:'A glass bottle that can hold 1.5 pints of liquid.', source:'PHB' },
+{ name:'Bucket',            category:'gear', subcategory:'container', rarity:'mundane', weight:2,    value:'5 cp',    valueCp:5,     description:'A wooden or metal pail that can hold 3 gallons of liquid or half a cubic foot of solid material.', source:'PHB' },
+{ name:'Flask',             category:'gear', subcategory:'container', rarity:'mundane', weight:1,    value:'2 cp',    valueCp:2,     description:'A small metal or ceramic container that holds 1 pint of liquid.', source:'PHB' },
+{ name:'Jug',               category:'gear', subcategory:'container', rarity:'mundane', weight:4,    value:'2 cp',    valueCp:2,     description:'A ceramic vessel that holds 1 gallon of liquid.', source:'PHB' },
+{ name:'Pitcher',           category:'gear', subcategory:'container', rarity:'mundane', weight:4,    value:'2 cp',    valueCp:2,     description:'A ceramic pitcher that holds 1 gallon of liquid.', source:'PHB' },
+{ name:'Pot (Iron)',        category:'gear', subcategory:'container', rarity:'mundane', weight:10,   value:'2 gp',    valueCp:200,   description:'An iron pot suitable for cooking over a fire.', source:'PHB' },
+{ name:'Tankard',           category:'gear', subcategory:'container', rarity:'mundane', weight:1,    value:'2 cp',    valueCp:2,     description:'A drinking vessel that holds 1 pint of liquid.', source:'PHB' },
+{ name:'Vial',              category:'gear', subcategory:'container', rarity:'mundane', weight:0,    value:'1 gp',    valueCp:100,   description:'A small glass vial that holds 4 ounces of liquid.', source:'PHB' },
+{ name:'Case (Crossbow Bolt)', category:'gear', subcategory:'container', rarity:'mundane', weight:1, value:'1 gp',  valueCp:100,   description:'A wooden case that can hold up to 20 crossbow bolts.', source:'PHB' },
+{ name:'Case (Map or Scroll)', category:'gear', subcategory:'container', rarity:'mundane', weight:1, value:'1 gp',  valueCp:100,   description:'A cylindrical leather case that can hold up to ten rolled-up sheets of paper or five rolled-up sheets of parchment.', source:'PHB' },
+
+/* ── Religious & Divine Items ── */
+{ name:'Holy Symbol (Emblem)',  category:'gear', subcategory:'divine', rarity:'mundane', weight:0,    value:'5 gp',    valueCp:500,   description:'A simple emblem depicting a holy symbol worn visibly. Can be used as a spellcasting focus by clerics and paladins.', source:'PHB' },
+{ name:'Holy Symbol (Reliquary)', category:'gear', subcategory:'divine', rarity:'mundane', weight:2,  value:'5 gp',    valueCp:500,   description:'A reliquary containing a sacred relic. Can be used as a spellcasting focus.', source:'PHB' },
+{ name:'Prayer Book',           category:'gear', subcategory:'divine', rarity:'mundane', weight:2,    value:'10 gp',   valueCp:1000,  description:'A small book containing prayers and religious teachings. Often carried by clerics and devout followers.', source:'PHB' },
+{ name:'Incense (Block)',       category:'gear', subcategory:'divine', rarity:'mundane', weight:0,    value:'5 cp',    valueCp:5,     description:'A block of incense that burns for 1 hour when lit, producing fragrant smoke used in religious ceremonies.', source:'PHB' },
+{ name:'Censer',                category:'gear', subcategory:'divine', rarity:'mundane', weight:1,    value:'5 gp',    valueCp:500,   description:'A container for burning incense, typically swung on a chain during religious rituals.', source:'PHB' },
+{ name:'Vestments',             category:'clothing', subcategory:'divine', rarity:'mundane', weight:4, value:'15 gp',   valueCp:1500,  description:'Ceremonial robes worn by priests and clerics during religious ceremonies. More ornate than common robes.', source:'PHB' },
+
+/* ── Camping Gear ── */
+{ name:'Tent (Two-Person)',     category:'gear', subcategory:'camping', rarity:'mundane', weight:20,   value:'2 gp',    valueCp:200,   description:'A simple canvas tent that sleeps two people.', source:'PHB' },
+{ name:'Mess Kit',              category:'gear', subcategory:'camping', rarity:'mundane', weight:1,    value:'2 sp',    valueCp:20,    description:'A tin box containing a cup, plates, and simple cutlery for eating.', source:'PHB' },
+
+/* ── Additional Utility Items ── */
+{ name:'Chain (10 feet)',       category:'gear', subcategory:'utility', rarity:'mundane', weight:10,   value:'5 gp',    valueCp:500,   description:'A 10-foot length of chain. Can be burst with a DC 20 Strength check. Each chain has 10 hit points.', source:'PHB' },
+{ name:'Ladder (10-foot)',      category:'gear', subcategory:'utility', rarity:'mundane', weight:25,   value:'1 sp',    valueCp:10,    description:'A wooden ladder measuring 10 feet in length.', source:'PHB' },
+{ name:'Lock',                  category:'gear', subcategory:'utility', rarity:'mundane', weight:1,    value:'10 gp',   valueCp:1000,  description:'A key-operated lock. Comes with one key. Without the key, can be picked with thieves\' tools and a successful DC 15 Dexterity check.', source:'PHB' },
+{ name:'Sealing Wax',           category:'gear', subcategory:'utility', rarity:'mundane', weight:0,    value:'5 sp',    valueCp:50,    description:'Wax used to seal letters and documents. Often stamped with a signet ring.', source:'PHB' },
+{ name:'Soap',                  category:'gear', subcategory:'utility', rarity:'mundane', weight:0,    value:'2 cp',    valueCp:2,     description:'A bar of soap for bathing and cleaning.', source:'PHB' },
+{ name:'Perfume (Vial)',        category:'gear', subcategory:'utility', rarity:'mundane', weight:0,    value:'5 gp',    valueCp:500,   description:'A small vial of pleasant-smelling perfume or cologne.', source:'PHB' },
+{ name:'Ram (Portable)',        category:'gear', subcategory:'utility', rarity:'mundane', weight:35,   value:'4 gp',    valueCp:400,   description:'A wooden pole with a heavy metal head used for breaking down doors. Grants +4 bonus to Strength checks to break doors.', source:'PHB' },
+{ name:'Bell',                  category:'gear', subcategory:'utility', rarity:'mundane', weight:0,    value:'1 gp',    valueCp:100,   description:'A small bell that makes a loud ringing sound when struck.', source:'PHB' },
+{ name:'String (10 feet)',      category:'gear', subcategory:'utility', rarity:'mundane', weight:0,    value:'1 sp',    valueCp:10,    description:'Ten feet of thin string or twine.', source:'PHB' },
+{ name:'Pole (10-foot)',        category:'gear', subcategory:'utility', rarity:'mundane', weight:7,    value:'5 cp',    valueCp:5,     description:'A wooden pole useful for prodding and probing.', source:'PHB' },
+{ name:'Net',                   category:'gear', subcategory:'utility', rarity:'mundane', weight:3,    value:'1 gp',    valueCp:100,   description:'A large net for catching fish or restraining creatures. Can be thrown as a weapon (range 5/15). A creature hit is restrained until freed (DC 10 STR check or slashing damage to AC 10, 5 HP).', source:'PHB' },
+{ name:'Hourglass',             category:'gear', subcategory:'utility', rarity:'mundane', weight:1,    value:'25 gp',   valueCp:2500,  description:'A glass timepiece that measures one hour.', source:'PHB' },
+{ name:'Scale (Merchant\'s)',   category:'gear', subcategory:'utility', rarity:'mundane', weight:3,    value:'5 gp',    valueCp:500,   description:'A small balance and pans for weighing coins and goods accurately.', source:'PHB' },
+{ name:'Tent (Single)',         category:'gear', subcategory:'camping', rarity:'mundane', weight:10,   value:'1 gp',    valueCp:100,   description:'A small canvas tent that sleeps one person.', source:'PHB' },
+
+/* ══════════════════════════════════════════════════════════════════
+   EQUIPMENT PACKS
+══════════════════════════════════════════════════════════════════ */
+
+{ name:"Burglar's Pack",        category:'pack', subcategory:'equipment-pack', rarity:'mundane', weight:44.5, value:'16 gp',  valueCp:1600,  description:'Includes a backpack, 1000 ball bearings, 10 feet of string, a bell, 5 candles, a crowbar, a hammer, 10 pitons, a hooded lantern, 2 flasks of oil, 5 days of rations, a tinderbox, and a waterskin. Also contains 50 feet of hempen rope strapped to the side.', source:'PHB' },
+{ name:"Diplomat's Pack",       category:'pack', subcategory:'equipment-pack', rarity:'mundane', weight:39,   value:'39 gp',  valueCp:3900,  description:'Includes a chest, 2 cases for maps and scrolls, a set of fine clothes, a bottle of ink, an ink pen, a lamp, 2 flasks of oil, 5 sheets of paper, a vial of perfume, sealing wax, and soap.', source:'PHB' },
+{ name:"Dungeoneer's Pack",     category:'pack', subcategory:'equipment-pack', rarity:'mundane', weight:61.5, value:'12 gp',  valueCp:1200,  description:'Includes a backpack, a crowbar, a hammer, 10 pitons, 10 torches, a tinderbox, 10 days of rations, and a waterskin. Also contains 50 feet of hempen rope strapped to the side.', source:'PHB' },
+{ name:"Entertainer's Pack",    category:'pack', subcategory:'equipment-pack', rarity:'mundane', weight:38,   value:'40 gp',  valueCp:4000,  description:'Includes a backpack, a bedroll, 2 costumes, 5 candles, 5 days of rations, a waterskin, and a disguise kit.', source:'PHB' },
+{ name:"Explorer's Pack",       category:'pack', subcategory:'equipment-pack', rarity:'mundane', weight:59,   value:'10 gp',  valueCp:1000,  description:'Includes a backpack, a bedroll, a mess kit, a tinderbox, 10 torches, 10 days of rations, and a waterskin. Also contains 50 feet of hempen rope strapped to the side.', source:'PHB' },
+{ name:"Priest's Pack",         category:'pack', subcategory:'equipment-pack', rarity:'mundane', weight:24,   value:'19 gp',  valueCp:1900,  description:'Includes a backpack, a blanket, 10 candles, a tinderbox, an alms box, 2 blocks of incense, a censer, vestments, 2 days of rations, and a waterskin.', source:'PHB' },
+{ name:"Scholar's Pack",        category:'pack', subcategory:'equipment-pack', rarity:'mundane', weight:22,   value:'40 gp',  valueCp:4000,  description:'Includes a backpack, a book of lore, a bottle of ink, an ink pen, 10 sheets of parchment, a little bag of sand, and a small knife.', source:'PHB' },
+
+/* ══════════════════════════════════════════════════════════════════
+   TOOLS - ARTISAN'S TOOLS
+══════════════════════════════════════════════════════════════════ */
+
+{ name:"Alchemist's Supplies",  category:'tool', subcategory:'artisan',  rarity:'mundane', weight:8,   value:'50 gp',  valueCp:5000,  description:'Includes alembics, beakers, vials, and ingredients for creating potions and alchemical substances. Proficiency allows crafting alchemical items and identifying substances.', source:'PHB' },
+{ name:"Brewer's Supplies",     category:'tool', subcategory:'artisan',  rarity:'mundane', weight:9,   value:'20 gp',  valueCp:2000,  description:'Includes a large glass jug, quantity of hops, a siphon, and tubing. Proficiency lets you brew beer and detect poison or contamination in drinks.', source:'PHB' },
+{ name:"Calligrapher's Supplies", category:'tool', subcategory:'artisan', rarity:'mundane', weight:5,  value:'10 gp',  valueCp:1000,  description:'Includes ink, parchment, and writing tools for creating decorative text. Proficiency allows forging documents and authenticating handwriting.', source:'PHB' },
+{ name:"Carpenter's Tools",     category:'tool', subcategory:'artisan',  rarity:'mundane', weight:6,   value:'8 gp',   valueCp:800,   description:'Includes a saw, hammer, nails, hatchet, square, and plane. Proficiency lets you construct wooden structures and identify structural weaknesses.', source:'PHB' },
+{ name:"Cartographer's Tools",  category:'tool', subcategory:'artisan',  rarity:'mundane', weight:6,   value:'15 gp',  valueCp:1500,  description:'Includes a quill, ink, parchment, compass, calipers, and ruler. Proficiency allows creating and understanding maps.', source:'PHB' },
+{ name:"Cobbler's Tools",       category:'tool', subcategory:'artisan',  rarity:'mundane', weight:5,   value:'5 gp',   valueCp:500,   description:'Includes an awl, knife, hammer, thread, and leather scraps. Proficiency lets you craft and repair footwear, and determine a creature\'s race and direction from tracks.', source:'PHB' },
+{ name:"Cook's Utensils",       category:'tool', subcategory:'artisan',  rarity:'mundane', weight:8,   value:'1 gp',   valueCp:100,   description:'Includes pots, pans, knives, spoons, and other cooking implements. Proficiency lets you prepare meals and detect poison in food.', source:'PHB' },
+{ name:"Glassblower's Tools",   category:'tool', subcategory:'artisan',  rarity:'mundane', weight:5,   value:'30 gp',  valueCp:3000,  description:'Includes blowpipe, pliers, blocks, and paddles for shaping glass. Proficiency allows crafting glass objects and identifying glass quality.', source:'PHB' },
+{ name:"Jeweler's Tools",       category:'tool', subcategory:'artisan',  rarity:'mundane', weight:2,   value:'25 gp',  valueCp:2500,  description:'Includes small files, pliers, tweezers, and loupes. Proficiency lets you craft jewelry, assess gem value, and identify fake stones.', source:'PHB' },
+{ name:"Leatherworker's Tools", category:'tool', subcategory:'artisan',  rarity:'mundane', weight:5,   value:'5 gp',   valueCp:500,   description:'Includes knives, needles, thread, awl, and leather scraps. Proficiency allows crafting leather items and determining hide quality.', source:'PHB' },
+{ name:"Mason's Tools",         category:'tool', subcategory:'artisan',  rarity:'mundane', weight:8,   value:'10 gp',  valueCp:1000,  description:'Includes a trowel, hammer, chisels, and brushes. Proficiency lets you craft stone structures and identify weak points in stonework.', source:'PHB' },
+{ name:"Painter's Supplies",    category:'tool', subcategory:'artisan',  rarity:'mundane', weight:5,   value:'10 gp',  valueCp:1000,  description:'Includes easel, canvas, brushes, and paints. Proficiency allows creating paintings, forging paintings, and identifying art quality.', source:'PHB' },
+{ name:"Potter's Tools",        category:'tool', subcategory:'artisan',  rarity:'mundane', weight:3,   value:'10 gp',  valueCp:1000,  description:'Includes potter\'s needles, ribs, and scrapers. Proficiency lets you craft pottery and identify ceramic quality.', source:'PHB' },
+{ name:"Smith's Tools",         category:'tool', subcategory:'artisan',  rarity:'mundane', weight:8,   value:'20 gp',  valueCp:2000,  description:'Includes hammers, tongs, charcoal, and iron. Proficiency allows forging metal items, repairing armor and weapons, and identifying metalwork quality.', source:'PHB' },
+{ name:"Tinker's Tools",        category:'tool', subcategory:'artisan',  rarity:'mundane', weight:10,  value:'50 gp',  valueCp:5000,  description:'Includes various hand tools, thread, wire, and scrap materials. Proficiency lets you construct and repair clockwork devices and gadgets.', source:'PHB' },
+{ name:"Woodcarver's Tools",    category:'tool', subcategory:'artisan',  rarity:'mundane', weight:5,   value:'1 gp',   valueCp:100,   description:'Includes knives, gouges, and a small saw. Proficiency allows carving intricate wooden objects and identifying wood types.', source:'PHB' },
+
+/* ── Tools - Other ── */
+{ name:"Disguise Kit",          category:'tool', subcategory:'specialist', rarity:'mundane', weight:3,   value:'25 gp',  valueCp:2500,  description:'Includes cosmetics, hair dye, props, and clothing accessories. Proficiency allows creating convincing disguises.', source:'PHB' },
+{ name:"Forgery Kit",           category:'tool', subcategory:'specialist', rarity:'mundane', weight:5,   value:'15 gp',  valueCp:1500,  description:'Includes papers, inks, seals, and templates. Proficiency allows forging documents and detecting forgeries.', source:'PHB' },
+{ name:"Herbalism Kit",         category:'tool', subcategory:'specialist', rarity:'mundane', weight:3,   value:'5 gp',   valueCp:500,   description:'Includes pouches, vials, clippers, and a mortar and pestle. Proficiency allows identifying plants and creating herbal remedies.', source:'PHB' },
+{ name:"Navigator's Tools",     category:'tool', subcategory:'specialist', rarity:'mundane', weight:2,   value:'25 gp',  valueCp:2500,  description:'Includes sextant, compass, calipers, and charts. Proficiency allows plotting courses and determining position at sea.', source:'PHB' },
+{ name:"Poisoner's Kit",        category:'tool', subcategory:'specialist', rarity:'mundane', weight:2,   value:'50 gp',  valueCp:5000,  description:'Includes vials, chemicals, and tools for handling poison. Proficiency allows creating and identifying poisons.', source:'PHB' },
+{ name:"Thieves' Tools",        category:'tool', subcategory:'specialist', rarity:'mundane', weight:1,   value:'25 gp',  valueCp:2500,  description:'Includes lockpicks, files, small mirrors, and scissors. Proficiency allows picking locks and disarming traps.', source:'PHB' },
+
+/* ══════════════════════════════════════════════════════════════════
+   MUSICAL INSTRUMENTS
+══════════════════════════════════════════════════════════════════ */
+
+{ name:'Bagpipes',              category:'tool', subcategory:'musical', rarity:'mundane', weight:6,   value:'30 gp',  valueCp:3000,  description:'A wind instrument played by squeezing air through reeds. Common in highland cultures.', source:'PHB' },
+{ name:'Drum',                  category:'tool', subcategory:'musical', rarity:'mundane', weight:3,   value:'6 gp',   valueCp:600,   description:'A percussion instrument consisting of a membrane stretched over a frame. Played with hands or sticks.', source:'PHB' },
+{ name:'Dulcimer',              category:'tool', subcategory:'musical', rarity:'mundane', weight:10,  value:'25 gp',  valueCp:2500,  description:'A stringed instrument played by striking the strings with small hammers.', source:'PHB' },
+{ name:'Flute',                 category:'tool', subcategory:'musical', rarity:'mundane', weight:1,   value:'2 gp',   valueCp:200,   description:'A simple wind instrument played by blowing across an opening.', source:'PHB' },
+{ name:'Lute',                  category:'tool', subcategory:'musical', rarity:'mundane', weight:2,   value:'35 gp',  valueCp:3500,  description:'A stringed instrument with a rounded body, played by plucking. Popular among bards.', source:'PHB' },
+{ name:'Lyre',                  category:'tool', subcategory:'musical', rarity:'mundane', weight:2,   value:'30 gp',  valueCp:3000,  description:'A small stringed instrument held in the lap and plucked.', source:'PHB' },
+{ name:'Horn',                  category:'tool', subcategory:'musical', rarity:'mundane', weight:2,   value:'3 gp',   valueCp:300,   description:'A simple brass or horn instrument that produces a loud, carrying tone.', source:'PHB' },
+{ name:'Pan Flute',             category:'tool', subcategory:'musical', rarity:'mundane', weight:2,   value:'12 gp',  valueCp:1200,  description:'Multiple flutes of different lengths bound together, producing haunting melodies.', source:'PHB' },
+{ name:'Shawm',                 category:'tool', subcategory:'musical', rarity:'mundane', weight:1,   value:'2 gp',   valueCp:200,   description:'A double-reed woodwind instrument with a loud, piercing tone.', source:'PHB' },
+{ name:'Viol',                  category:'tool', subcategory:'musical', rarity:'mundane', weight:1,   value:'30 gp',  valueCp:3000,  description:'A bowed string instrument, ancestor of the violin.', source:'PHB' },
+
+/* ══════════════════════════════════════════════════════════════════
+   GAMING SETS
+══════════════════════════════════════════════════════════════════ */
+
+{ name:'Dice Set',              category:'tool', subcategory:'gaming', rarity:'mundane', weight:0,   value:'1 sp',   valueCp:10,    description:'A set of dice for playing games of chance. Proficiency allows playing games, detecting cheating, and spotting rigged games.', source:'PHB' },
+{ name:'Dragonchess Set',       category:'tool', subcategory:'gaming', rarity:'mundane', weight:0.5, value:'1 gp',   valueCp:100,   description:'A complex strategy game played on three stacked boards representing sky, earth, and underworld.', source:'PHB' },
+{ name:'Playing Card Set',      category:'tool', subcategory:'gaming', rarity:'mundane', weight:0,   value:'5 sp',   valueCp:50,    description:'A deck of cards for various gambling and strategy games.', source:'PHB' },
+{ name:'Three-Dragon Ante Set', category:'tool', subcategory:'gaming', rarity:'mundane', weight:0,   value:'1 gp',   valueCp:100,   description:'A popular gambling card game played across taverns and gambling halls.', source:'PHB' },
 
 /* ══════════════════════════════════════════════════════════════════
    CLOTHING

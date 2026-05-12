@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
             stats,
             story,
             hp,
+            subclass,
         } = body;
 
         if (!userId || !name || !race || !dndClass || !background || !alignment || !stats) {
@@ -127,6 +128,7 @@ export async function POST(request: NextRequest) {
             currency,
             feats:      [],
             spellSlots: spellSlots,
+            subclass:   subclass ?? null,
             createdAt:  new Date(),
         });
 

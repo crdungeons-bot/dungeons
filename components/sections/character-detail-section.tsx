@@ -11,6 +11,7 @@ import SpellcastingStats                from '@/components/ui/spellcasting-stats
 import { useCharacterInventory, type EnrichedInventoryItem } from '@/hooks/use-character-inventory';
 import ItemTooltip from '@/components/ui/item-tooltip';
 import AddItemModal from '@/components/ui/add-item-modal';
+import { shouldDisplaySubclass } from '@/lib/subclass-levels';
 
 /* ═══════════════════════════════════════════════════════════════════
    Types
@@ -1479,7 +1480,7 @@ export default function CharacterDetailSection({ id }: { id: string }) {
     );
 
     const displayRace   = fmt(char.race);
-    const displayClass  = char.subclass 
+    const displayClass  = (char.subclass && shouldDisplaySubclass(char.class, char.level ?? 1, true))
         ? `${fmt(char.class)} (${char.subclass.name})`
         : fmt(char.class);
     const displayBg     = fmt(char.background);

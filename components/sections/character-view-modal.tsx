@@ -8,6 +8,7 @@ import { usesPactMagic } from '@/data/spell-slots';
 import { useCharacterInventory, type EnrichedInventoryItem } from '@/hooks/use-character-inventory';
 import ItemTooltip from '@/components/ui/item-tooltip';
 import SpellcastingStats from '@/components/ui/spellcasting-stats';
+import { shouldDisplaySubclass } from '@/lib/subclass-levels';
 
 /* ═══════════════════════════════════════════════════════════════════
    Types
@@ -1026,7 +1027,7 @@ export default function CharacterViewModal({
     if (!isOpen) return null;
 
     const displayRace = char ? fmt(char.race) : '';
-    const displayClass = char && char.subclass
+    const displayClass = char && char.subclass && shouldDisplaySubclass(char.class, char.level ?? 1, true)
         ? `${fmt(char.class)} (${char.subclass.name})`
         : char
             ? fmt(char.class)

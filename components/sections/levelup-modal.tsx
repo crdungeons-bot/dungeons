@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { shouldDisplaySubclass } from '@/lib/subclass-levels';
 
 /* ═══════════════════════════════════════════════════════════════════
    D&D 5e constants
@@ -737,7 +738,7 @@ function HPScreen({ char, newLevel, onAccept }: {
     const avgRoll     = Math.floor(hitDie / 2) + 1;
     const avgGain     = Math.max(1, avgRoll + conMod);
 
-    const classDisplay = char.subclass
+    const classDisplay = (char.subclass && shouldDisplaySubclass(char.class, char.level + 1, true))
         ? `${char.class.charAt(0).toUpperCase() + char.class.slice(1)} (${char.subclass.name})`
         : char.class.charAt(0).toUpperCase() + char.class.slice(1);
 

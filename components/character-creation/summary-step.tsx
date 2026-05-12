@@ -266,7 +266,12 @@ export default function SummaryStep({
 
     /* ── back handler ── */
     function handleBack() {
-        const p = new URLSearchParams({ step: '7' });
+        // Determine correct previous step based on whether class has level 1 subclass
+        const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
+        const needsSubclassStep = dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(dndClass);
+        const prevStepNumber = needsSubclassStep ? '7' : '6';
+        
+        const p = new URLSearchParams({ step: prevStepNumber });
         if (race)           p.set('race',          race);
         if (dndClass)       p.set('class',         dndClass);
         if (subclass)       p.set('subclass',      subclass);

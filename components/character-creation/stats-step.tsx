@@ -441,8 +441,14 @@ export default function StatsStep(props: StatsStepProps) {
                            mode === 'manual'  ? allManualValid :
                            false;
 
+    // Determine correct step numbers based on whether class has level 1 subclass
+    const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
+    const needsSubclassStep = props.dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(props.dndClass);
+    const prevStepNumber = needsSubclassStep ? '6' : '5';
+    const nextStepNumber = needsSubclassStep ? '8' : '7';
+
     const handleBack = () => {
-        const params = new URLSearchParams({ step: '6' });
+        const params = new URLSearchParams({ step: prevStepNumber });
         const { race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies } = props;
         if (race)           params.set('race',          race);
         if (dndClass)       params.set('class',         dndClass);
@@ -476,7 +482,7 @@ export default function StatsStep(props: StatsStepProps) {
         }
 
         // Navigate to review / save step
-        const params = new URLSearchParams({ step: '8' });
+        const params = new URLSearchParams({ step: nextStepNumber });
         const { race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies } = props;
         if (race)           params.set('race',          race);
         if (dndClass)       params.set('class',         dndClass);

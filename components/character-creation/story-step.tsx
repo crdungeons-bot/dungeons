@@ -151,8 +151,14 @@ export default function StoryStep({
 
     const hasAnyContent = [backstory, personality, ideals, bonds, flaws, appearance].some(s => s.trim().length > 0);
 
+    // Determine correct next step based on whether class has level 1 subclass
+    const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
+    const needsSubclassStep = dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(dndClass);
+    const nextStepNumber = needsSubclassStep ? '7' : '6';
+    const prevStepNumber = needsSubclassStep ? '5' : '4';
+
     const handleBack = () => {
-        const params = new URLSearchParams({ step: '5' });
+        const params = new URLSearchParams({ step: prevStepNumber });
         if (race)           params.set('race',          race);
         if (dndClass)       params.set('class',         dndClass);
         if (subclass)       params.set('subclass',      subclass);
@@ -173,7 +179,7 @@ export default function StoryStep({
             localStorage.setItem('char_story', JSON.stringify(storyData));
         }
 
-        const params = new URLSearchParams({ step: '7' });
+        const params = new URLSearchParams({ step: nextStepNumber });
         if (race)           params.set('race',          race);
         if (dndClass)       params.set('class',         dndClass);
         if (subclass)       params.set('subclass',      subclass);

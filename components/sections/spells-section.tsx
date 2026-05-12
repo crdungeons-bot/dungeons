@@ -308,7 +308,7 @@ export default function SpellsSection() {
         fetch('/api/resources/spells-abilities')
             .then(r => r.json())
             .then(data => {
-                setEntries(data.entries ?? []);
+                setEntries(data.results ?? []);  // Fixed: API returns 'results' not 'entries'
                 setLoading(false);
             })
             .catch(() => {

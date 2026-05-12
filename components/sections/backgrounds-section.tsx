@@ -1,7 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { STATIC_BACKGROUNDS, type StaticBackground } from '@/data/backgrounds';
+import { useState, useEffect } from 'react';
+
+type StaticBackground = {
+    index: string;
+    name: string;
+    starting_proficiencies: { index: string; name: string }[];
+    feature: { name: string; desc: string[] };
+    starting_equipment: { equipment: { name: string }; quantity: number }[];
+    personality_traits?: { from: { desc: string }[] };
+};
 
 // ── Left column: compact row for each background ──────────────────────────────
 
@@ -268,9 +276,27 @@ function EmptyDetail() {
 
 export default function BackgroundsSection() {
     const [selected, setSelected] = useState<string | null>(null);
+    const [backgrounds, setBackgrounds] = useState<StaticBackground[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const backgrounds = STATIC_BACKGROUNDS;
+    useEffect(() => {
+        fetch('/api/resources/backgrounds')
+            .then(res => res.json())
+            .then(data => {
+                setBackgrounds(data.results || []);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Failed to fetch backgrounds:', err);
+                setLoading(false);
+            });
+    }, []);
+
     const selectedBg  = backgrounds.find(b => b.index === selected) ?? null;
+
+    if (loading) {
+        return <div style={{ padding: '2rem', color: 'var(--color-accent-light)' }}>Loading backgrounds...</div>;
+    }
 
     return (
         <div style={{

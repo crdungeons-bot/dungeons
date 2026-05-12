@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter }         from 'next/navigation';
-import { STATIC_BACKGROUNDS } from '@/data/backgrounds';
 
 /* ═══════════════════════════════════════════════════════════════════
    Static skill data,   all 18 D&D 5e skills grouped by ability score
@@ -171,6 +170,23 @@ export default function ProficiencyStep({
     raceApiData, classApiData,
 }: Props) {
     const router = useRouter();
+    const [bgData, setBgData] = useState<ApiJson>(null);
+
+    // Fetch background data when background prop changes
+    useEffect(() => {
+        if (!background) {
+            setBgData(null);
+            return;
+        }
+        
+        fetch(`/api/resources/backgrounds/${background}`)
+            .then(res => res.json())
+            .then(data => setBgData(data))
+            .catch(err => {
+                console.error('Failed to fetch background:', err);
+                setBgData(null);
+            });
+    }, [background]);
 
     /* ── Derive locked proficiencies ── */
     const { lockedMap, choiceGroups } = useMemo(() => {
@@ -190,9 +206,8 @@ export default function ProficiencyStep({
         addLocked(parseApiProfs(classApiData?.proficiencies), 'Class');
 
         // Background locked skills
-        if (background) {
-            const bg = STATIC_BACKGROUNDS.find(b => b.index === background);
-            addLocked(parseApiProfs(bg?.starting_proficiencies), 'Background');
+        if (bgData) {
+            addLocked(parseApiProfs(bgData?.starting_proficiencies), 'Background');
         }
 
         // Build choice groups
@@ -218,7 +233,7 @@ export default function ProficiencyStep({
         }
 
         return { lockedMap: locked, choiceGroups: groups };
-    }, [raceApiData, classApiData, background]);
+    }, [raceApiData, classApiData, bgData]);
 
     /* ── User selection state,   one selected-set per choice group ── */
     const [selections, setSelections] = useState<Set<string>[]>(

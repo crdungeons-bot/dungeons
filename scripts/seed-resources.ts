@@ -17,6 +17,7 @@ import { FEATS }            from './feats-data.js';
 import RACES                from './races-data.js';
 import CLASSES              from './classes-data.js';
 import SUBCLASSES_DATA      from './subclasses-data.js';
+import { STATIC_BACKGROUNDS } from './backgrounds-data.js';
 
 // Load .env.local (Next.js convention) so MONGODB_URI is available when
 // running this script outside of the Next.js server process.
@@ -211,6 +212,26 @@ async function seedSubclasses(db: ReturnType<MongoClient['db']>) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   Seed backgrounds
+═══════════════════════════════════════════════════════════════════ */
+
+async function seedBackgrounds(db: ReturnType<MongoClient['db']>) {
+    const col = 'backgrounds';
+    await dropIfExists(db, col);
+
+    const collection = db.collection(col);
+
+    await collection.insertMany(STATIC_BACKGROUNDS as object[]);
+    log(`Inserted ${STATIC_BACKGROUNDS.length} backgrounds`);
+
+    await collection.createIndex({ index: 1 },                          { name: 'index', unique: true });
+    await collection.createIndex({ name: 1 },                           { name: 'name' });
+    await collection.createIndex({ name: 'text' },                      { name: 'text_search' });
+
+    log('Indexes created for backgrounds');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Main
 ═══════════════════════════════════════════════════════════════════ */
 
@@ -241,6 +262,9 @@ async function main() {
 
         console.log('\n─── subclasses ─────────────────────────────────────');
         await seedSubclasses(db);
+
+        console.log('\n─── backgrounds ────────────────────────────────────');
+        await seedBackgrounds(db);
 
         console.log('\n✅  Seed complete.\n');
     } finally {

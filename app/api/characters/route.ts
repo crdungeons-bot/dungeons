@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId }                  from 'mongodb';
 import clientPromise                 from '@/lib/mongo';
-import { STATIC_BACKGROUNDS }        from '@/data/backgrounds';
 import { getSpellSlots }             from '@/data/spell-slots';
 
 export async function GET(request: NextRequest) {
@@ -71,7 +70,7 @@ export async function POST(request: NextRequest) {
         const resourcesDb = client.db('dnd-resources');
 
         // Get background data to extract starting equipment
-        const bgData = STATIC_BACKGROUNDS.find(b => b.index === background);
+        const bgData = await resourcesDb.collection('backgrounds').findOne({ index: background });
         
         // Initialize inventory and currency
         const inventory: Array<{ itemId: string; quantity: number; equipped: boolean; attuned: boolean; source: string }> = [];

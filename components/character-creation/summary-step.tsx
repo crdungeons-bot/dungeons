@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { STATIC_BACKGROUNDS } from '@/data/backgrounds';
 
 /* ─── types ─────────────────────────────────────────────────────── */
 
@@ -183,6 +182,7 @@ export default function SummaryStep({
     const [story, setStory]   = useState<Story | null>(null);
     const [creating, setCreating] = useState(false);
     const [error, setError]   = useState('');
+    const [bgDetail, setBgDetail] = useState<{ feature: { name: string; desc: string[] } } | null>(null);
 
     /* read localStorage after mount */
     useEffect(() => {
@@ -197,6 +197,22 @@ export default function SummaryStep({
         } catch { /* ignore */ }
     }, []);
 
+    /* fetch background data */
+    useEffect(() => {
+        if (!background) {
+            setBgDetail(null);
+            return;
+        }
+        
+        fetch(`/api/resources/backgrounds/${background}`)
+            .then(res => res.json())
+            .then(data => setBgDetail(data))
+            .catch(err => {
+                console.error('Failed to fetch background:', err);
+                setBgDetail(null);
+            });
+    }, [background]);
+
     /* ── derived display values ── */
     const displayName       = name       ? fmt(name)       : 'Unnamed Hero';
     const displayRace       = race       ? fmt(race)       : ', ';
@@ -207,10 +223,6 @@ export default function SummaryStep({
             : ', ';
     const displayBackground = background ? fmt(background) : ', ';
     const displayAlignment  = alignment  ? fmt(alignment)  : ', ';
-
-    const bgDetail = background
-        ? (STATIC_BACKGROUNDS.find(b => b.index === background) ?? null)
-        : null;
 
     const hasPhysical = height || weight || age;
     const hasStory    = story && (story.backstory || story.personality || story.appearance);

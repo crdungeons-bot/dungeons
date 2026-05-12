@@ -6,7 +6,6 @@ import ProficiencyStep   from '@/components/character-creation/proficiency-step'
 import StoryStep         from '@/components/character-creation/story-step';
 import StatsStep         from '@/components/character-creation/stats-step';
 import SummaryStep       from '@/components/character-creation/summary-step';
-import { STATIC_BACKGROUNDS } from '@/data/backgrounds';
 import clientPromise from '@/lib/mongo';
 
 type ApiItem = { index: string; name: string; url: string };
@@ -74,6 +73,13 @@ export default async function CreateCharacterPage({
     if (currentStep === proficiencyStep && params.race && params.class) {
         raceApiData = await db.collection('races').findOne({ index: params.race });
         classApiData = await db.collection('classes').findOne({ index: params.class });
+    }
+
+    // For the background step, fetch all backgrounds
+    const backgroundStep = needsSubclassStep ? 4 : 3;
+    let backgrounds: object[] = [];
+    if (currentStep === backgroundStep) {
+        backgrounds = await db.collection('backgrounds').find().sort({ name: 1 }).toArray();
     }
 
     const stepLabel = effectiveSteps[currentStep - 1] ?? 'Race';
@@ -217,7 +223,7 @@ export default async function CreateCharacterPage({
 
             {currentStep === (needsSubclassStep ? 4 : 3) && (
                 <BackgroundStep
-                    backgrounds={STATIC_BACKGROUNDS}
+                    backgrounds={backgrounds as []}
                     race={params.race}
                     dndClass={params.class}
                     subclass={params.subclass}

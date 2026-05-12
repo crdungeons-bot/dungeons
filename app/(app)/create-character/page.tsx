@@ -175,6 +175,13 @@ export default async function CreateCharacterPage({
                     races={data.results}
                     preselect={params.preselect}
                     preselectClass={params.preselect_class}
+                    name={params.name}
+                    background={params.background}
+                    alignment={params.alignment}
+                    height={params.height}
+                    weight={params.weight}
+                    age={params.age}
+                    proficiencies={params.proficiencies}
                 />
             )}
 
@@ -183,6 +190,14 @@ export default async function CreateCharacterPage({
                     classes={data.results}
                     preselect={params.preselect_class}
                     race={params.race}
+                    subclass={params.subclass}
+                    name={params.name}
+                    background={params.background}
+                    alignment={params.alignment}
+                    height={params.height}
+                    weight={params.weight}
+                    age={params.age}
+                    proficiencies={params.proficiencies}
                 />
             )}
 
@@ -190,6 +205,13 @@ export default async function CreateCharacterPage({
                 <SubclassSelectStep
                     characterClass={params.class}
                     race={params.race}
+                    name={params.name}
+                    background={params.background}
+                    alignment={params.alignment}
+                    height={params.height}
+                    weight={params.weight}
+                    age={params.age}
+                    proficiencies={params.proficiencies}
                 />
             )}
 

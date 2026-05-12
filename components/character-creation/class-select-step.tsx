@@ -449,10 +449,28 @@ export default function ClassSelectStep({
     classes,
     preselect,
     race,
+    // Preserve all later step data
+    subclass,
+    name,
+    background,
+    alignment,
+    height,
+    weight,
+    age,
+    proficiencies,
 }: {
     classes: DndClass[];
     preselect?: string;
     race?: string;
+    // Later step data to preserve
+    subclass?: string;
+    name?: string;
+    background?: string;
+    alignment?: string;
+    height?: string;
+    weight?: string;
+    age?: string;
+    proficiencies?: string;
 }) {
     const router = useRouter();
 
@@ -480,6 +498,15 @@ export default function ClassSelectStep({
         const params = new URLSearchParams({ step: '1' });
         if (race) params.set('preselect', race);
         if (selectedClass) params.set('preselect_class', selectedClass);
+        // Preserve all later step data
+        if (subclass) params.set('subclass', subclass);
+        if (name) params.set('name', name);
+        if (background) params.set('background', background);
+        if (alignment) params.set('alignment', alignment);
+        if (height) params.set('height', height);
+        if (weight) params.set('weight', weight);
+        if (age) params.set('age', age);
+        if (proficiencies) params.set('proficiencies', proficiencies);
         router.push(`/create-character?${params.toString()}`);
     };
 
@@ -488,6 +515,15 @@ export default function ClassSelectStep({
         const params = new URLSearchParams({ step: '3' });
         if (race) params.set('race', race);
         params.set('class', selectedClass);
+        // Preserve all later step data if user came back
+        if (subclass) params.set('subclass', subclass);
+        if (name) params.set('name', name);
+        if (background) params.set('background', background);
+        if (alignment) params.set('alignment', alignment);
+        if (height) params.set('height', height);
+        if (weight) params.set('weight', weight);
+        if (age) params.set('age', age);
+        if (proficiencies) params.set('proficiencies', proficiencies);
         router.push(`/create-character?${params.toString()}`);
     };
 

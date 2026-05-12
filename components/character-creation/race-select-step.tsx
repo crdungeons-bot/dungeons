@@ -433,11 +433,27 @@ export default function RaceSelectStep({
     races,
     preselect,
     preselectClass,
+    // Preserve all later step data
+    name,
+    background,
+    alignment,
+    height,
+    weight,
+    age,
+    proficiencies,
 }: {
     races: Race[];
     preselect?: string;
     /** Class index pre-selected from a class detail page,   carried forward to step 2 */
     preselectClass?: string;
+    // Later step data to preserve
+    name?: string;
+    background?: string;
+    alignment?: string;
+    height?: string;
+    weight?: string;
+    age?: string;
+    proficiencies?: string;
 }) {
     const router = useRouter();
 
@@ -472,6 +488,14 @@ export default function RaceSelectStep({
         const params = new URLSearchParams({ step: '2', race: selectedRace });
         // Carry a pre-selected class forward so step 2 auto-selects it
         if (preselectClass) params.set('preselect_class', preselectClass);
+        // Preserve all later step data if user came back
+        if (name) params.set('name', name);
+        if (background) params.set('background', background);
+        if (alignment) params.set('alignment', alignment);
+        if (height) params.set('height', height);
+        if (weight) params.set('weight', weight);
+        if (age) params.set('age', age);
+        if (proficiencies) params.set('proficiencies', proficiencies);
         router.push(`/create-character?${params.toString()}`);
     };
 

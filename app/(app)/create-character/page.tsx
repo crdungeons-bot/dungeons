@@ -7,6 +7,7 @@ import StoryStep         from '@/components/character-creation/story-step';
 import StatsStep         from '@/components/character-creation/stats-step';
 import SummaryStep       from '@/components/character-creation/summary-step';
 import { STATIC_BACKGROUNDS } from '@/data/backgrounds';
+import clientPromise from '@/lib/mongo';
 
 type ApiItem = { index: string; name: string; url: string };
 type ApiList  = { count: number; results: ApiItem[] };
@@ -46,25 +47,34 @@ export default async function CreateCharacterPage({
         ? STEPS 
         : STEPS.filter(s => s !== 'Subclass');
 
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    // Query MongoDB directly (works in production without localhost)
+    const client = await clientPromise;
+    const db = client.db('dnd-resources');
 
-    // Steps 1–2 need the full list; step 4 needs race+class detail; others need nothing
-    const listUrl =
-        currentStep === 2 ? `${BASE_URL}/api/resources/classes` :
-                            `${BASE_URL}/api/resources/races`;
-
-    const data: ApiList = (currentStep === 1 || currentStep === 2)
-        ? await fetch(listUrl, { cache: 'force-cache' }).then(r => r.json())
-        : { count: 0, results: [] };
+    // Steps 1–2 need the full list
+    let data: ApiList = { count: 0, results: [] };
+    if (currentStep === 1) {
+        const races = await db.collection('races').find().sort({ name: 1 }).toArray();
+        data = {
+            count: races.length,
+            results: races.map(r => ({ index: r.index, name: r.name, url: r.url || '' })) as ApiItem[],
+        };
+    } else if (currentStep === 2) {
+        const classes = await db.collection('classes').find().sort({ name: 1 }).toArray();
+        data = {
+            count: classes.length,
+            results: classes.map(c => ({ index: c.index, name: c.name, url: c.url || '' })) as ApiItem[],
+        };
+    }
 
     // For the proficiency step (now step 5 if subclass shown, step 4 otherwise), fetch race + class detail in parallel
     const proficiencyStep = needsSubclassStep ? 5 : 4;
-    const [raceApiData, classApiData] = currentStep === proficiencyStep && params.race && params.class
-        ? await Promise.all([
-            fetch(`${BASE_URL}/api/resources/races?index=${params.race}`,   { cache: 'force-cache' }).then(r => r.json()).then(d => d.results[0]),
-            fetch(`${BASE_URL}/api/resources/classes?index=${params.class}`, { cache: 'force-cache' }).then(r => r.json()).then(d => d.results[0]),
-          ])
-        : [null, null];
+    let raceApiData = null;
+    let classApiData = null;
+    if (currentStep === proficiencyStep && params.race && params.class) {
+        raceApiData = await db.collection('races').findOne({ index: params.race });
+        classApiData = await db.collection('classes').findOne({ index: params.class });
+    }
 
     const stepLabel = effectiveSteps[currentStep - 1] ?? 'Race';
 

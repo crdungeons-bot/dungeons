@@ -1,15 +1,18 @@
 import Link from 'next/link';
 import { RaceDetail } from '@/types';
 import TraitHoverBadge from '@/components/ui/trait-hover-badge';
+import clientPromise from '@/lib/mongo';
 
 type TraitDetail = { index: string; name: string; desc: string[] };
 
 export default async function RaceDetailSection({ race }: { race: string }) {
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    
-    const response = await fetch(`${BASE_URL}/api/resources/races?index=${race}`, { cache: 'force-cache' });
-    const responseData = await response.json();
-    const data: RaceDetail = responseData.results[0];
+    // Query MongoDB directly (works in production without localhost)
+    const client = await clientPromise;
+    const db = client.db('dnd-resources');
+    const collection = db.collection('races');
+
+    const result = await collection.findOne({ index: race });
+    const data: RaceDetail = result as unknown as RaceDetail;
 
     // Fetch descriptions for every trait in parallel (still from external API for now)
     const traitDetails: TraitDetail[] = await Promise.all(

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ClassDetail } from '@/types';
+import clientPromise from '@/lib/mongo';
 
 const CLASS_DESCRIPTIONS: Record<string, string> = {
     barbarian:
@@ -29,11 +30,13 @@ const CLASS_DESCRIPTIONS: Record<string, string> = {
 };
 
 export default async function ClassDetailSection({ dndClass }: { dndClass: string }) {
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    
-    const response = await fetch(`${BASE_URL}/api/resources/classes?index=${dndClass}`, { cache: 'force-cache' });
-    const responseData = await response.json();
-    const data: ClassDetail = responseData.results[0];
+    // Query MongoDB directly (works in production without localhost)
+    const client = await clientPromise;
+    const db = client.db('dnd-resources');
+    const collection = db.collection('classes');
+
+    const result = await collection.findOne({ index: dndClass });
+    const data: ClassDetail = result as unknown as ClassDetail;
 
     const description = CLASS_DESCRIPTIONS[dndClass] ?? `The ${data.name} is a legendary class with a rich history in Dungeons & Dragons. Master their abilities and forge your legend.`;
 

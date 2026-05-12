@@ -528,16 +528,23 @@ export default function BackgroundStep({
 
     const canContinue = characterName.trim().length > 0 && selectedBg !== null && selectedAlignment !== null;
 
+    // Determine correct step numbers based on whether class has level 1 subclass
+    const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
+    const needsSubclassStep = dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(dndClass);
+    const nextStepNumber = needsSubclassStep ? '5' : '4'; // Proficiencies
+    const prevStepNumber = needsSubclassStep ? '3' : '2'; // Subclass or Class
+
     const handleBack = () => {
-        const params = new URLSearchParams({ step: '3' });
+        const params = new URLSearchParams({ step: prevStepNumber });
         if (race) params.set('race', race);
         if (dndClass) params.set('class', dndClass);
+        if (subclass) params.set('subclass', subclass);
         router.push(`/create-character?${params.toString()}`);
     };
 
     const handleContinue = () => {
         if (!canContinue) return;
-        const params = new URLSearchParams({ step: '5' });
+        const params = new URLSearchParams({ step: nextStepNumber });
         if (race)      params.set('race', race);
         if (dndClass)  params.set('class', dndClass);
         if (subclass)  params.set('subclass', subclass);
@@ -713,11 +720,11 @@ export default function BackgroundStep({
                         fontSize: '0.95rem',
                         letterSpacing: '0.04em',
                         cursor: canContinue ? 'pointer' : 'not-allowed',
-                        whiteSpace: 'nowrap',
-                        transition: 'background-color 0.2s, color 0.2s',
-                    }}
+                    whiteSpace: 'nowrap',
+                    transition: 'background-color 0.2s, color 0.2s',
+                }}
                 >
-                    Continue to Story &#8594;
+                    Continue to Proficiencies &#8594;
                 </button>
             </div>
 

@@ -157,6 +157,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 export default function SummaryStep({
     race,
     dndClass,
+    subclass,
     name,
     background,
     alignment,
@@ -167,6 +168,7 @@ export default function SummaryStep({
 }: {
     race?:          string;
     dndClass?:      string;
+    subclass?:      string;
     name?:          string;
     background?:    string;
     alignment?:     string;
@@ -232,6 +234,7 @@ export default function SummaryStep({
             stats:          stats ?? {},
             story:          story ?? {},
             hp,
+            subclass:       subclass ? { name: subclass, class: dndClass ?? '', level_chosen: 1 } : null,
         };
 
         try {
@@ -259,9 +262,10 @@ export default function SummaryStep({
 
     /* ── back handler ── */
     function handleBack() {
-        const p = new URLSearchParams({ step: '6' });
+        const p = new URLSearchParams({ step: '7' });
         if (race)           p.set('race',          race);
         if (dndClass)       p.set('class',         dndClass);
+        if (subclass)       p.set('subclass',      subclass);
         if (name)           p.set('name',          name);
         if (background)     p.set('background',    background);
         if (alignment)      p.set('alignment',     alignment);

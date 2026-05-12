@@ -503,10 +503,12 @@ export default function BackgroundStep({
     backgrounds,
     race,
     dndClass,
+    subclass,
 }: {
     backgrounds: BgDetail[];
     race?: string;
     dndClass?: string;
+    subclass?: string;
 }) {
     const router = useRouter();
 
@@ -527,17 +529,18 @@ export default function BackgroundStep({
     const canContinue = characterName.trim().length > 0 && selectedBg !== null && selectedAlignment !== null;
 
     const handleBack = () => {
-        const params = new URLSearchParams({ step: '2' });
+        const params = new URLSearchParams({ step: '3' });
         if (race) params.set('race', race);
-        if (dndClass) params.set('preselect_class', dndClass);
+        if (dndClass) params.set('class', dndClass);
         router.push(`/create-character?${params.toString()}`);
     };
 
     const handleContinue = () => {
         if (!canContinue) return;
-        const params = new URLSearchParams({ step: '4' });
+        const params = new URLSearchParams({ step: '5' });
         if (race)      params.set('race', race);
         if (dndClass)  params.set('class', dndClass);
+        if (subclass)  params.set('subclass', subclass);
         params.set('name',       characterName.trim());
         params.set('background', selectedBg!);
         params.set('alignment',  selectedAlignment!);
@@ -685,7 +688,7 @@ export default function BackgroundStep({
                             whiteSpace: 'nowrap',
                         }}
                     >
-                        &#8592; Class
+                        &#8592; {subclass ? 'Subclass' : 'Class'}
                     </button>
 
                     {/* Quick-glance summary of what's been filled */}

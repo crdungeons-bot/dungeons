@@ -78,6 +78,7 @@ type ChoiceGroup = {
 type Props = {
     race?:        string;
     dndClass?:    string;
+    subclass?:    string;
     name?:        string;
     background?:  string;
     alignment?:   string;
@@ -166,7 +167,7 @@ function ProfBubble({
 ═══════════════════════════════════════════════════════════════════ */
 
 export default function ProficiencyStep({
-    race, dndClass, name, background, alignment, height, weight, age,
+    race, dndClass, subclass, name, background, alignment, height, weight, age,
     raceApiData, classApiData,
 }: Props) {
     const router = useRouter();
@@ -280,9 +281,10 @@ export default function ProficiencyStep({
 
     /* ── Navigation ── */
     function handleBack() {
-        const p = new URLSearchParams({ step: '3' });
+        const p = new URLSearchParams({ step: '4' });
         if (race)       p.set('race',       race);
         if (dndClass)   p.set('class',      dndClass);
+        if (subclass)   p.set('subclass',   subclass);
         if (name)       p.set('name',       name);
         if (background) p.set('background', background);
         if (alignment)  p.set('alignment',  alignment);
@@ -294,9 +296,10 @@ export default function ProficiencyStep({
 
     function handleContinue() {
         if (!canContinue) return;
-        const p = new URLSearchParams({ step: '5' });
+        const p = new URLSearchParams({ step: '6' });
         if (race)       p.set('race',       race);
         if (dndClass)   p.set('class',      dndClass);
+        if (subclass)   p.set('subclass',   subclass);
         if (name)       p.set('name',       name);
         if (background) p.set('background', background);
         if (alignment)  p.set('alignment',  alignment);

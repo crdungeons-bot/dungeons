@@ -328,6 +328,7 @@ function StatInputCard({
 type StatsStepProps = {
     race?: string;
     dndClass?: string;
+    subclass?: string;
     name?: string;
     background?: string;
     alignment?: string;
@@ -439,10 +440,11 @@ export default function StatsStep(props: StatsStepProps) {
                            false;
 
     const handleBack = () => {
-        const params = new URLSearchParams({ step: '5' });
-        const { race, dndClass, name, background, alignment, height, weight, age, proficiencies } = props;
+        const params = new URLSearchParams({ step: '6' });
+        const { race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies } = props;
         if (race)           params.set('race',          race);
         if (dndClass)       params.set('class',         dndClass);
+        if (subclass)       params.set('subclass',      subclass);
         if (name)           params.set('name',          name);
         if (background)     params.set('background',    background);
         if (alignment)      params.set('alignment',     alignment);
@@ -472,10 +474,11 @@ export default function StatsStep(props: StatsStepProps) {
         }
 
         // Navigate to review / save step
-        const params = new URLSearchParams({ step: '7' });
-        const { race, dndClass, name, background, alignment, height, weight, age, proficiencies } = props;
+        const params = new URLSearchParams({ step: '8' });
+        const { race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies } = props;
         if (race)           params.set('race',          race);
         if (dndClass)       params.set('class',         dndClass);
+        if (subclass)       params.set('subclass',      subclass);
         if (name)           params.set('name',          name);
         if (background)     params.set('background',    background);
         if (alignment)      params.set('alignment',     alignment);

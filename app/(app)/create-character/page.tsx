@@ -198,6 +198,7 @@ export default async function CreateCharacterPage({
                     backgrounds={STATIC_BACKGROUNDS}
                     race={params.race}
                     dndClass={params.class}
+                    subclass={params.subclass}
                 />
             )}
 
@@ -205,6 +206,7 @@ export default async function CreateCharacterPage({
                 <ProficiencyStep
                     race={params.race}
                     dndClass={params.class}
+                    subclass={params.subclass}
                     name={params.name}
                     background={params.background}
                     alignment={params.alignment}
@@ -216,10 +218,11 @@ export default async function CreateCharacterPage({
                 />
             )}
 
-            {currentStep === 5 && (
+            {currentStep === (needsSubclassStep ? 6 : 5) && (
                 <StoryStep
                     race={params.race}
                     dndClass={params.class}
+                    subclass={params.subclass}
                     name={params.name}
                     background={params.background}
                     alignment={params.alignment}
@@ -234,6 +237,7 @@ export default async function CreateCharacterPage({
                 <StatsStep
                     race={params.race}
                     dndClass={params.class}
+                    subclass={params.subclass}
                     name={params.name}
                     background={params.background}
                     alignment={params.alignment}
@@ -248,6 +252,7 @@ export default async function CreateCharacterPage({
                 <SummaryStep
                     race={params.race}
                     dndClass={params.class}
+                    subclass={params.subclass}
                     name={params.name}
                     background={params.background}
                     alignment={params.alignment}

@@ -127,6 +127,7 @@ function SectionDivider({ title, subtitle }: { title: string; subtitle?: string 
 type StoryStepProps = {
     race?: string;
     dndClass?: string;
+    subclass?: string;
     name?: string;
     background?: string;
     alignment?: string;
@@ -137,7 +138,7 @@ type StoryStepProps = {
 };
 
 export default function StoryStep({
-    race, dndClass, name, background, alignment, height, weight, age, proficiencies,
+    race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies,
 }: StoryStepProps) {
     const router = useRouter();
 
@@ -151,9 +152,10 @@ export default function StoryStep({
     const hasAnyContent = [backstory, personality, ideals, bonds, flaws, appearance].some(s => s.trim().length > 0);
 
     const handleBack = () => {
-        const params = new URLSearchParams({ step: '4' });
+        const params = new URLSearchParams({ step: '5' });
         if (race)           params.set('race',          race);
         if (dndClass)       params.set('class',         dndClass);
+        if (subclass)       params.set('subclass',      subclass);
         if (name)           params.set('name',          name);
         if (background)     params.set('background',    background);
         if (alignment)      params.set('alignment',     alignment);
@@ -171,9 +173,10 @@ export default function StoryStep({
             localStorage.setItem('char_story', JSON.stringify(storyData));
         }
 
-        const params = new URLSearchParams({ step: '6' });
+        const params = new URLSearchParams({ step: '7' });
         if (race)           params.set('race',          race);
         if (dndClass)       params.set('class',         dndClass);
+        if (subclass)       params.set('subclass',      subclass);
         if (name)           params.set('name',          name);
         if (background)     params.set('background',    background);
         if (alignment)      params.set('alignment',     alignment);

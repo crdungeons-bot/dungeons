@@ -1,5 +1,6 @@
 import RaceSelectStep    from '@/components/character-creation/race-select-step';
 import ClassSelectStep   from '@/components/character-creation/class-select-step';
+import SubclassSelectStep from '@/components/character-creation/subclass-select-step';
 import BackgroundStep    from '@/components/character-creation/background-step';
 import ProficiencyStep   from '@/components/character-creation/proficiency-step';
 import StoryStep         from '@/components/character-creation/story-step';
@@ -10,7 +11,10 @@ import { STATIC_BACKGROUNDS } from '@/data/backgrounds';
 type ApiItem = { index: string; name: string; url: string };
 type ApiList  = { count: number; results: ApiItem[] };
 
-const STEPS = ['Race', 'Class', 'Background', 'Proficiencies', 'Story', 'Stats', 'Review'];
+const STEPS = ['Race', 'Class', 'Subclass', 'Background', 'Proficiencies', 'Story', 'Stats', 'Review'];
+
+// Classes that choose subclass at level 1
+const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
 
 export default async function CreateCharacterPage({
     searchParams,
@@ -21,6 +25,7 @@ export default async function CreateCharacterPage({
         preselect_class?: string;
         race?: string;
         class?: string;
+        subclass?: string;
         name?: string;
         background?: string;
         alignment?: string;
@@ -33,6 +38,14 @@ export default async function CreateCharacterPage({
     const params = await searchParams;
     const currentStep = Number(params.step ?? '1');
 
+    // Check if we need to show subclass step
+    const needsSubclassStep = params.class && LEVEL_1_SUBCLASS_CLASSES.includes(params.class);
+    
+    // Adjust step display if subclass step is not needed
+    const effectiveSteps = needsSubclassStep 
+        ? STEPS 
+        : STEPS.filter(s => s !== 'Subclass');
+
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
     // Steps 1–2 need the full list; step 4 needs race+class detail; others need nothing
@@ -40,19 +53,20 @@ export default async function CreateCharacterPage({
         currentStep === 2 ? `${BASE_URL}/api/resources/classes` :
                             `${BASE_URL}/api/resources/races`;
 
-    const data: ApiList = currentStep <= 2
+    const data: ApiList = (currentStep === 1 || currentStep === 2)
         ? await fetch(listUrl, { cache: 'force-cache' }).then(r => r.json())
         : { count: 0, results: [] };
 
-    // For the proficiency step, fetch race + class detail in parallel
-    const [raceApiData, classApiData] = currentStep === 4 && params.race && params.class
+    // For the proficiency step (now step 5 if subclass shown, step 4 otherwise), fetch race + class detail in parallel
+    const proficiencyStep = needsSubclassStep ? 5 : 4;
+    const [raceApiData, classApiData] = currentStep === proficiencyStep && params.race && params.class
         ? await Promise.all([
             fetch(`${BASE_URL}/api/resources/races?index=${params.race}`,   { cache: 'force-cache' }).then(r => r.json()).then(d => d.results[0]),
             fetch(`${BASE_URL}/api/resources/classes?index=${params.class}`, { cache: 'force-cache' }).then(r => r.json()).then(d => d.results[0]),
           ])
         : [null, null];
 
-    const stepLabel = STEPS[currentStep - 1] ?? 'Race';
+    const stepLabel = effectiveSteps[currentStep - 1] ?? 'Race';
 
     return (
         <div style={{
@@ -84,19 +98,17 @@ export default async function CreateCharacterPage({
                     fontWeight: '800',
                     margin: '0 0 1rem',
                 }}>
-                    {currentStep === 7
+                    {currentStep === effectiveSteps.length
                         ? '⚔ Review & Create'
-                        : `Step ${currentStep}: ${
-                            currentStep === 4 ? 'Choose Your Proficiencies' :
-                            currentStep === 5 ? 'Tell Your Story'           :
-                            currentStep === 6 ? 'Roll Your Stats'           :
-                            `Choose Your ${stepLabel}`
-                          }`}
+                        : currentStep === proficiencyStep ? 'Step ' + currentStep + ': Choose Your Proficiencies' :
+                          currentStep === proficiencyStep + 1 ? 'Step ' + currentStep + ': Tell Your Story' :
+                          currentStep === proficiencyStep + 2 ? 'Step ' + currentStep + ': Roll Your Stats' :
+                          `Step ${currentStep}: Choose Your ${stepLabel}`}
                 </h1>
 
                 {/* Progress indicator */}
                 <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-                    {STEPS.map((label, i) => {
+                    {effectiveSteps.map((label, i) => {
                         const stepNum  = i + 1;
                         const isDone   = stepNum < currentStep;
                         const isActive = stepNum === currentStep;
@@ -133,7 +145,7 @@ export default async function CreateCharacterPage({
                                     </span>
                                 </div>
 
-                                {i < STEPS.length - 1 && (
+                                {i < effectiveSteps.length - 1 && (
                                     <div style={{
                                         width: '28px',
                                         height: '1.5px',
@@ -164,7 +176,14 @@ export default async function CreateCharacterPage({
                 />
             )}
 
-            {currentStep === 3 && (
+            {currentStep === 3 && needsSubclassStep && params.class && (
+                <SubclassSelectStep
+                    characterClass={params.class}
+                    race={params.race}
+                />
+            )}
+
+            {currentStep === (needsSubclassStep ? 4 : 3) && (
                 <BackgroundStep
                     backgrounds={STATIC_BACKGROUNDS}
                     race={params.race}
@@ -172,7 +191,7 @@ export default async function CreateCharacterPage({
                 />
             )}
 
-            {currentStep === 4 && (
+            {currentStep === (needsSubclassStep ? 5 : 4) && (
                 <ProficiencyStep
                     race={params.race}
                     dndClass={params.class}
@@ -201,7 +220,7 @@ export default async function CreateCharacterPage({
                 />
             )}
 
-            {currentStep === 6 && (
+            {currentStep === (needsSubclassStep ? 7 : 6) && (
                 <StatsStep
                     race={params.race}
                     dndClass={params.class}
@@ -215,7 +234,7 @@ export default async function CreateCharacterPage({
                 />
             )}
 
-            {currentStep === 7 && (
+            {currentStep === (needsSubclassStep ? 8 : 7) && (
                 <SummaryStep
                     race={params.race}
                     dndClass={params.class}

@@ -55,7 +55,7 @@ export type LevelUpCharacter = {
     stats: Stats;
 };
 
-type Step = 'announce' | 'hp' | 'asi-choice' | 'asi' | 'feat' | 'features' | 'summary';
+type Step = 'announce' | 'subclass' | 'hp' | 'asi-choice' | 'asi' | 'feat' | 'features' | 'summary';
 
 type LevelUpResult = {
     level: number;
@@ -342,6 +342,185 @@ function AnnounceScreen({ char, newLevel, onNext }: {
                     Click to continue
                 </p>
             )}
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Step 1.5: Subclass Selection
+═══════════════════════════════════════════════════════════════════ */
+
+function SubclassScreen({ char, selectedSubclass, onSelect, onNext }: {
+    char: LevelUpCharacter;
+    selectedSubclass: string | null;
+    onSelect: (subclass: string) => void;
+    onNext: () => void;
+}) {
+    const [subclasses, setSubclasses] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [viewingSubclass, setViewingSubclass] = useState<string | null>(null);
+    const [subclassSamples, setSubclassSamples] = useState<Record<string, any[]>>({});
+
+    // Fetch subclasses for this class
+    useEffect(() => {
+        setLoading(true);
+        fetch(`/api/resources/subclasses?class=${char.class}`)
+            .then(r => r.json())
+            .then(data => {
+                setSubclasses(data.results || []);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Failed to fetch subclasses:', err);
+                setLoading(false);
+            });
+    }, [char.class]);
+
+    // Fetch sample spells for each subclass
+    useEffect(() => {
+        if (subclasses.length === 0) return;
+
+        const fetchSamples = async () => {
+            const samples: Record<string, any[]> = {};
+            
+            for (const subclass of subclasses) {
+                try {
+                    const tag = `${subclass.name.toLowerCase()} ${char.class}`;
+                    const response = await fetch(`/api/resources/spells-abilities?subclass=${encodeURIComponent(tag)}&limit=3`);
+                    const data = await response.json();
+                    samples[subclass.name] = (data.results || []).slice(0, 3);
+                } catch (err) {
+                    console.error(`Failed to fetch samples for ${subclass.name}:`, err);
+                    samples[subclass.name] = [];
+                }
+            }
+            
+            setSubclassSamples(samples);
+        };
+
+        fetchSamples();
+    }, [subclasses, char.class]);
+
+    const classDisplayName = char.class.charAt(0).toUpperCase() + char.class.slice(1);
+
+    return (
+        <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', animation: 'lu-fade-in 0.4s ease-out', maxHeight: '600px', overflowY: 'auto' }}>
+            <div style={{ textAlign: 'center' }}>
+                <p style={{ margin: '0 0 0.3rem', fontSize: '0.62rem', fontWeight: '800', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(212,175,55,0.5)' }}>Choose Your Path</p>
+                <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '700', color: '#fff' }}>
+                    {classDisplayName} Subclass
+                </p>
+                <p style={{ margin: '0.5rem 0 0', fontSize: '0.85rem', color: 'rgba(244,232,208,0.6)' }}>
+                    Select the specialization that defines your path forward
+                </p>
+            </div>
+
+            {loading ? (
+                <div style={{ textAlign: 'center', padding: '3rem', color: 'rgba(212,175,55,0.5)' }}>
+                    Loading subclasses...
+                </div>
+            ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' }}>
+                    {subclasses.map(subclass => {
+                        const isSelected = selectedSubclass === subclass.name;
+                        const samples = subclassSamples[subclass.name] || [];
+
+                        return (
+                            <div
+                                key={subclass.name}
+                                onClick={() => onSelect(subclass.name)}
+                                style={{
+                                    border: `2px solid ${isSelected ? 'var(--color-gold)' : 'rgba(212,175,55,0.25)'}`,
+                                    borderRadius: '0.5rem',
+                                    backgroundColor: isSelected ? 'rgba(212,175,55,0.07)' : 'rgba(255,255,255,0.02)',
+                                    padding: '1rem',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    position: 'relative',
+                                }}
+                                onMouseEnter={e => {
+                                    if (!isSelected) {
+                                        e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)';
+                                        e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.03)';
+                                    }
+                                }}
+                                onMouseLeave={e => {
+                                    if (!isSelected) {
+                                        e.currentTarget.style.borderColor = 'rgba(212,175,55,0.25)';
+                                        e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)';
+                                    }
+                                }}
+                            >
+                                {isSelected && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '0.5rem',
+                                        right: '0.5rem',
+                                        backgroundColor: 'var(--color-gold)',
+                                        color: 'var(--color-primary)',
+                                        fontSize: '0.6rem',
+                                        fontWeight: '800',
+                                        padding: '0.15rem 0.5rem',
+                                        borderRadius: '9999px',
+                                        textTransform: 'uppercase',
+                                    }}>
+                                        ✓
+                                    </div>
+                                )}
+
+                                <h3 style={{ color: 'var(--color-gold)', margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: '700' }}>
+                                    {subclass.name}
+                                </h3>
+                                <p style={{ color: 'rgba(244,232,208,0.7)', fontSize: '0.82rem', lineHeight: '1.4', margin: '0 0 0.75rem' }}>
+                                    {subclass.description}
+                                </p>
+
+                                {samples.length > 0 && (
+                                    <div>
+                                        <p style={{ color: 'rgba(212,175,55,0.5)', fontSize: '0.68rem', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 0.4rem' }}>
+                                            Sample Abilities
+                                        </p>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                                            {samples.map((sample: any) => (
+                                                <p key={sample.name} style={{
+                                                    color: 'rgba(212,175,55,0.7)',
+                                                    fontSize: '0.75rem',
+                                                    margin: 0,
+                                                    padding: '0.3rem 0.5rem',
+                                                    backgroundColor: 'rgba(212,175,55,0.05)',
+                                                    borderRadius: '0.25rem',
+                                                }}>
+                                                    {sample.name}
+                                                </p>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                <button
+                    onClick={onNext}
+                    disabled={!selectedSubclass}
+                    style={{
+                        padding: '0.85rem 2rem',
+                        borderRadius: '0.375rem',
+                        border: 'none',
+                        backgroundColor: selectedSubclass ? 'var(--color-gold)' : 'rgba(212,175,55,0.2)',
+                        color: selectedSubclass ? 'var(--color-primary)' : 'rgba(212,175,55,0.3)',
+                        fontWeight: '700',
+                        fontSize: '1rem',
+                        cursor: selectedSubclass ? 'pointer' : 'not-allowed',
+                        transition: 'all 0.15s',
+                    }}
+                >
+                    {selectedSubclass ? `Continue with ${selectedSubclass}` : 'Select a Subclass'}
+                </button>
+            </div>
         </div>
     );
 }
@@ -1291,12 +1470,28 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
         return stats;
     }, [char.stats, char.class, newLevel]);
 
-    const [step,         setStep]         = useState<Step>('announce');
-    const [hpGain,       setHpGain]       = useState(0);
-    const [newStats,     setNewStats]     = useState<Stats>(initialStats);
-    const [selectedFeat, setSelectedFeat] = useState<{ name: string; benefit: string; statChoice: StatKey | null } | null>(null);
-    const [saving,       setSaving]       = useState(false);
-    const [featureCount, setFeatureCount] = useState(0);
+    const [step,            setStep]            = useState<Step>('announce');
+    const [hpGain,          setHpGain]          = useState(0);
+    const [newStats,        setNewStats]        = useState<Stats>(initialStats);
+    const [selectedFeat,    setSelectedFeat]    = useState<{ name: string; benefit: string; statChoice: StatKey | null } | null>(null);
+    const [selectedSubclass, setSelectedSubclass] = useState<string | null>(null);
+    const [saving,          setSaving]          = useState(false);
+    const [featureCount,    setFeatureCount]    = useState(0);
+    const [subclassLevel,   setSubclassLevel]   = useState<number | null>(null);
+
+    // Fetch subclass_level for this class to determine if subclass selection is needed
+    useEffect(() => {
+        fetch(`/api/resources/subclasses?class=${char.class}&limit=1`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.results && data.results.length > 0) {
+                    setSubclassLevel(data.results[0].subclass_level);
+                }
+            })
+            .catch(err => console.error('Failed to fetch subclass info:', err));
+    }, [char.class]);
+
+    const needsSubclass = subclassLevel !== null && newLevel === subclassLevel;
 
     const hitDie     = HIT_DICE[char.class] ?? 8;
     const conMod     = getModNum(char.stats.con ?? 10);
@@ -1305,11 +1500,13 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
     const statsChanged = STAT_KEYS.some(k => newStats[k] !== char.stats[k]);
 
     const stepFlow: Step[] = useMemo(() => {
-        const flow: Step[] = ['announce', 'hp'];
+        const flow: Step[] = ['announce'];
+        if (needsSubclass) flow.push('subclass');
+        flow.push('hp');
         if (isAsiLevel) flow.push('asi-choice');
         flow.push('features', 'summary');
         return flow;
-    }, [isAsiLevel]);
+    }, [isAsiLevel, needsSubclass]);
 
     const goNext = () => {
         // Special handling for 'asi' and 'feat' steps which aren't in stepFlow
@@ -1338,6 +1535,13 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
                     benefit: selectedFeat.benefit,
                     level: newLevel,
                     statChoice: selectedFeat.statChoice,
+                };
+            }
+            if (selectedSubclass) {
+                payload.subclass = {
+                    name: selectedSubclass,
+                    class: char.class,
+                    level_chosen: newLevel,
                 };
             }
             const res = await fetch(`/api/characters/${char.id}`, {
@@ -1422,6 +1626,16 @@ export default function LevelUpModal({ char, onClose, onComplete }: {
                 {/* Step content */}
                 {step === 'announce' && (
                     <AnnounceScreen char={char} newLevel={newLevel} onNext={goNext} />
+                )}
+                {step === 'subclass' && (
+                    <SubclassScreen
+                        char={char}
+                        selectedSubclass={selectedSubclass}
+                        onSelect={setSelectedSubclass}
+                        onNext={() => {
+                            if (selectedSubclass) goNext();
+                        }}
+                    />
                 )}
                 {step === 'hp' && (
                     <HPScreen

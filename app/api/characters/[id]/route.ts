@@ -74,6 +74,7 @@ export async function PATCH(
         if (body.hp       !== undefined) update.hp       = body.hp;
         if (body.stats    !== undefined) update.stats    = body.stats;
         if (body.currency !== undefined) update.currency = body.currency;
+        if (body.subclass !== undefined) update.subclass = body.subclass;
 
         // If a feat was selected during level-up, add it to the feats array
         if (body.feat) {

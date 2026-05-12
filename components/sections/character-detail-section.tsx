@@ -44,6 +44,7 @@ type CharacterData = {
     name:          string;
     race:          string;
     class:         string;
+    subclass?:     { name: string; class: string; level_chosen: number } | null;
     background:    string;
     alignment:     string;
     level:         number;
@@ -338,9 +339,12 @@ const TYPE_BORDER: Record<string,string> = {
     'spell':          'rgba(93,142,232,0.18)',
 };
 
-function MagicCard({ entry, locked }: { entry: SpellEntry; locked?: boolean }) {
+function MagicCard({ entry, locked, subclassTag }: { entry: SpellEntry; locked?: boolean; subclassTag?: string | null }) {
     const [expanded, setExpanded] = useState(false);
     const type = entry.type ?? 'spell';
+    
+    // Check if this spell/ability is granted by the character's subclass
+    const isSubclassGranted = subclassTag && entry.subclasses && entry.subclasses.includes(subclassTag);
 
     return (
         <div
@@ -361,6 +365,21 @@ function MagicCard({ entry, locked }: { entry: SpellEntry; locked?: boolean }) {
                     {entry.name}
                 </span>
                 <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', flexWrap: 'wrap', flexShrink: 0 }}>
+                    {/* Subclass Badge */}
+                    {isSubclassGranted && (
+                        <span style={{ 
+                            fontSize: '0.58rem', 
+                            fontWeight: '800', 
+                            background: 'rgba(160,100,240,0.2)', 
+                            color: 'rgba(160,100,240,0.95)', 
+                            borderRadius: '999px', 
+                            padding: '0.05rem 0.45rem',
+                            border: '1px solid rgba(160,100,240,0.3)',
+                            letterSpacing: '0.02em'
+                        }}>
+                            SUBCLASS
+                        </span>
+                    )}
                     {/* Level */}
                     {type === 'spell' && entry.level !== undefined && (
                         <span style={{ fontSize: '0.6rem', fontWeight: '800', background: 'rgba(93,142,232,0.2)', color: 'rgba(93,142,232,0.9)', borderRadius: '999px', padding: '0.05rem 0.4rem' }}>
@@ -477,6 +496,8 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
     const charClass = char.class;
     const charRace  = char.race;
     const charLevel = char.level ?? 1;
+    const charSubclass = char.subclass;
+    const subclassTag = charSubclass ? `${charSubclass.name.toLowerCase()} ${charClass}` : null;
     const maxSlot   = maxSpellLevel(charClass, charLevel);
     const isCaster  = FULL_CASTERS.has(charClass) || HALF_CASTERS.has(charClass);
 
@@ -486,11 +507,21 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
 
     useEffect(() => {
         setLoadingMagic(true);
-        fetch(`/api/resources/spells-abilities?class=${encodeURIComponent(charClass)}&race=${encodeURIComponent(charRace)}`)
+        
+        // Build query URL with subclass filtering if applicable
+        let url = `/api/resources/spells-abilities?class=${encodeURIComponent(charClass)}&race=${encodeURIComponent(charRace)}`;
+        
+        // If character has a subclass, fetch subclass-specific spells too
+        if (charSubclass) {
+            const subclassTag = `${charSubclass.name.toLowerCase()} ${charClass}`;
+            url += `&subclass=${encodeURIComponent(subclassTag)}`;
+        }
+        
+        fetch(url)
             .then(r => r.json())
-            .then(data => { setAllEntries(data.entries ?? []); setLoadingMagic(false); })
+            .then(data => { setAllEntries(data.results ?? data.entries ?? []); setLoadingMagic(false); })
             .catch(() => setLoadingMagic(false));
-    }, [charClass, charRace]);
+    }, [charClass, charRace, charSubclass]);
 
     /* ── Step 1: pre-filter by class / race / level ── */
     const { racialAbilities, classAbilitiesUnlocked, classAbilitiesLocked, cantrips, spellsByLevel } = useMemo(() => {
@@ -785,7 +816,7 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
                     <section>
                         <MagicGroupHeader title={`Racial Abilities,   ${fmt(charRace)}`} count={fRacial.length} color="rgba(80,200,100,0.8)" />
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                            {fRacial.map((e, i) => <MagicCard key={`r-${i}`} entry={e} />)}
+                            {fRacial.map((e, i) => <MagicCard key={`r-${i}`} entry={e} subclassTag={subclassTag} />)}
                         </div>
                     </section>
                 )}
@@ -795,7 +826,7 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
                     <section>
                         <MagicGroupHeader title={`${fmt(charClass)} Abilities,   Level ${charLevel}`} count={fClassHave.length} color="rgba(212,175,55,0.8)" />
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                            {fClassHave.map((e, i) => <MagicCard key={`c-${i}`} entry={e} />)}
+                            {fClassHave.map((e, i) => <MagicCard key={`c-${i}`} entry={e} subclassTag={subclassTag} />)}
                         </div>
                     </section>
                 )}
@@ -805,7 +836,7 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
                     <section>
                         <MagicGroupHeader title="Cantrips" count={fCantrips.length} color="rgba(93,142,232,0.8)" />
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: '0.4rem' }}>
-                            {fCantrips.map((e, i) => <MagicCard key={`ct-${i}`} entry={e} />)}
+                            {fCantrips.map((e, i) => <MagicCard key={`ct-${i}`} entry={e} subclassTag={subclassTag} />)}
                         </div>
                     </section>
                 )}
@@ -819,7 +850,7 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
                             color="rgba(93,142,232,0.8)"
                         />
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: '0.4rem' }}>
-                            {fByLevel[lvl].map((e, i) => <MagicCard key={`s${lvl}-${i}`} entry={e} />)}
+                            {fByLevel[lvl].map((e, i) => <MagicCard key={`s${lvl}-${i}`} entry={e} subclassTag={subclassTag} />)}
                         </div>
                     </section>
                 ))}
@@ -839,7 +870,7 @@ function SpellsAbilitiesTab({ char }: { char: CharacterData }) {
                     <section>
                         <MagicGroupHeader title="Coming Soon,   Level Up to Unlock" count={fClassLater.length} color="rgba(244,232,208,0.2)" />
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                            {fClassLater.map((e, i) => <MagicCard key={`cl-${i}`} entry={e} locked />)}
+                            {fClassLater.map((e, i) => <MagicCard key={`cl-${i}`} entry={e} locked subclassTag={subclassTag} />)}
                         </div>
                     </section>
                 )}
@@ -938,6 +969,7 @@ function OverviewTab({ char }: { char: CharacterData }) {
                     {[
                         { label: 'Race',       value: fmt(char.race)       },
                         { label: 'Class',      value: fmt(char.class)      },
+                        ...(char.subclass ? [{ label: 'Subclass',  value: char.subclass.name }] : []),
                         { label: 'Background', value: fmt(char.background) },
                         { label: 'Alignment',  value: fmt(char.alignment)  },
                         { label: 'Level',      value: `Level ${char.level}` },
@@ -1447,7 +1479,9 @@ export default function CharacterDetailSection({ id }: { id: string }) {
     );
 
     const displayRace   = fmt(char.race);
-    const displayClass  = fmt(char.class);
+    const displayClass  = char.subclass 
+        ? `${fmt(char.class)} (${char.subclass.name})`
+        : fmt(char.class);
     const displayBg     = fmt(char.background);
     const displayAlign  = fmt(char.alignment);
 

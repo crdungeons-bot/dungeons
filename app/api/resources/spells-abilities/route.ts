@@ -7,6 +7,7 @@ import clientPromise from '@/lib/mongo';
  * Query parameters (all optional):
  *   class       ,   filter to entries whose `classes` array contains this value
  *   race        ,   filter to entries whose `races` array contains this value
+ *   subclass    ,   filter to entries whose `subclasses` array contains this value
  *   type        ,   'spell' | 'class-ability' | 'racial-ability'
  *                  ('spell' means no `type` field in the document)
  *   levelMax    ,   for spells: only levels 0..levelMax
@@ -16,8 +17,9 @@ import clientPromise from '@/lib/mongo';
  *   concentration,   'true' | 'false'
  *   ritual       ,   'true' | 'false'
  *   q           ,   text search on name + description (case-insensitive substring)
+ *   limit       ,   limit number of results
  *
- * Returns: { entries: SpellEntry[], total: number }
+ * Returns: { results: SpellEntry[], count: number }
  */
 export async function GET(request: NextRequest) {
     try {
@@ -25,6 +27,7 @@ export async function GET(request: NextRequest) {
 
         const classParam    = searchParams.get('class');
         const raceParam     = searchParams.get('race');
+        const subclassParam = searchParams.get('subclass');
         const typeParam     = searchParams.get('type');          // 'spell' | 'class-ability' | 'racial-ability'
         const levelMax      = searchParams.get('levelMax');      // max spell level (number)
         const levelGained   = searchParams.get('levelGained');   // exact ability level
@@ -33,19 +36,21 @@ export async function GET(request: NextRequest) {
         const concentration = searchParams.get('concentration'); // 'true' | 'false'
         const ritual        = searchParams.get('ritual');        // 'true' | 'false'
         const q             = searchParams.get('q');             // text search
+        const limit         = searchParams.get('limit');         // result limit
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const filter: Record<string, any> = {};
 
-        // ── class / race ──────────────────────────────────────────
-        // When both are given, find entries relevant to EITHER (used by
-        // the character sheet to fetch everything for one character in a
-        // single round-trip). When only one is given, filter exactly.
-        if (classParam && raceParam) {
-            filter.$or = [{ classes: classParam }, { races: raceParam }];
-        } else {
-            if (classParam) filter.classes = classParam;
-            if (raceParam)  filter.races   = raceParam;
+        // ── class / race / subclass ───────────────────────────────
+        // Build OR conditions for class, race, and subclass
+        // Returns entries that match ANY of: class, race, or subclass
+        const orConditions = [];
+        if (classParam)    orConditions.push({ classes: classParam });
+        if (raceParam)     orConditions.push({ races: raceParam });
+        if (subclassParam) orConditions.push({ subclasses: subclassParam });
+        
+        if (orConditions.length > 0) {
+            filter.$or = orConditions;
         }
 
         // ── type ──────────────────────────────────────────────────
@@ -90,13 +95,21 @@ export async function GET(request: NextRequest) {
         const client     = await clientPromise;
         const collection = client.db('dnd-resources').collection('spells-abilities');
 
-        const entries = await collection
+        let query = collection
             .find(filter, { projection: { _id: 0 } })
-            .sort({ type: 1, levelGained: 1, level: 1, name: 1 })
-            .toArray();
+            .sort({ type: 1, levelGained: 1, level: 1, name: 1 });
+
+        if (limit !== null) {
+            const limitNum = parseInt(limit, 10);
+            if (!Number.isNaN(limitNum) && limitNum > 0) {
+                query = query.limit(limitNum);
+            }
+        }
+
+        const entries = await query.toArray();
 
         return NextResponse.json(
-            { entries, total: entries.length },
+            { results: entries, count: entries.length },
             { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } },
         );
     } catch (err) {

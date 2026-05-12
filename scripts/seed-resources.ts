@@ -16,6 +16,7 @@ import ITEMS                from './items-data.js';
 import { FEATS }            from './feats-data.js';
 import RACES                from './races-data.js';
 import CLASSES              from './classes-data.js';
+import SUBCLASSES_DATA      from './subclasses-data.js';
 
 // Load .env.local (Next.js convention) so MONGODB_URI is available when
 // running this script outside of the Next.js server process.
@@ -54,6 +55,7 @@ async function seedSpellsAbilities(db: ReturnType<MongoClient['db']>) {
         ...e,
         classes:    e.classes    ?? [],
         races:      e.races      ?? [],
+        subclasses: e.subclasses ?? [],
         components: e.components ?? [],
     }));
 
@@ -65,6 +67,7 @@ async function seedSpellsAbilities(db: ReturnType<MongoClient['db']>) {
     await collection.createIndex({ type: 1 },                                 { name: 'type' });
     await collection.createIndex({ classes: 1 },                              { name: 'classes' });
     await collection.createIndex({ races: 1 },                                { name: 'races' });
+    await collection.createIndex({ subclasses: 1 },                           { name: 'subclasses' });
     await collection.createIndex({ level: 1 },                                { name: 'spell_level' });
     await collection.createIndex({ levelGained: 1 },                          { name: 'level_gained' });
     await collection.createIndex({ school: 1 },                               { name: 'school' });
@@ -78,6 +81,8 @@ async function seedSpellsAbilities(db: ReturnType<MongoClient['db']>) {
     await collection.createIndex({ type: 1, races: 1, levelGained: 1 },       { name: 'racial_ability_lookup' });
     // Compound: character spell list
     await collection.createIndex({ classes: 1, level: 1 },                    { name: 'spell_class_level' });
+    // Compound: subclass spell list
+    await collection.createIndex({ subclasses: 1, level: 1 },                 { name: 'spell_subclass_level' });
 
     log('Indexes created for spells-abilities');
 }
@@ -168,6 +173,44 @@ async function seedClasses(db: ReturnType<MongoClient['db']>) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   Seed subclasses
+═══════════════════════════════════════════════════════════════════ */
+
+async function seedSubclasses(db: ReturnType<MongoClient['db']>) {
+    const col = 'subclasses';
+    await dropIfExists(db, col);
+
+    const collection = db.collection(col);
+
+    // Convert the nested object structure into individual documents
+    // Each document represents one subclass with its parent class info
+    const subclassDocs = [];
+    
+    for (const [className, classData] of Object.entries(SUBCLASSES_DATA)) {
+        for (const subclass of classData.subclasses) {
+            subclassDocs.push({
+                name: subclass.name,
+                description: subclass.description,
+                class: className,
+                subclass_level: classData.subclass_level,
+            });
+        }
+    }
+
+    await collection.insertMany(subclassDocs);
+    log(`Inserted ${subclassDocs.length} subclasses across ${Object.keys(SUBCLASSES_DATA).length} classes`);
+
+    // Indexes for efficient querying
+    await collection.createIndex({ class: 1 },                          { name: 'class' });
+    await collection.createIndex({ name: 1 },                           { name: 'name' });
+    await collection.createIndex({ subclass_level: 1 },                 { name: 'subclass_level' });
+    await collection.createIndex({ class: 1, name: 1 },                 { name: 'class_name', unique: true });
+    await collection.createIndex({ name: 'text', description: 'text' }, { name: 'text_search' });
+
+    log('Indexes created for subclasses');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Main
 ═══════════════════════════════════════════════════════════════════ */
 
@@ -195,6 +238,9 @@ async function main() {
 
         console.log('\n─── classes ────────────────────────────────────────');
         await seedClasses(db);
+
+        console.log('\n─── subclasses ─────────────────────────────────────');
+        await seedSubclasses(db);
 
         console.log('\n✅  Seed complete.\n');
     } finally {

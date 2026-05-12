@@ -1,6 +1,7 @@
 import { Navigation } from '@/components';
 import Sidebar from '@/components/dashboard/sidebar';
 import ProtectedRoute from '@/components/protected-route';
+import { Analytics } from "@vercel/analytics/next"
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (

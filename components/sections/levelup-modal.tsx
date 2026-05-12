@@ -360,6 +360,8 @@ function SubclassScreen({ char, selectedSubclass, onSelect, onNext }: {
     const [loading, setLoading] = useState(true);
     const [viewingSubclass, setViewingSubclass] = useState<string | null>(null);
     const [subclassSamples, setSubclassSamples] = useState<Record<string, any[]>>({});
+    const [detailSpells, setDetailSpells] = useState<any[]>([]);
+    const [loadingDetail, setLoadingDetail] = useState(false);
 
     // Fetch subclasses for this class
     useEffect(() => {
@@ -401,8 +403,175 @@ function SubclassScreen({ char, selectedSubclass, onSelect, onNext }: {
         fetchSamples();
     }, [subclasses, char.class]);
 
-    const classDisplayName = char.class.charAt(0).toUpperCase() + char.class.slice(1);
+    // Fetch all spells/abilities for detail view
+    useEffect(() => {
+        if (!viewingSubclass) {
+            setDetailSpells([]);
+            return;
+        }
 
+        setLoadingDetail(true);
+        const tag = `${viewingSubclass.toLowerCase()} ${char.class}`;
+        fetch(`/api/resources/spells-abilities?subclass=${encodeURIComponent(tag)}`)
+            .then(r => r.json())
+            .then(data => {
+                setDetailSpells(data.results || []);
+                setLoadingDetail(false);
+            })
+            .catch(err => {
+                console.error('Failed to fetch subclass details:', err);
+                setLoadingDetail(false);
+            });
+    }, [viewingSubclass, char.class]);
+
+    const classDisplayName = char.class.charAt(0).toUpperCase() + char.class.slice(1);
+    const viewingSubclassData = viewingSubclass ? subclasses.find(s => s.name === viewingSubclass) : null;
+
+    // Detail View
+    if (viewingSubclass && viewingSubclassData) {
+        return (
+            <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', animation: 'lu-fade-in 0.4s ease-out', maxHeight: '600px', overflowY: 'auto' }}>
+                <div>
+                    <button
+                        onClick={() => setViewingSubclass(null)}
+                        style={{
+                            padding: '0.5rem 1rem',
+                            borderRadius: '0.375rem',
+                            border: '1px solid rgba(212,175,55,0.3)',
+                            backgroundColor: 'transparent',
+                            color: 'rgba(212,175,55,0.7)',
+                            fontSize: '0.85rem',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            marginBottom: '1rem',
+                            transition: 'all 0.15s',
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)';
+                            e.currentTarget.style.color = 'var(--color-gold)';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.color = 'rgba(212,175,55,0.7)';
+                        }}
+                    >
+                        ← Back to All Subclasses
+                    </button>
+                    
+                    <h2 style={{ color: 'var(--color-gold)', fontSize: '1.75rem', fontWeight: '800', margin: '0 0 0.5rem' }}>
+                        {viewingSubclassData.name}
+                    </h2>
+                    <p style={{ color: 'rgba(244,232,208,0.8)', fontSize: '0.95rem', lineHeight: '1.6', margin: '0 0 1.5rem' }}>
+                        {viewingSubclassData.description}
+                    </p>
+                </div>
+
+                <div>
+                    <h3 style={{ color: 'rgba(212,175,55,0.5)', fontSize: '0.7rem', fontWeight: '800', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 1rem' }}>
+                        Subclass Spells & Abilities
+                    </h3>
+
+                    {loadingDetail ? (
+                        <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(212,175,55,0.5)' }}>
+                            Loading abilities...
+                        </div>
+                    ) : detailSpells.length === 0 ? (
+                        <p style={{ color: 'rgba(244,232,208,0.5)', fontStyle: 'italic' }}>
+                            No specific spells found for this subclass.
+                        </p>
+                    ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            {detailSpells.map((spell: any, idx: number) => (
+                                <div
+                                    key={idx}
+                                    style={{
+                                        padding: '1rem',
+                                        backgroundColor: 'rgba(212,175,55,0.05)',
+                                        border: '1px solid rgba(212,175,55,0.2)',
+                                        borderRadius: '0.5rem',
+                                    }}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                                        <h4 style={{ color: 'var(--color-gold)', fontSize: '1rem', fontWeight: '700', margin: 0 }}>
+                                            {spell.name}
+                                        </h4>
+                                        {spell.level !== undefined && (
+                                            <span style={{
+                                                backgroundColor: 'rgba(212,175,55,0.15)',
+                                                color: 'rgba(212,175,55,0.8)',
+                                                padding: '0.2rem 0.6rem',
+                                                borderRadius: '9999px',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '700',
+                                            }}>
+                                                Level {spell.level}
+                                            </span>
+                                        )}
+                                        {spell.school && (
+                                            <span style={{ color: 'rgba(212,175,55,0.5)', fontSize: '0.8rem', textTransform: 'capitalize' }}>
+                                                {spell.school}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p style={{ color: 'rgba(244,232,208,0.7)', fontSize: '0.9rem', lineHeight: '1.5', margin: 0 }}>
+                                        {spell.description}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                    <button
+                        onClick={() => setViewingSubclass(null)}
+                        style={{
+                            flex: 1,
+                            padding: '0.85rem',
+                            borderRadius: '0.375rem',
+                            border: '1px solid rgba(212,175,55,0.3)',
+                            backgroundColor: 'transparent',
+                            color: 'rgba(212,175,55,0.7)',
+                            fontWeight: '600',
+                            fontSize: '0.95rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s',
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.05)';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                    >
+                        Close
+                    </button>
+                    <button
+                        onClick={() => {
+                            onSelect(viewingSubclass);
+                            setViewingSubclass(null);
+                        }}
+                        style={{
+                            flex: 2,
+                            padding: '0.85rem',
+                            borderRadius: '0.375rem',
+                            border: selectedSubclass === viewingSubclass ? '2px solid var(--color-gold)' : 'none',
+                            backgroundColor: selectedSubclass === viewingSubclass ? 'rgba(212,175,55,0.1)' : 'var(--color-gold)',
+                            color: selectedSubclass === viewingSubclass ? 'var(--color-gold)' : 'var(--color-primary)',
+                            fontWeight: '700',
+                            fontSize: '1rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s',
+                        }}
+                    >
+                        {selectedSubclass === viewingSubclass ? `✓ ${viewingSubclass} Selected` : `Select ${viewingSubclass}`}
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // Grid View
     return (
         <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', animation: 'lu-fade-in 0.4s ease-out', maxHeight: '600px', overflowY: 'auto' }}>
             <div style={{ textAlign: 'center' }}>
@@ -496,6 +665,36 @@ function SubclassScreen({ char, selectedSubclass, onSelect, onNext }: {
                                         </div>
                                     </div>
                                 )}
+
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setViewingSubclass(subclass.name);
+                                    }}
+                                    style={{
+                                        marginTop: '0.75rem',
+                                        width: '100%',
+                                        padding: '0.5rem',
+                                        borderRadius: '0.375rem',
+                                        border: '1px solid rgba(212,175,55,0.35)',
+                                        backgroundColor: 'transparent',
+                                        color: 'rgba(212,175,55,0.65)',
+                                        fontSize: '0.8rem',
+                                        fontWeight: '600',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.15s',
+                                    }}
+                                    onMouseEnter={e => {
+                                        e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)';
+                                        e.currentTarget.style.color = 'var(--color-gold)';
+                                    }}
+                                    onMouseLeave={e => {
+                                        e.currentTarget.style.backgroundColor = 'transparent';
+                                        e.currentTarget.style.color = 'rgba(212,175,55,0.65)';
+                                    }}
+                                >
+                                    View Full Details
+                                </button>
                             </div>
                         );
                     })}

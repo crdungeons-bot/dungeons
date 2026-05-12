@@ -435,7 +435,9 @@ export default function StatsStep(props: StatsStepProps) {
         const n = parseInt(manualStats[s.key]);
         return !isNaN(n) && n >= 1 && n <= 30;
     });
-    const canContinue    = mode === 'rolled'  ? allAssigned  :
+    // User must choose a mode first, then complete it
+    const canContinue    = mode === 'choose'  ? false :
+                           mode === 'rolled'  ? allAssigned  :
                            mode === 'manual'  ? allManualValid :
                            false;
 

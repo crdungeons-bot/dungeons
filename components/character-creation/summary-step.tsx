@@ -200,7 +200,11 @@ export default function SummaryStep({
     /* ── derived display values ── */
     const displayName       = name       ? fmt(name)       : 'Unnamed Hero';
     const displayRace       = race       ? fmt(race)       : ', ';
-    const displayClass      = dndClass   ? fmt(dndClass)   : ', ';
+    const displayClass      = dndClass && subclass 
+        ? `${fmt(dndClass)} (${fmt(subclass)})`
+        : dndClass 
+            ? fmt(dndClass) 
+            : ', ';
     const displayBackground = background ? fmt(background) : ', ';
     const displayAlignment  = alignment  ? fmt(alignment)  : ', ';
 

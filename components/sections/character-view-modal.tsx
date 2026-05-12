@@ -1026,7 +1026,11 @@ export default function CharacterViewModal({
     if (!isOpen) return null;
 
     const displayRace = char ? fmt(char.race) : '';
-    const displayClass = char ? fmt(char.class) : '';
+    const displayClass = char && char.subclass
+        ? `${fmt(char.class)} (${char.subclass.name})`
+        : char
+            ? fmt(char.class)
+            : '';
     const displayBg = char ? fmt(char.background) : '';
     const displayAlign = char ? fmt(char.alignment) : '';
 

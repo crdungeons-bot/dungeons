@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { StaticBackground } from '@/data/backgrounds';
+import type { Background } from '@/types/background';
 
 // Alias so internal code stays readable
-type BgDetail = StaticBackground;
+type BgDetail = Background;
 
 // ── Alignment data (hardcoded,   these never change in D&D 5e) ─────────────────
 

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link                             from 'next/link';
-import { STATIC_BACKGROUNDS }           from '@/data/backgrounds';
 import type { SpellEntry }              from '@/data/spells';
 import type { SpellSlots, PactMagicSlots } from '@/data/spell-slots';
 import { usesPactMagic }                from '@/data/spell-slots';
@@ -1330,11 +1329,26 @@ function GearTab({ char }: { char: CharacterData }) {
 }
 
 function LoreTab({ char }: { char: CharacterData }) {
-    const bgData      = STATIC_BACKGROUNDS.find(b => b.index === char.background);
+    const [bgData, setBgData] = useState<{ name: string; feature: { name: string; desc: string[] } } | null>(null);
     const alignment   = ALIGNMENTS[char.alignment];
     const hasPhysical = char.height || char.weight || char.age;
     const story       = char.story;
     const hasStory    = story && Object.values(story).some(v => v && v.trim().length > 0);
+
+    useEffect(() => {
+        if (!char.background) {
+            setBgData(null);
+            return;
+        }
+        
+        fetch(`/api/resources/backgrounds/${char.background}`)
+            .then(res => res.json())
+            .then(data => setBgData(data))
+            .catch(err => {
+                console.error('Failed to fetch background:', err);
+                setBgData(null);
+            });
+    }, [char.background]);
 
     return (
         <div style={{ padding: '1.75rem 2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>

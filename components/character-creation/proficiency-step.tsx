@@ -97,7 +97,7 @@ function isSkill(index: string) { return index.startsWith('skill-'); }
 
 function parseApiProfs(list: ApiJson[] | undefined): string[] {
     return (list ?? [])
-        .filter((p) => p && isSkill(p.index))
+        .filter((p) => p && p.index)
         .map((p) => p!.index as string);
 }
 

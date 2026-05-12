@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { shouldDisplaySubclass } from '@/lib/subclass-levels';
 
 /* ─── types ─────────────────────────────────────────────────────── */
 
@@ -10,6 +11,7 @@ type Character = {
     name:       string;
     race:       string;
     class:      string;
+    subclass?:  { name: string; class: string; level_chosen: number } | null;
     background: string;
     alignment:  string;
     level:      number;
@@ -26,6 +28,10 @@ function fmt(s: string): string {
 
 function CharacterCard({ char }: { char: Character }) {
     const [hovered, setHovered] = useState(false);
+
+    const displayClass = (char.subclass && shouldDisplaySubclass(char.class, char.level ?? 1, true))
+        ? `${fmt(char.class)} (${char.subclass.name})`
+        : fmt(char.class);
 
     return (
         <Link
@@ -111,7 +117,7 @@ function CharacterCard({ char }: { char: Character }) {
                     textOverflow: 'ellipsis',
                     whiteSpace:   'nowrap',
                 }}>
-                    {fmt(char.race)} · {fmt(char.class)}
+                    {fmt(char.race)} · {displayClass}
                 </p>
             </div>
         </Link>

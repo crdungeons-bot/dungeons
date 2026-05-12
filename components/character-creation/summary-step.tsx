@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { shouldDisplaySubclass } from '@/lib/subclass-levels';
 
 /* ─── types ─────────────────────────────────────────────────────── */
 
@@ -216,10 +217,10 @@ export default function SummaryStep({
     /* ── derived display values ── */
     const displayName       = name       ? fmt(name)       : 'Unnamed Hero';
     const displayRace       = race       ? fmt(race)       : ', ';
-    const displayClass      = dndClass && subclass 
+    const displayClass      = dndClass && subclass && shouldDisplaySubclass(dndClass, 1, true)
         ? `${fmt(dndClass)} (${fmt(subclass)})`
-        : dndClass 
-            ? fmt(dndClass) 
+        : dndClass
+            ? fmt(dndClass)
             : ', ';
     const displayBackground = background ? fmt(background) : ', ';
     const displayAlignment  = alignment  ? fmt(alignment)  : ', ';

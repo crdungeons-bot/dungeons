@@ -309,7 +309,7 @@ export default function SummaryStep() {
 
             clearCharacterCreationData();
 
-            router.push('/dashboard?created=1');
+            router.push('/dashboard?section=characters');
         } catch (e: unknown) {
             setError(e instanceof Error ? e.message : 'Failed to create character');
             setCreating(false);

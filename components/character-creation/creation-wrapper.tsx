@@ -11,19 +11,6 @@ export default function CharacterCreationWrapper({
 }) {
     const router = useRouter();
 
-    // Clean up localStorage when window closes
-    useEffect(() => {
-        const handleBeforeUnload = () => {
-            clearCharacterCreationData();
-        };
-
-        window.addEventListener('beforeunload', handleBeforeUnload);
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-    }, []);
-
     const handleExit = () => {
         if (confirm('Are you sure you want to exit? All progress will be lost.')) {
             clearCharacterCreationData();

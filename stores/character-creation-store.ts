@@ -119,12 +119,12 @@ function mergePersistedCharacterCreation(
         return currentState;
     }
     const p = persistedState as PersistedSlice;
+    // Persisted state takes priority over current state during rehydration
     return {
         ...currentState,
-        ...p,
         draft: {
-            ...p.draft,
             ...currentState.draft,
+            ...p.draft,
         },
     };
 }
@@ -133,10 +133,22 @@ export const useCharacterCreationStore = create<CharacterCreationStore>()(
     persist(
         (set) => ({
             draft: {},
-            patchDraft: (partial) =>
-                set((s) => ({
-                    draft: { ...s.draft, ...partial },
-                })),
+            patchDraft: (partial) => {
+                set((s) => {
+                    const newDraft = { ...s.draft, ...partial };
+                    // Immediately sync to localStorage to avoid race conditions
+                    if (typeof window !== 'undefined') {
+                        try {
+                            const persistKey = 'character_creation_data';
+                            const value = { state: { draft: newDraft }, version: 1 };
+                            localStorage.setItem(persistKey, JSON.stringify(value));
+                        } catch (e) {
+                            console.error('[CharacterCreation] Failed to persist:', e);
+                        }
+                    }
+                    return { draft: newDraft };
+                });
+            },
             resetDraft: () => set({ draft: {} }),
         }),
         {

@@ -1,62 +1,60 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import SubclassSelectionModal from './subclass-selection-modal';
-import { getCharacterCreationData, updateCharacterCreationData } from '@/lib/character-creation-storage';
+import {
+    useCharacterCreationStore,
+    useCharacterCreationHydrated,
+} from '@/stores/character-creation-store';
 
 const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
 
 export default function SubclassSelectStep() {
     const router = useRouter();
-    const [selectedSubclass, setSelectedSubclass] = useState<string | null>(null);
-    const [characterClass, setCharacterClass] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
+    const hydrated = useCharacterCreationHydrated();
+    const dndClass = useCharacterCreationStore(s => s.draft.dndClass);
+    const subclass = useCharacterCreationStore(s => s.draft.subclass);
+    const patchDraft = useCharacterCreationStore(s => s.patchDraft);
 
-    // Load from localStorage on mount
     useEffect(() => {
-        const saved = getCharacterCreationData();
-        
-        // Check if this class needs a subclass at level 1
-        if (saved.dndClass && !LEVEL_1_SUBCLASS_CLASSES.includes(saved.dndClass)) {
-            // Skip this step - go to background
-            router.push('/create-character?step=4');
-            return;
+        if (!hydrated) return;
+        if (dndClass && !LEVEL_1_SUBCLASS_CLASSES.includes(dndClass)) {
+            router.replace('/create-character?step=4');
         }
-        
-        if (saved.subclass) setSelectedSubclass(saved.subclass);
-        if (saved.dndClass) setCharacterClass(saved.dndClass);
-        setLoading(false);
-    }, [router]);
+    }, [hydrated, dndClass, router]);
 
-    const handleSelect = (subclass: string) => {
-        setSelectedSubclass(subclass);
-        updateCharacterCreationData({ subclass });
+    const handleSelect = (sub: string) => {
+        patchDraft({ subclass: sub });
     };
 
     const handleConfirm = () => {
-        if (!selectedSubclass) return;
-        router.push('/create-character?step=4'); // Background step
+        if (!subclass) return;
+        router.push('/create-character?step=4');
     };
 
     const handleBack = () => {
-        router.push('/create-character?step=2'); // Class step
+        router.push('/create-character?step=2');
     };
 
-    if (loading || !characterClass) {
-        return <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            flex: 1,
-            color: 'var(--color-gold)' 
-        }}>Loading...</div>;
+    if (!hydrated || !dndClass) {
+        return (
+            <div style={{
+                display:         'flex',
+                alignItems:      'center',
+                justifyContent:  'center',
+                flex:            1,
+                color:           'var(--color-gold)',
+            }}>
+                Loading…
+            </div>
+        );
     }
 
     return (
         <SubclassSelectionModal
-            characterClass={characterClass}
-            selectedSubclass={selectedSubclass}
+            characterClass={dndClass}
+            selectedSubclass={subclass ?? null}
             onSelect={handleSelect}
             onClose={handleBack}
             onConfirm={handleConfirm}

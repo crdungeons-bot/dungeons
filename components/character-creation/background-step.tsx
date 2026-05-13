@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Background } from '@/types/background';
-import { getCharacterCreationData, updateCharacterCreationData } from '@/lib/character-creation-storage';
+import { useShallow } from 'zustand/react/shallow';
+import { useCharacterCreationStore } from '@/stores/character-creation-store';
 
 // Alias so internal code stays readable
 type BgDetail = Background;
@@ -507,36 +508,25 @@ export default function BackgroundStep({
 }) {
     const router = useRouter();
 
-    // Form state - will be loaded from localStorage
-    const [characterName, setCharacterName] = useState('');
-    const [selectedBg, setSelectedBg]       = useState<string | null>(null);
-    const [selectedAlignment, setAlignment]  = useState<string | null>(null);
-    const [height, setHeight]               = useState('');
-    const [weight, setWeight]               = useState('');
-    const [age, setAge]                     = useState('');
-
-    // Load data from localStorage on mount
-    useEffect(() => {
-        const saved = getCharacterCreationData();
-        if (saved.name) setCharacterName(saved.name);
-        if (saved.background) setSelectedBg(saved.background);
-        if (saved.alignment) setAlignment(saved.alignment);
-        if (saved.height) setHeight(saved.height);
-        if (saved.weight) setWeight(saved.weight);
-        if (saved.age) setAge(saved.age);
-    }, []);
-
-    // Save to localStorage whenever state changes
-    useEffect(() => {
-        updateCharacterCreationData({
-            name: characterName || undefined,
-            background: selectedBg || undefined,
-            alignment: selectedAlignment || undefined,
-            height: height || undefined,
-            weight: weight || undefined,
-            age: age || undefined,
-        });
-    }, [characterName, selectedBg, selectedAlignment, height, weight, age]);
+    const {
+        patchDraft,
+        characterName,
+        selectedBg,
+        selectedAlignment,
+        height,
+        weight,
+        age,
+    } = useCharacterCreationStore(
+        useShallow((s) => ({
+            patchDraft: s.patchDraft,
+            characterName: s.draft.name ?? '',
+            selectedBg: s.draft.background ?? null,
+            selectedAlignment: s.draft.alignment ?? null,
+            height: s.draft.height ?? '',
+            weight: s.draft.weight ?? '',
+            age: s.draft.age ?? '',
+        })),
+    );
 
     // Accordion state,   which background row is currently expanded
     const [expandedBg, setExpandedBg] = useState<string | null>(null);
@@ -570,7 +560,7 @@ export default function BackgroundStep({
                         label="Name"
                         placeholder="e.g. Kael Dawnstrider"
                         value={characterName}
-                        onChange={setCharacterName}
+                        onChange={(v) => patchDraft({ name: v || undefined })}
                         required
                     />
                     <p style={{
@@ -605,7 +595,7 @@ export default function BackgroundStep({
                             isExpanded={expandedBg === bg.index}
                             onToggle={() => toggleAccordion(bg.index)}
                             onSelect={() => {
-                                setSelectedBg(bg.index);
+                                patchDraft({ background: bg.index });
                                 setExpandedBg(bg.index);
                             }}
                         />
@@ -623,7 +613,7 @@ export default function BackgroundStep({
                 }}>
                     Alignment describes your character's moral compass,   how they approach ethics, order, and the world around them.
                 </p>
-                <AlignmentGrid selected={selectedAlignment} onSelect={setAlignment} />
+                <AlignmentGrid selected={selectedAlignment} onSelect={(id) => patchDraft({ alignment: id })} />
 
                 {/* ── PHYSICAL TRAITS ────────────────────────────────── */}
                 <SectionDivider title="Physical Traits" />
@@ -646,19 +636,19 @@ export default function BackgroundStep({
                         label="Age"
                         placeholder='e.g. 32'
                         value={age}
-                        onChange={setAge}
+                        onChange={(v) => patchDraft({ age: v || undefined })}
                     />
                     <StyledInput
                         label="Height"
                         placeholder={"e.g. 5'10\""}
                         value={height}
-                        onChange={setHeight}
+                        onChange={(v) => patchDraft({ height: v || undefined })}
                     />
                     <StyledInput
                         label="Weight"
                         placeholder="e.g. 175 lbs"
                         value={weight}
-                        onChange={setWeight}
+                        onChange={(v) => patchDraft({ weight: v || undefined })}
                     />
                 </div>
 

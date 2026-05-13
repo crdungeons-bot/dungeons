@@ -1,7 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import {
+    useCharacterCreationStore,
+    useCharacterCreationHydrated,
+} from '@/stores/character-creation-store';
 
 // ── Constants & utilities ─────────────────────────────────────────────────────
 
@@ -325,83 +329,75 @@ function StatInputCard({
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-type StatsStepProps = {
-    race?: string;
-    dndClass?: string;
-    subclass?: string;
-    name?: string;
-    background?: string;
-    alignment?: string;
-    height?: string;
-    weight?: string;
-    age?: string;
-    proficiencies?: string;
-};
-
-export default function StatsStep(props: StatsStepProps) {
+export default function StatsStep() {
     const router = useRouter();
+    const hydrated = useCharacterCreationHydrated();
+    const patchDraft = useCharacterCreationStore((s) => s.patchDraft);
+    const restoredRef = useRef(false);
 
-    // Try to restore saved stats if navigating back
-    const savedStats = typeof window !== 'undefined' 
-        ? (() => {
-            try {
-                const saved = localStorage.getItem('char_stats');
-                return saved ? JSON.parse(saved) : null;
-            } catch { return null; }
-        })()
-        : null;
-
-    const [mode, setMode]               = useState<Mode>(() => {
-        // If we have saved stats, determine which mode to restore
-        if (savedStats) {
-            if (savedStats.method === 'manual') return 'manual';
-            if (savedStats.method === 'rolled') return 'rolled';
-        }
-        return 'choose';
-    });
+    const [mode, setMode]               = useState<Mode>('choose');
     const [isRolling, setIsRolling]     = useState(false);
-    const [rolled, setRolled]           = useState<RollResult[]>(() => {
-        // If we saved rolled stats, restore the roll results
-        if (savedStats?.method === 'rolled' && savedStats.rollDetails) {
-            return savedStats.rollDetails;
-        }
-        return [];
-    });
+    const [rolled, setRolled]           = useState<RollResult[]>([]);
     const [rerolled, setRerolled]       = useState(false);
-
-    // Roll assignment state
-    const [statToRoll, setStatToRoll]   = useState<AssignMap>(() => {
-        if (savedStats?.method === 'rolled') {
-            return {
-                str: savedStats.str ?? null,
-                dex: savedStats.dex ?? null,
-                con: savedStats.con ?? null,
-                int: savedStats.int ?? null,
-                wis: savedStats.wis ?? null,
-                cha: savedStats.cha ?? null,
-            };
-        }
-        return { ...EMPTY_ASSIGN };
-    });
-    const [selectedPool, setSelected]   = useState<number | null>(null); // which roll chip is "held"
-
-    // Manual entry state
-    const [manualStats, setManual]      = useState<Record<StatKey, string>>(() => {
-        if (savedStats?.method === 'manual') {
-            return {
-                str: String(savedStats.str ?? ''),
-                dex: String(savedStats.dex ?? ''),
-                con: String(savedStats.con ?? ''),
-                int: String(savedStats.int ?? ''),
-                wis: String(savedStats.wis ?? ''),
-                cha: String(savedStats.cha ?? ''),
-            };
-        }
-        return { ...EMPTY_MANUAL };
-    });
-
-    // Animation: rapidly changing dice during roll sequence
+    const [statToRoll, setStatToRoll]   = useState<AssignMap>({ ...EMPTY_ASSIGN });
+    const [selectedPool, setSelected]   = useState<number | null>(null);
+    const [manualStats, setManual]      = useState<Record<StatKey, string>>({ ...EMPTY_MANUAL });
     const [animDice, setAnimDice]       = useState<number[][]>([]);
+
+    useEffect(() => {
+        if (!hydrated || restoredRef.current) return;
+        const s = useCharacterCreationStore.getState().draft.stats;
+        if (!s) {
+            restoredRef.current = true;
+            return;
+        }
+        const statKeys: StatKey[] = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+        const looksLikeLegacyPlain =
+            !('method' in s) &&
+            statKeys.every((k) => typeof (s as Record<string, unknown>)[k] === 'number');
+        if (looksLikeLegacyPlain) {
+            setMode('manual');
+            setManual(
+                Object.fromEntries(
+                    statKeys.map((k) => [k, String((s as Record<string, number>)[k])]),
+                ) as Record<StatKey, string>,
+            );
+            restoredRef.current = true;
+            return;
+        }
+        if (!s.method) {
+            restoredRef.current = true;
+            return;
+        }
+        if (s.method === 'manual') {
+            setMode('manual');
+            setManual({
+                str: String(s.str ?? ''),
+                dex: String(s.dex ?? ''),
+                con: String(s.con ?? ''),
+                int: String(s.int ?? ''),
+                wis: String(s.wis ?? ''),
+                cha: String(s.cha ?? ''),
+            });
+        } else {
+            setMode('rolled');
+            if (s.rollDetails && Array.isArray(s.rollDetails)) {
+                setRolled(s.rollDetails as RollResult[]);
+            }
+            const ra = s.rollAssign;
+            if (ra && typeof ra === 'object') {
+                setStatToRoll({
+                    str: ra.str ?? null,
+                    dex: ra.dex ?? null,
+                    con: ra.con ?? null,
+                    int: ra.int ?? null,
+                    wis: ra.wis ?? null,
+                    cha: ra.cha ?? null,
+                });
+            }
+        }
+        restoredRef.current = true;
+    }, [hydrated]);
 
     // Kick off the dice animation while isRolling
     useEffect(() => {
@@ -488,60 +484,50 @@ export default function StatsStep(props: StatsStepProps) {
                            mode === 'manual'  ? allManualValid :
                            false;
 
-    // Determine correct step numbers based on whether class has level 1 subclass
-    const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
-    const needsSubclassStep = props.dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(props.dndClass);
-    const prevStepNumber = needsSubclassStep ? '6' : '5';
-    const nextStepNumber = needsSubclassStep ? '8' : '7';
-
     const handleBack = () => {
-        const params = new URLSearchParams({ step: prevStepNumber });
-        const { race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies } = props;
-        if (race)           params.set('race',          race);
-        if (dndClass)       params.set('class',         dndClass);
-        if (subclass)       params.set('subclass',      subclass);
-        if (name)           params.set('name',          name);
-        if (background)     params.set('background',    background);
-        if (alignment)      params.set('alignment',     alignment);
-        if (height)         params.set('height',        height);
-        if (weight)         params.set('weight',        weight);
-        if (age)            params.set('age',           age);
-        if (proficiencies)  params.set('proficiencies', proficiencies);
-        router.push(`/create-character?${params.toString()}`);
+        router.push('/create-character?step=6');
     };
 
     const handleContinue = () => {
-        // Collect final stat values
-        const finalStats: Record<StatKey, number> = {} as Record<StatKey, number>;
         if (mode === 'rolled') {
-            for (const s of STATS) {
-                finalStats[s.key] = rolled[statToRoll[s.key]!].total;
+            if (!allAssigned) {
+                alert('Assign every rolled total to a unique stat.');
+                return;
             }
+            patchDraft({
+                stats: {
+                    method: 'rolled',
+                    str: rolled[statToRoll.str!].total,
+                    dex: rolled[statToRoll.dex!].total,
+                    con: rolled[statToRoll.con!].total,
+                    int: rolled[statToRoll.int!].total,
+                    wis: rolled[statToRoll.wis!].total,
+                    cha: rolled[statToRoll.cha!].total,
+                    rollDetails: rolled,
+                    rollAssign: { ...statToRoll },
+                },
+            });
+        } else if (mode === 'manual') {
+            const nums = STATS.map((s) => Number(manualStats[s.key]));
+            if (nums.some((n) => !Number.isFinite(n) || n < 1 || n > 30)) {
+                alert('Please enter valid numbers (1–30) for all stats.');
+                return;
+            }
+            patchDraft({
+                stats: {
+                    method: 'manual',
+                    str: nums[0],
+                    dex: nums[1],
+                    con: nums[2],
+                    int: nums[3],
+                    wis: nums[4],
+                    cha: nums[5],
+                },
+            });
         } else {
-            for (const s of STATS) {
-                finalStats[s.key] = parseInt(manualStats[s.key]);
-            }
+            return;
         }
-
-        // Save to localStorage (stats can be large with dice details)
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('char_stats', JSON.stringify(finalStats));
-        }
-
-        // Navigate to review / save step
-        const params = new URLSearchParams({ step: nextStepNumber });
-        const { race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies } = props;
-        if (race)           params.set('race',          race);
-        if (dndClass)       params.set('class',         dndClass);
-        if (subclass)       params.set('subclass',      subclass);
-        if (name)           params.set('name',          name);
-        if (background)     params.set('background',    background);
-        if (alignment)      params.set('alignment',     alignment);
-        if (height)         params.set('height',        height);
-        if (weight)         params.set('weight',        weight);
-        if (age)            params.set('age',           age);
-        if (proficiencies)  params.set('proficiencies', proficiencies);
-        router.push(`/create-character?${params.toString()}`);
+        router.push('/create-character?step=8');
     };
 
     return (

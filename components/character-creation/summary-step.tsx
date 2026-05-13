@@ -1,8 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useShallow } from 'zustand/react/shallow';
 import { shouldDisplaySubclass } from '@/lib/subclass-levels';
+import {
+    clearCharacterCreationData,
+    useCharacterCreationStore,
+} from '@/stores/character-creation-store';
+import type { CharacterDraft } from '@/stores/character-creation-store';
 
 /* ─── types ─────────────────────────────────────────────────────── */
 
@@ -11,6 +17,20 @@ type Story = {
     backstory: string; personality: string; ideals: string;
     bonds: string; flaws: string; appearance: string;
 };
+
+function extractAbilityScores(stats: CharacterDraft['stats'] | undefined): Stats | null {
+    if (!stats) return null;
+    const keys: (keyof Stats)[] = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    if (!keys.every((k) => typeof stats[k] === 'number')) return null;
+    return {
+        str: stats.str,
+        dex: stats.dex,
+        con: stats.con,
+        int: stats.int,
+        wis: stats.wis,
+        cha: stats.cha,
+    };
+}
 
 /* D&D 5e hit dice by class */
 const HIT_DICE: Record<string, number> = {
@@ -154,49 +174,76 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 /* ─── main component ─────────────────────────────────────────────── */
 
-export default function SummaryStep({
-    race,
-    dndClass,
-    subclass,
-    name,
-    background,
-    alignment,
-    height,
-    weight,
-    age,
-    proficiencies,
-}: {
-    race?:          string;
-    dndClass?:      string;
-    subclass?:      string;
-    name?:          string;
-    background?:    string;
-    alignment?:     string;
-    height?:        string;
-    weight?:        string;
-    age?:           string;
-    proficiencies?: string;
-}) {
+export default function SummaryStep() {
     const router = useRouter();
 
-    const [stats, setStats]   = useState<Stats | null>(null);
-    const [story, setStory]   = useState<Story | null>(null);
+    const {
+        race,
+        dndClass,
+        subclass,
+        name,
+        background,
+        alignment,
+        height,
+        weight,
+        age,
+        proficiencies,
+        backstory,
+        personality,
+        ideals,
+        bonds,
+        flaws,
+        appearance,
+        draftStats,
+    } = useCharacterCreationStore(
+        useShallow((s) => ({
+            race: s.draft.race,
+            dndClass: s.draft.dndClass,
+            subclass: s.draft.subclass,
+            name: s.draft.name,
+            background: s.draft.background,
+            alignment: s.draft.alignment,
+            height: s.draft.height,
+            weight: s.draft.weight,
+            age: s.draft.age,
+            proficiencies: s.draft.proficiencies,
+            backstory: s.draft.backstory,
+            personality: s.draft.personality,
+            ideals: s.draft.ideals,
+            bonds: s.draft.bonds,
+            flaws: s.draft.flaws,
+            appearance: s.draft.appearance,
+            draftStats: s.draft.stats,
+        })),
+    );
+
+    const stats = useMemo(() => extractAbilityScores(draftStats), [draftStats]);
+
+    const story = useMemo((): Story | null => {
+        const s: Story = {
+            backstory: backstory ?? '',
+            personality: personality ?? '',
+            ideals: ideals ?? '',
+            bonds: bonds ?? '',
+            flaws: flaws ?? '',
+            appearance: appearance ?? '',
+        };
+        if (
+            s.backstory ||
+            s.personality ||
+            s.ideals ||
+            s.bonds ||
+            s.flaws ||
+            s.appearance
+        ) {
+            return s;
+        }
+        return null;
+    }, [backstory, personality, ideals, bonds, flaws, appearance]);
+
     const [creating, setCreating] = useState(false);
     const [error, setError]   = useState('');
     const [bgDetail, setBgDetail] = useState<{ feature: { name: string; desc: string[] } } | null>(null);
-
-    /* read localStorage after mount */
-    useEffect(() => {
-        try {
-            const s = localStorage.getItem('char_stats');
-            if (s) setStats(JSON.parse(s));
-        } catch { /* ignore */ }
-
-        try {
-            const st = localStorage.getItem('char_story');
-            if (st) setStory(JSON.parse(st));
-        } catch { /* ignore */ }
-    }, []);
 
     /* fetch background data */
     useEffect(() => {
@@ -247,7 +294,7 @@ export default function SummaryStep({
             height:         height ?? null,
             weight:         weight ?? null,
             age:            age ?? null,
-            proficiencies:  proficiencies ? proficiencies.split(',') : [],
+            proficiencies:  proficiencies ?? [],
             stats:          stats ?? {},
             story:          story ?? {},
             hp,
@@ -266,9 +313,7 @@ export default function SummaryStep({
                 throw new Error(data.error ?? 'Something went wrong');
             }
 
-            /* clean up localStorage */
-            localStorage.removeItem('char_stats');
-            localStorage.removeItem('char_story');
+            clearCharacterCreationData();
 
             router.push('/dashboard?created=1');
         } catch (e: unknown) {
@@ -279,23 +324,7 @@ export default function SummaryStep({
 
     /* ── back handler ── */
     function handleBack() {
-        // Determine correct previous step based on whether class has level 1 subclass
-        const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
-        const needsSubclassStep = dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(dndClass);
-        const prevStepNumber = needsSubclassStep ? '7' : '6';
-        
-        const p = new URLSearchParams({ step: prevStepNumber });
-        if (race)           p.set('race',          race);
-        if (dndClass)       p.set('class',         dndClass);
-        if (subclass)       p.set('subclass',      subclass);
-        if (name)           p.set('name',          name);
-        if (background)     p.set('background',    background);
-        if (alignment)      p.set('alignment',     alignment);
-        if (height)         p.set('height',        height);
-        if (weight)         p.set('weight',        weight);
-        if (age)            p.set('age',           age);
-        if (proficiencies)  p.set('proficiencies', proficiencies);
-        router.push(`/create-character?${p.toString()}`);
+        router.push('/create-character?step=7');
     }
 
     /* ── layout ── */
@@ -444,7 +473,7 @@ export default function SummaryStep({
 
                 {/* ── Skill Proficiencies ── */}
                 {proficiencies && proficiencies.length > 0 && (() => {
-                    const skills = proficiencies.split(',').filter(s => s.startsWith('skill-'));
+                    const skills = proficiencies.filter((s) => s.startsWith('skill-'));
                     if (skills.length === 0) return null;
                     return (
                         <section>

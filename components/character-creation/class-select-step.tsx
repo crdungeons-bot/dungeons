@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { getCharacterCreationData, updateCharacterCreationData } from '@/lib/character-creation-storage';
+import { useCharacterCreationStore } from '@/stores/character-creation-store';
 
 type DndClass = { index: string; name: string; url: string };
 
@@ -452,18 +452,15 @@ export default function ClassSelectStep({
     classes: DndClass[];
 }) {
     const router = useRouter();
+    const draftClass = useCharacterCreationStore(s => s.draft.dndClass);
+    const patchDraft = useCharacterCreationStore(s => s.patchDraft);
 
     // Which class's modal is open
     const [viewingClass, setViewingClass] = useState<string | null>(null);
     const [viewingData, setViewingData]   = useState<ClassDetail | null>(null);
     const [loadingDetail, setLoadingDetail] = useState(false);
-    const [selectedClass, setSelectedClass] = useState<string | null>(null);
 
-    // Load from localStorage on mount
-    useEffect(() => {
-        const saved = getCharacterCreationData();
-        if (saved.dndClass) setSelectedClass(saved.dndClass);
-    }, []);
+    const selectedClass = draftClass ?? null;
 
     useEffect(() => {
         if (!viewingClass) { setViewingData(null); return; }
@@ -480,8 +477,7 @@ export default function ClassSelectStep({
     const selectedClassName = classes.find(c => c.index === selectedClass)?.name;
 
     const handleSelectClass = (classIndex: string) => {
-        setSelectedClass(classIndex);
-        updateCharacterCreationData({ dndClass: classIndex });
+        patchDraft({ dndClass: classIndex, subclass: undefined });
     };
 
     const handleBack = () => {
@@ -577,8 +573,7 @@ export default function ClassSelectStep({
                         {selectedClass && (
                             <button
                                 onClick={() => {
-                                    setSelectedClass(null);
-                                    updateCharacterCreationData({ dndClass: undefined });
+                                    patchDraft({ dndClass: undefined, subclass: undefined });
                                 }}
                                 style={{
                                     padding: '0.6rem 1rem',

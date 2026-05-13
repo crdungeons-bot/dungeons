@@ -122,57 +122,14 @@ export default async function CreateCharacterPage({
             )}
 
             {currentStep === 5 && (
-                <ProficiencyStep
-                    proficiencies={undefined}
-                    raceApiData={null}
-                    classApiData={null}
-                />
+                <ProficiencyStep />
             )}
 
-            {currentStep === 6 && (
-                <StoryStep
-                    race={undefined}
-                    dndClass={undefined}
-                    subclass={undefined}
-                    name={undefined}
-                    background={undefined}
-                    alignment={undefined}
-                    height={undefined}
-                    weight={undefined}
-                    age={undefined}
-                    proficiencies={undefined}
-                />
-            )}
+            {currentStep === 6 && <StoryStep />}
 
-            {currentStep === 7 && (
-                <StatsStep
-                    race={undefined}
-                    dndClass={undefined}
-                    subclass={undefined}
-                    name={undefined}
-                    background={undefined}
-                    alignment={undefined}
-                    height={undefined}
-                    weight={undefined}
-                    age={undefined}
-                    proficiencies={undefined}
-                />
-            )}
+            {currentStep === 7 && <StatsStep />}
 
-            {currentStep === 8 && (
-                <SummaryStep
-                    race={undefined}
-                    dndClass={undefined}
-                    subclass={undefined}
-                    name={undefined}
-                    background={undefined}
-                    alignment={undefined}
-                    height={undefined}
-                    weight={undefined}
-                    age={undefined}
-                    proficiencies={undefined}
-                />
-            )}
+            {currentStep === 8 && <SummaryStep />}
         </div>
         </CharacterCreationWrapper>
     );

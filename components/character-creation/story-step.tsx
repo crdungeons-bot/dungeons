@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useShallow } from 'zustand/react/shallow';
+import { useCharacterCreationStore } from '@/stores/character-creation-store';
 
 // ── Styled textarea ───────────────────────────────────────────────────────────
 
@@ -122,136 +124,48 @@ function SectionDivider({ title, subtitle }: { title: string; subtitle?: string 
     );
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
-
-type StoryStepProps = {
-    race?: string;
-    dndClass?: string;
-    subclass?: string;
-    name?: string;
-    background?: string;
-    alignment?: string;
-    height?: string;
-    weight?: string;
-    age?: string;
-    proficiencies?: string;
-};
-
-export default function StoryStep({
-    race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies,
-}: StoryStepProps) {
+export default function StoryStep() {
     const router = useRouter();
+    const {
+        name,
+        backstory,
+        personality,
+        ideals,
+        bonds,
+        flaws,
+        appearance,
+        patchDraft,
+    } = useCharacterCreationStore(
+        useShallow((s) => ({
+            name: s.draft.name ?? '',
+            backstory: s.draft.backstory ?? '',
+            personality: s.draft.personality ?? '',
+            ideals: s.draft.ideals ?? '',
+            bonds: s.draft.bonds ?? '',
+            flaws: s.draft.flaws ?? '',
+            appearance: s.draft.appearance ?? '',
+            patchDraft: s.patchDraft,
+        })),
+    );
 
-    // Initialize state from localStorage if available (user navigating back)
-    const [backstory,    setBackstory]    = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('char_story');
-            if (saved) {
-                try {
-                    return JSON.parse(saved).backstory || '';
-                } catch { return ''; }
-            }
-        }
-        return '';
-    });
-    const [personality,  setPersonality]  = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('char_story');
-            if (saved) {
-                try {
-                    return JSON.parse(saved).personality || '';
-                } catch { return ''; }
-            }
-        }
-        return '';
-    });
-    const [ideals,       setIdeals]       = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('char_story');
-            if (saved) {
-                try {
-                    return JSON.parse(saved).ideals || '';
-                } catch { return ''; }
-            }
-        }
-        return '';
-    });
-    const [bonds,        setBonds]        = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('char_story');
-            if (saved) {
-                try {
-                    return JSON.parse(saved).bonds || '';
-                } catch { return ''; }
-            }
-        }
-        return '';
-    });
-    const [flaws,        setFlaws]        = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('char_story');
-            if (saved) {
-                try {
-                    return JSON.parse(saved).flaws || '';
-                } catch { return ''; }
-            }
-        }
-        return '';
-    });
-    const [appearance,   setAppearance]   = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('char_story');
-            if (saved) {
-                try {
-                    return JSON.parse(saved).appearance || '';
-                } catch { return ''; }
-            }
-        }
-        return '';
-    });
-
-    const hasAnyContent = [backstory, personality, ideals, bonds, flaws, appearance].some(s => s.trim().length > 0);
-
-    // Determine correct next step based on whether class has level 1 subclass
-    const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
-    const needsSubclassStep = dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(dndClass);
-    const nextStepNumber = needsSubclassStep ? '7' : '6';
-    const prevStepNumber = needsSubclassStep ? '5' : '4';
+    const hasAnyContent = [backstory, personality, ideals, bonds, flaws, appearance].some(
+        (x) => x.trim().length > 0,
+    );
 
     const handleBack = () => {
-        const params = new URLSearchParams({ step: prevStepNumber });
-        if (race)           params.set('race',          race);
-        if (dndClass)       params.set('class',         dndClass);
-        if (subclass)       params.set('subclass',      subclass);
-        if (name)           params.set('name',          name);
-        if (background)     params.set('background',    background);
-        if (alignment)      params.set('alignment',     alignment);
-        if (height)         params.set('height',        height);
-        if (weight)         params.set('weight',        weight);
-        if (age)            params.set('age',           age);
-        if (proficiencies)  params.set('proficiencies', proficiencies);
-        router.push(`/create-character?${params.toString()}`);
+        router.push('/create-character?step=5');
     };
 
     const handleContinue = () => {
-        // Story is stored in localStorage so the text doesn't bloat the URL
-        if (typeof window !== 'undefined') {
-            const storyData = { backstory, personality, ideals, bonds, flaws, appearance };
-            localStorage.setItem('char_story', JSON.stringify(storyData));
-        }
-
-        const params = new URLSearchParams({ step: nextStepNumber });
-        if (race)           params.set('race',          race);
-        if (dndClass)       params.set('class',         dndClass);
-        if (subclass)       params.set('subclass',      subclass);
-        if (name)           params.set('name',          name);
-        if (background)     params.set('background',    background);
-        if (alignment)      params.set('alignment',     alignment);
-        if (height)         params.set('height',        height);
-        if (weight)         params.set('weight',        weight);
-        if (age)            params.set('age',           age);
-        if (proficiencies)  params.set('proficiencies', proficiencies);
-        router.push(`/create-character?${params.toString()}`);
+        patchDraft({
+            backstory: backstory || undefined,
+            personality: personality || undefined,
+            ideals: ideals || undefined,
+            bonds: bonds || undefined,
+            flaws: flaws || undefined,
+            appearance: appearance || undefined,
+        });
+        router.push('/create-character?step=7');
     };
 
     return (
@@ -302,7 +216,7 @@ export default function StoryStep({
                         `e.g. Born into a family of traveling merchants, ${name || 'your character'} spent their early years crossing trade routes between kingdoms. It was on one such journey that they witnessed a creature from the shadowfell tear through their caravan,   the only survivor, they vowed to understand the forces that nearly claimed them...`
                     }
                     value={backstory}
-                    onChange={setBackstory}
+                    onChange={(v) => patchDraft({ backstory: v || undefined })}
                     rows={7}
                 />
 
@@ -315,7 +229,7 @@ export default function StoryStep({
                     label="Physical Description"
                     placeholder="e.g. Tall and lean with pale grey skin and silver eyes that seem to catch light that isn't there. A scar runs from their left temple to the corner of their jaw,   a souvenir they never speak of. They dress practically but always wear a single copper earring shaped like a crescent moon."
                     value={appearance}
-                    onChange={setAppearance}
+                    onChange={(v) => patchDraft({ appearance: v || undefined })}
                     rows={4}
                 />
 
@@ -335,7 +249,7 @@ export default function StoryStep({
                         sublabel="How do they typically act? Any quirks or mannerisms?"
                         placeholder="e.g. I quote ancient proverbs in situations where they are not entirely appropriate. I believe that anything worth doing is worth doing right."
                         value={personality}
-                        onChange={setPersonality}
+                        onChange={(v) => patchDraft({ personality: v || undefined })}
                         rows={4}
                     />
 
@@ -344,7 +258,7 @@ export default function StoryStep({
                         sublabel="What principles guide their decisions?"
                         placeholder="e.g. Knowledge,   the path to power and self-improvement is through knowledge. (Neutral)"
                         value={ideals}
-                        onChange={setIdeals}
+                        onChange={(v) => patchDraft({ ideals: v || undefined })}
                         rows={4}
                     />
 
@@ -353,7 +267,7 @@ export default function StoryStep({
                         sublabel="Who or what do they care about most?"
                         placeholder="e.g. I have an ancient text that holds terrible secrets that must not fall into the wrong hands. My village was burned to the ground by soldiers of the empire,   I will see them pay."
                         value={bonds}
-                        onChange={setBonds}
+                        onChange={(v) => patchDraft({ bonds: v || undefined })}
                         rows={4}
                     />
 
@@ -362,7 +276,7 @@ export default function StoryStep({
                         sublabel="What weaknesses or vices do they struggle with?"
                         placeholder="e.g. I am convinced that no one could ever fool me the way I fool others. I turn tail and run when things look bad."
                         value={flaws}
-                        onChange={setFlaws}
+                        onChange={(v) => patchDraft({ flaws: v || undefined })}
                         rows={4}
                     />
                 </div>

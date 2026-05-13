@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { getCharacterCreationData, updateCharacterCreationData } from '@/lib/character-creation-storage';
+import { useCharacterCreationStore } from '@/stores/character-creation-store';
 
 type Race = { index: string; name: string; url: string };
 
@@ -436,20 +436,15 @@ export default function RaceSelectStep({
     races: Race[];
 }) {
     const router = useRouter();
+    const draftRace = useCharacterCreationStore(s => s.draft.race);
+    const patchDraft = useCharacterCreationStore(s => s.patchDraft);
 
     // Which race's modal is open
     const [viewingRace, setViewingRace] = useState<string | null>(null);
     const [viewingData, setViewingData] = useState<RaceDetail | null>(null);
     const [loadingDetail, setLoadingDetail] = useState(false);
 
-    // The confirmed selection - load from localStorage
-    const [selectedRace, setSelectedRace] = useState<string | null>(null);
-
-    // Load from localStorage on mount
-    useEffect(() => {
-        const saved = getCharacterCreationData();
-        if (saved.race) setSelectedRace(saved.race);
-    }, []);
+    const selectedRace = draftRace ?? null;
 
     // Fetch detail data whenever the modal race changes
     useEffect(() => {
@@ -470,8 +465,7 @@ export default function RaceSelectStep({
     const selectedRaceName = races.find(r => r.index === selectedRace)?.name;
 
     const handleSelectRace = (raceIndex: string) => {
-        setSelectedRace(raceIndex);
-        updateCharacterCreationData({ race: raceIndex });
+        patchDraft({ race: raceIndex });
     };
 
     const handleContinue = () => {
@@ -538,7 +532,7 @@ export default function RaceSelectStep({
 
                         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }} className="race-footer-buttons">
                             <button
-                                onClick={() => setSelectedRace(null)}
+                                onClick={() => patchDraft({ race: undefined })}
                                 style={{
                                     padding: '0.6rem 1rem',
                                     borderRadius: '0.375rem',

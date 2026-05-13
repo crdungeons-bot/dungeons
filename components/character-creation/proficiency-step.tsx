@@ -2,6 +2,11 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter }         from 'next/navigation';
+import {
+    useCharacterCreationStore,
+    useCharacterCreationHydrated,
+} from '@/stores/character-creation-store';
+import { useShallow } from 'zustand/react/shallow';
 
 /* ═══════════════════════════════════════════════════════════════════
    Static skill data,   all 18 D&D 5e skills grouped by ability score
@@ -74,20 +79,31 @@ type ChoiceGroup = {
     pool:   string[]; // skill indices available to pick from
 };
 
-type Props = {
-    race?:        string;
-    dndClass?:    string;
-    subclass?:    string;
-    name?:        string;
-    background?:  string;
-    alignment?:   string;
-    height?:      string;
-    weight?:      string;
-    age?:         string;
-    proficiencies?: string;
-    raceApiData:  ApiJson;
-    classApiData: ApiJson;
-};
+function normalizeSavedProficiencies(raw: unknown): string[] {
+    if (Array.isArray(raw)) return raw.filter((p): p is string => typeof p === 'string');
+    if (typeof raw === 'string') return raw.split(',').filter(Boolean);
+    return [];
+}
+
+function buildSelectionsForGroups(
+    groups: ChoiceGroup[],
+    lockedMap: Map<string, Source[]>,
+    savedProficiencies: string[],
+): Set<string>[] {
+    const initial = groups.map(() => new Set<string>());
+    const lockedKeys = new Set(lockedMap.keys());
+    const userChosen = savedProficiencies.filter(p => !lockedKeys.has(p));
+    for (const prof of userChosen) {
+        for (let i = 0; i < groups.length; i++) {
+            const g = groups[i];
+            if (g.pool.includes(prof) && initial[i].size < g.choose) {
+                initial[i].add(prof);
+                break;
+            }
+        }
+    }
+    return initial;
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    Helpers
@@ -166,28 +182,79 @@ function ProfBubble({
    Main component
 ═══════════════════════════════════════════════════════════════════ */
 
-export default function ProficiencyStep({
-    race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies,
-    raceApiData, classApiData,
-}: Props) {
+export default function ProficiencyStep() {
     const router = useRouter();
+    const hydrated = useCharacterCreationHydrated();
+    const draft = useCharacterCreationStore(useShallow((s) => s.draft));
+    const patchDraft = useCharacterCreationStore((s) => s.patchDraft);
+    const [raceApiData, setRaceApiData] = useState<ApiJson>(null);
+    const [classApiData, setClassApiData] = useState<ApiJson>(null);
     const [bgData, setBgData] = useState<ApiJson>(null);
+    const [apiError, setApiError] = useState<string | null>(null);
+    const [loadingRaceClass, setLoadingRaceClass] = useState(false);
 
-    // Fetch background data when background prop changes
     useEffect(() => {
-        if (!background) {
+        if (!hydrated) return;
+        const bg = draft.background;
+        if (!bg) {
             setBgData(null);
             return;
         }
-        
-        fetch(`/api/resources/backgrounds/${background}`)
+
+        fetch(`/api/resources/backgrounds/${bg}`)
             .then(res => res.json())
             .then(data => setBgData(data))
             .catch(err => {
                 console.error('Failed to fetch background:', err);
                 setBgData(null);
             });
-    }, [background]);
+    }, [hydrated, draft.background]);
+
+    // Load race + class JSON from API (needed when user jumps to this step — server no longer passes Mongo docs)
+    useEffect(() => {
+        if (!hydrated) return;
+        const { race, dndClass } = draft;
+        if (!race || !dndClass) {
+            setRaceApiData(null);
+            setClassApiData(null);
+            setApiError(null);
+            setLoadingRaceClass(false);
+            return;
+        }
+
+        let cancelled = false;
+        setApiError(null);
+        setLoadingRaceClass(true);
+
+        Promise.all([
+            fetch(`/api/resources/races?index=${encodeURIComponent(race)}`).then(r => r.json()),
+            fetch(`/api/resources/classes?index=${encodeURIComponent(dndClass)}`).then(r => r.json()),
+        ])
+            .then(([raceJson, classJson]) => {
+                if (cancelled) return;
+                const rRow = raceJson?.results?.[0] ?? null;
+                const cRow = classJson?.results?.[0] ?? null;
+                setRaceApiData(rRow);
+                setClassApiData(cRow);
+                if (!rRow || !cRow) {
+                    setApiError('Could not load race or class details. Try again from Race and Class.');
+                }
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setApiError('Could not load race or class data. Check your connection and try again.');
+                    setRaceApiData(null);
+                    setClassApiData(null);
+                }
+            })
+            .finally(() => {
+                if (!cancelled) setLoadingRaceClass(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [hydrated, draft.race, draft.dndClass]);
 
     /* ── Derive locked proficiencies ── */
     const { lockedMap, choiceGroups } = useMemo(() => {
@@ -237,34 +304,17 @@ export default function ProficiencyStep({
     }, [raceApiData, classApiData, bgData]);
 
     /* ── User selection state,   one selected-set per choice group ── */
-    const [selections, setSelections] = useState<Set<string>[]>(
-        () => {
-            // Start with empty sets for each group
-            const initialSelections = choiceGroups.map(() => new Set<string>());
-            
-            // If we have proficiencies from a previous visit, restore them
-            if (proficiencies) {
-                const savedProfs = proficiencies.split(',').filter(Boolean);
-                const lockedProfs = new Set(lockedMap.keys());
-                
-                // Filter out locked proficiencies - only restore user-chosen ones
-                const userChosenProfs = savedProfs.filter(p => !lockedProfs.has(p));
-                
-                // Try to assign each saved proficiency to its appropriate choice group
-                for (const prof of userChosenProfs) {
-                    for (let i = 0; i < choiceGroups.length; i++) {
-                        const group = choiceGroups[i];
-                        if (group.pool.includes(prof) && initialSelections[i].size < group.choose) {
-                            initialSelections[i].add(prof);
-                            break; // Assign to first eligible group
-                        }
-                    }
-                }
-            }
-            
-            return initialSelections;
-        }
-    );
+    const [selections, setSelections] = useState<Set<string>[]>([]);
+
+    // Keep selection row count in sync when API data arrives (jumping to this step used to crash: selections[i] undefined).
+    // Do not reset once the user has the same number of choice rows as the UI — avoids wiping picks when background JSON loads later.
+    useEffect(() => {
+        if (!hydrated) return;
+        if (choiceGroups.length > 0 && selections.length === choiceGroups.length) return;
+
+        const profList = normalizeSavedProficiencies(draft.proficiencies);
+        setSelections(buildSelectionsForGroups(choiceGroups, lockedMap, profList));
+    }, [hydrated, choiceGroups, lockedMap, draft.proficiencies, selections.length]);
 
     /* ── Which skills are in ANY available choice pool ── */
     const inPool = useMemo(() => {
@@ -276,12 +326,14 @@ export default function ProficiencyStep({
     /* ── All confirmed proficiencies (locked + selected) ── */
     const allProfs = useMemo(() => {
         const s = new Set<string>(lockedMap.keys());
-        for (const sel of selections) sel.forEach(i => s.add(i));
+        for (const sel of selections) {
+            if (sel) sel.forEach(i => s.add(i));
+        }
         return s;
     }, [lockedMap, selections]);
 
     /* ── Choice group counts ── */
-    const groupsRemaining = choiceGroups.map((g, i) => g.choose - selections[i].size);
+    const groupsRemaining = choiceGroups.map((g, i) => g.choose - (selections[i]?.size ?? 0));
     const totalRemaining  = groupsRemaining.reduce((a, b) => a + b, 0);
     const canContinue     = totalRemaining === 0;
 
@@ -297,7 +349,7 @@ export default function ProficiencyStep({
         if (eligibleGroups.length === 0) return;
 
         setSelections(prev => {
-            const next = prev.map(s => new Set(s));
+            const next = choiceGroups.map((_, i) => new Set(prev[i] ?? []));
 
             // If already selected in any group, deselect it
             for (const { i } of eligibleGroups) {
@@ -320,42 +372,114 @@ export default function ProficiencyStep({
         });
     }
 
-    /* ── Navigation ── */
-    // Determine correct step numbers based on whether class has level 1 subclass
-    const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
-    const needsSubclassStep = dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(dndClass);
-    const prevStepNumber = needsSubclassStep ? '4' : '3'; // Background
-    const nextStepNumber = needsSubclassStep ? '6' : '5'; // Story
-
+    /* ── Navigation (fixed 8-step flow) ── */
     function handleBack() {
-        const p = new URLSearchParams({ step: prevStepNumber });
-        if (race)       p.set('race',       race);
-        if (dndClass)   p.set('class',      dndClass);
-        if (subclass)   p.set('subclass',   subclass);
-        if (name)       p.set('name',       name);
-        if (background) p.set('background', background);
-        if (alignment)  p.set('alignment',  alignment);
-        if (height)     p.set('height',     height);
-        if (weight)     p.set('weight',     weight);
-        if (age)        p.set('age',        age);
-        router.push(`/create-character?${p.toString()}`);
+        router.push('/create-character?step=4');
     }
 
     function handleContinue() {
         if (!canContinue) return;
-        const p = new URLSearchParams({ step: nextStepNumber });
-        if (race)       p.set('race',       race);
-        if (dndClass)   p.set('class',      dndClass);
-        if (subclass)   p.set('subclass',   subclass);
-        if (name)       p.set('name',       name);
-        if (background) p.set('background', background);
-        if (alignment)  p.set('alignment',  alignment);
-        if (height)     p.set('height',     height);
-        if (weight)     p.set('weight',     weight);
-        if (age)        p.set('age',        age);
-        // Encode all proficiencies as comma-separated
-        p.set('proficiencies', [...allProfs].join(','));
-        router.push(`/create-character?${p.toString()}`);
+        patchDraft({ proficiencies: [...allProfs] });
+        router.push('/create-character?step=6');
+    }
+
+    if (!hydrated) {
+        return (
+            <div style={{
+                flex:            1,
+                display:         'flex',
+                alignItems:      'center',
+                justifyContent:  'center',
+                padding:         '2rem',
+                color:           'rgba(212,175,55,0.6)',
+                fontSize:        '0.95rem',
+            }}>
+                Loading…
+            </div>
+        );
+    }
+
+    if (!draft.race || !draft.dndClass) {
+        return (
+            <div style={{ flex: 1, padding: '2rem', maxWidth: '520px', margin: '0 auto' }}>
+                <p style={{ color: 'rgba(244,232,208,0.75)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                    Choose a <strong style={{ color: 'var(--color-gold)' }}>race</strong> and{' '}
+                    <strong style={{ color: 'var(--color-gold)' }}>class</strong> before picking proficiencies.
+                    Your selections are saved in this browser until you finish or exit.
+                </p>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <button
+                        type="button"
+                        onClick={() => router.push('/create-character?step=1')}
+                        style={{
+                            padding:       '0.55rem 1.1rem',
+                            borderRadius:  '8px',
+                            border:        '1.5px solid rgba(212,175,55,0.35)',
+                            background:    'rgba(212,175,55,0.08)',
+                            color:         'var(--color-gold)',
+                            fontWeight:    '700',
+                            cursor:        'pointer',
+                        }}
+                    >
+                        Go to Race
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => router.push('/create-character?step=2')}
+                        style={{
+                            padding:       '0.55rem 1.1rem',
+                            borderRadius:  '8px',
+                            border:        '1.5px solid rgba(212,175,55,0.35)',
+                            background:    'rgba(212,175,55,0.08)',
+                            color:         'var(--color-gold)',
+                            fontWeight:    '700',
+                            cursor:        'pointer',
+                        }}
+                    >
+                        Go to Class
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (apiError) {
+        return (
+            <div style={{ flex: 1, padding: '2rem', maxWidth: '520px', margin: '0 auto' }}>
+                <p style={{ color: 'rgba(228,90,74,0.95)', marginBottom: '1rem' }}>{apiError}</p>
+                <button
+                    type="button"
+                    onClick={() => router.push('/create-character?step=2')}
+                    style={{
+                        padding:       '0.55rem 1.1rem',
+                        borderRadius:  '8px',
+                        border:        '1.5px solid rgba(212,175,55,0.35)',
+                        background:    'transparent',
+                        color:         'rgba(212,175,55,0.85)',
+                        fontWeight:    '700',
+                        cursor:        'pointer',
+                    }}
+                >
+                    ← Back to Class
+                </button>
+            </div>
+        );
+    }
+
+    if (loadingRaceClass || !raceApiData || !classApiData) {
+        return (
+            <div style={{
+                flex:            1,
+                display:         'flex',
+                alignItems:      'center',
+                justifyContent:  'center',
+                padding:         '2rem',
+                color:           'rgba(212,175,55,0.65)',
+                fontSize:        '0.95rem',
+            }}>
+                Loading skill options…
+            </div>
+        );
     }
 
     /* ── Render ── */
@@ -383,7 +507,7 @@ export default function ProficiencyStep({
                 {choiceGroups.length > 0 && (
                     <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.75rem', flexWrap: 'wrap' }}>
                         {choiceGroups.map((g, i) => {
-                            const remaining = g.choose - selections[i].size;
+                            const remaining = g.choose - (selections[i]?.size ?? 0);
                             return (
                                 <div key={i} style={{
                                     flex:          '1',

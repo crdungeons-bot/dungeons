@@ -142,12 +142,73 @@ export default function StoryStep({
 }: StoryStepProps) {
     const router = useRouter();
 
-    const [backstory,    setBackstory]    = useState('');
-    const [personality,  setPersonality]  = useState('');
-    const [ideals,       setIdeals]       = useState('');
-    const [bonds,        setBonds]        = useState('');
-    const [flaws,        setFlaws]        = useState('');
-    const [appearance,   setAppearance]   = useState('');
+    // Initialize state from localStorage if available (user navigating back)
+    const [backstory,    setBackstory]    = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('char_story');
+            if (saved) {
+                try {
+                    return JSON.parse(saved).backstory || '';
+                } catch { return ''; }
+            }
+        }
+        return '';
+    });
+    const [personality,  setPersonality]  = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('char_story');
+            if (saved) {
+                try {
+                    return JSON.parse(saved).personality || '';
+                } catch { return ''; }
+            }
+        }
+        return '';
+    });
+    const [ideals,       setIdeals]       = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('char_story');
+            if (saved) {
+                try {
+                    return JSON.parse(saved).ideals || '';
+                } catch { return ''; }
+            }
+        }
+        return '';
+    });
+    const [bonds,        setBonds]        = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('char_story');
+            if (saved) {
+                try {
+                    return JSON.parse(saved).bonds || '';
+                } catch { return ''; }
+            }
+        }
+        return '';
+    });
+    const [flaws,        setFlaws]        = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('char_story');
+            if (saved) {
+                try {
+                    return JSON.parse(saved).flaws || '';
+                } catch { return ''; }
+            }
+        }
+        return '';
+    });
+    const [appearance,   setAppearance]   = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('char_story');
+            if (saved) {
+                try {
+                    return JSON.parse(saved).appearance || '';
+                } catch { return ''; }
+            }
+        }
+        return '';
+    });
 
     const hasAnyContent = [backstory, personality, ideals, bonds, flaws, appearance].some(s => s.trim().length > 0);
 

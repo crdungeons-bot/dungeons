@@ -341,17 +341,64 @@ type StatsStepProps = {
 export default function StatsStep(props: StatsStepProps) {
     const router = useRouter();
 
-    const [mode, setMode]               = useState<Mode>('choose');
+    // Try to restore saved stats if navigating back
+    const savedStats = typeof window !== 'undefined' 
+        ? (() => {
+            try {
+                const saved = localStorage.getItem('char_stats');
+                return saved ? JSON.parse(saved) : null;
+            } catch { return null; }
+        })()
+        : null;
+
+    const [mode, setMode]               = useState<Mode>(() => {
+        // If we have saved stats, determine which mode to restore
+        if (savedStats) {
+            if (savedStats.method === 'manual') return 'manual';
+            if (savedStats.method === 'rolled') return 'rolled';
+        }
+        return 'choose';
+    });
     const [isRolling, setIsRolling]     = useState(false);
-    const [rolled, setRolled]           = useState<RollResult[]>([]);
+    const [rolled, setRolled]           = useState<RollResult[]>(() => {
+        // If we saved rolled stats, restore the roll results
+        if (savedStats?.method === 'rolled' && savedStats.rollDetails) {
+            return savedStats.rollDetails;
+        }
+        return [];
+    });
     const [rerolled, setRerolled]       = useState(false);
 
     // Roll assignment state
-    const [statToRoll, setStatToRoll]   = useState<AssignMap>({ ...EMPTY_ASSIGN });
+    const [statToRoll, setStatToRoll]   = useState<AssignMap>(() => {
+        if (savedStats?.method === 'rolled') {
+            return {
+                str: savedStats.str ?? null,
+                dex: savedStats.dex ?? null,
+                con: savedStats.con ?? null,
+                int: savedStats.int ?? null,
+                wis: savedStats.wis ?? null,
+                cha: savedStats.cha ?? null,
+            };
+        }
+        return { ...EMPTY_ASSIGN };
+    });
     const [selectedPool, setSelected]   = useState<number | null>(null); // which roll chip is "held"
 
     // Manual entry state
-    const [manualStats, setManual]      = useState<Record<StatKey, string>>({ ...EMPTY_MANUAL });
+    const [manualStats, setManual]      = useState<Record<StatKey, string>>(() => {
+        if (savedStats?.method === 'manual') {
+            return {
+                str: String(savedStats.str ?? ''),
+                dex: String(savedStats.dex ?? ''),
+                con: String(savedStats.con ?? ''),
+                int: String(savedStats.int ?? ''),
+                wis: String(savedStats.wis ?? ''),
+                cha: String(savedStats.cha ?? ''),
+            };
+        }
+        return { ...EMPTY_MANUAL };
+    });
 
     // Animation: rapidly changing dice during roll sequence
     const [animDice, setAnimDice]       = useState<number[][]>([]);

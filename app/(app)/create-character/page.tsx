@@ -7,6 +7,7 @@ import StoryStep         from '@/components/character-creation/story-step';
 import StatsStep         from '@/components/character-creation/stats-step';
 import SummaryStep       from '@/components/character-creation/summary-step';
 import clientPromise from '@/lib/mongo';
+import CharacterCreationWrapper from '@/components/character-creation/creation-wrapper';
 
 type ApiItem = { index: string; name: string; url: string };
 type ApiList  = { count: number; results: ApiItem[] };
@@ -85,12 +86,13 @@ export default async function CreateCharacterPage({
     const stepLabel = effectiveSteps[currentStep - 1] ?? 'Race';
 
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100%',
-            backgroundColor: 'var(--color-primary)',
-        }}>
+        <CharacterCreationWrapper>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '100%',
+                backgroundColor: 'var(--color-primary)',
+            }}>
             {/* ── Step header ── */}
             <div style={{
                 padding: '1.25rem 2rem 1rem',
@@ -227,6 +229,12 @@ export default async function CreateCharacterPage({
                     race={params.race}
                     dndClass={params.class}
                     subclass={params.subclass}
+                    name={params.name}
+                    background={params.background}
+                    alignment={params.alignment}
+                    height={params.height}
+                    weight={params.weight}
+                    age={params.age}
                 />
             )}
 
@@ -291,5 +299,6 @@ export default async function CreateCharacterPage({
                 />
             )}
         </div>
+        </CharacterCreationWrapper>
     );
 }

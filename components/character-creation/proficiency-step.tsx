@@ -84,6 +84,7 @@ type Props = {
     height?:      string;
     weight?:      string;
     age?:         string;
+    proficiencies?: string;
     raceApiData:  ApiJson;
     classApiData: ApiJson;
 };
@@ -166,7 +167,7 @@ function ProfBubble({
 ═══════════════════════════════════════════════════════════════════ */
 
 export default function ProficiencyStep({
-    race, dndClass, subclass, name, background, alignment, height, weight, age,
+    race, dndClass, subclass, name, background, alignment, height, weight, age, proficiencies,
     raceApiData, classApiData,
 }: Props) {
     const router = useRouter();
@@ -237,7 +238,32 @@ export default function ProficiencyStep({
 
     /* ── User selection state,   one selected-set per choice group ── */
     const [selections, setSelections] = useState<Set<string>[]>(
-        () => choiceGroups.map(() => new Set<string>())
+        () => {
+            // Start with empty sets for each group
+            const initialSelections = choiceGroups.map(() => new Set<string>());
+            
+            // If we have proficiencies from a previous visit, restore them
+            if (proficiencies) {
+                const savedProfs = proficiencies.split(',').filter(Boolean);
+                const lockedProfs = new Set(lockedMap.keys());
+                
+                // Filter out locked proficiencies - only restore user-chosen ones
+                const userChosenProfs = savedProfs.filter(p => !lockedProfs.has(p));
+                
+                // Try to assign each saved proficiency to its appropriate choice group
+                for (const prof of userChosenProfs) {
+                    for (let i = 0; i < choiceGroups.length; i++) {
+                        const group = choiceGroups[i];
+                        if (group.pool.includes(prof) && initialSelections[i].size < group.choose) {
+                            initialSelections[i].add(prof);
+                            break; // Assign to first eligible group
+                        }
+                    }
+                }
+            }
+            
+            return initialSelections;
+        }
     );
 
     /* ── Which skills are in ANY available choice pool ── */

@@ -504,21 +504,33 @@ export default function BackgroundStep({
     race,
     dndClass,
     subclass,
+    name,
+    background,
+    alignment,
+    height: initialHeight,
+    weight: initialWeight,
+    age: initialAge,
 }: {
     backgrounds: BgDetail[];
     race?: string;
     dndClass?: string;
     subclass?: string;
+    name?: string;
+    background?: string;
+    alignment?: string;
+    height?: string;
+    weight?: string;
+    age?: string;
 }) {
     const router = useRouter();
 
-    // Form state
-    const [characterName, setCharacterName] = useState('');
-    const [selectedBg, setSelectedBg]       = useState<string | null>(null);
-    const [selectedAlignment, setAlignment]  = useState<string | null>(null);
-    const [height, setHeight]               = useState('');
-    const [weight, setWeight]               = useState('');
-    const [age, setAge]                     = useState('');
+    // Form state - initialize from props if available
+    const [characterName, setCharacterName] = useState(name || '');
+    const [selectedBg, setSelectedBg]       = useState<string | null>(background || null);
+    const [selectedAlignment, setAlignment]  = useState<string | null>(alignment || null);
+    const [height, setHeight]               = useState(initialHeight || '');
+    const [weight, setWeight]               = useState(initialWeight || '');
+    const [age, setAge]                     = useState(initialAge || '');
 
     // Accordion state,   which background row is currently expanded
     const [expandedBg, setExpandedBg] = useState<string | null>(null);

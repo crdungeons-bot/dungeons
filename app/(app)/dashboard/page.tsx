@@ -13,6 +13,7 @@ import DiceRollerSection from '@/components/sections/dice-roller-section';
 import DashboardHomeSection from '@/components/sections/dashboard-home-section';
 import PartiesSection from '@/components/sections/parties-section';
 import PartyDetailSection from '@/components/sections/party-detail-section';
+import DashboardCleanup from '@/components/dashboard-cleanup';
 
 export default async function Dashboard({
     searchParams,
@@ -26,6 +27,7 @@ export default async function Dashboard({
             minHeight: '100%',
             backgroundColor: 'var(--color-primary)',
         }}>
+            <DashboardCleanup />
             {section === 'dice-roller' && <DiceRollerSection />}
             {section === 'characters' && !item && <CharactersSection />}
         {section === 'characters' &&  item && <CharacterDetailSection id={item} />}

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Background } from '@/types/background';
+import { getCharacterCreationData, updateCharacterCreationData } from '@/lib/character-creation-storage';
 
 // Alias so internal code stays readable
 type BgDetail = Background;
@@ -501,36 +502,41 @@ function StyledInput({
 
 export default function BackgroundStep({
     backgrounds,
-    race,
-    dndClass,
-    subclass,
-    name,
-    background,
-    alignment,
-    height: initialHeight,
-    weight: initialWeight,
-    age: initialAge,
 }: {
     backgrounds: BgDetail[];
-    race?: string;
-    dndClass?: string;
-    subclass?: string;
-    name?: string;
-    background?: string;
-    alignment?: string;
-    height?: string;
-    weight?: string;
-    age?: string;
 }) {
     const router = useRouter();
 
-    // Form state - initialize from props if available
-    const [characterName, setCharacterName] = useState(name || '');
-    const [selectedBg, setSelectedBg]       = useState<string | null>(background || null);
-    const [selectedAlignment, setAlignment]  = useState<string | null>(alignment || null);
-    const [height, setHeight]               = useState(initialHeight || '');
-    const [weight, setWeight]               = useState(initialWeight || '');
-    const [age, setAge]                     = useState(initialAge || '');
+    // Form state - will be loaded from localStorage
+    const [characterName, setCharacterName] = useState('');
+    const [selectedBg, setSelectedBg]       = useState<string | null>(null);
+    const [selectedAlignment, setAlignment]  = useState<string | null>(null);
+    const [height, setHeight]               = useState('');
+    const [weight, setWeight]               = useState('');
+    const [age, setAge]                     = useState('');
+
+    // Load data from localStorage on mount
+    useEffect(() => {
+        const saved = getCharacterCreationData();
+        if (saved.name) setCharacterName(saved.name);
+        if (saved.background) setSelectedBg(saved.background);
+        if (saved.alignment) setAlignment(saved.alignment);
+        if (saved.height) setHeight(saved.height);
+        if (saved.weight) setWeight(saved.weight);
+        if (saved.age) setAge(saved.age);
+    }, []);
+
+    // Save to localStorage whenever state changes
+    useEffect(() => {
+        updateCharacterCreationData({
+            name: characterName || undefined,
+            background: selectedBg || undefined,
+            alignment: selectedAlignment || undefined,
+            height: height || undefined,
+            weight: weight || undefined,
+            age: age || undefined,
+        });
+    }, [characterName, selectedBg, selectedAlignment, height, weight, age]);
 
     // Accordion state,   which background row is currently expanded
     const [expandedBg, setExpandedBg] = useState<string | null>(null);
@@ -541,32 +547,19 @@ export default function BackgroundStep({
     const canContinue = characterName.trim().length > 0 && selectedBg !== null && selectedAlignment !== null;
 
     // Determine correct step numbers based on whether class has level 1 subclass
+    const saved = getCharacterCreationData();
     const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
-    const needsSubclassStep = dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(dndClass);
+    const needsSubclassStep = saved.dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(saved.dndClass);
     const nextStepNumber = needsSubclassStep ? '5' : '4'; // Proficiencies
     const prevStepNumber = needsSubclassStep ? '3' : '2'; // Subclass or Class
 
     const handleBack = () => {
-        const params = new URLSearchParams({ step: prevStepNumber });
-        if (race) params.set('race', race);
-        if (dndClass) params.set('class', dndClass);
-        if (subclass) params.set('subclass', subclass);
-        router.push(`/create-character?${params.toString()}`);
+        router.push(`/create-character?step=${prevStepNumber}`);
     };
 
     const handleContinue = () => {
         if (!canContinue) return;
-        const params = new URLSearchParams({ step: nextStepNumber });
-        if (race)      params.set('race', race);
-        if (dndClass)  params.set('class', dndClass);
-        if (subclass)  params.set('subclass', subclass);
-        params.set('name',       characterName.trim());
-        params.set('background', selectedBg!);
-        params.set('alignment',  selectedAlignment!);
-        if (height) params.set('height', height);
-        if (weight) params.set('weight', weight);
-        if (age)    params.set('age', age);
-        router.push(`/create-character?${params.toString()}`);
+        router.push(`/create-character?step=${nextStepNumber}`);
     };
 
     const selectedBgName = backgrounds.find(b => b.index === selectedBg)?.name;
@@ -707,7 +700,7 @@ export default function BackgroundStep({
                             whiteSpace: 'nowrap',
                         }}
                     >
-                        &#8592; {subclass ? 'Subclass' : 'Class'}
+                        &#8592; {saved.subclass ? 'Subclass' : 'Class'}
                     </button>
 
                     {/* Quick-glance summary of what's been filled */}

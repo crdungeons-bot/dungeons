@@ -124,54 +124,85 @@ export default async function CreateCharacterPage({
                           `Step ${currentStep}: Choose Your ${stepLabel}`}
                 </h1>
 
-                {/* Progress indicator */}
-                <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+                {/* Progress indicator - now clickable! */}
+                <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', paddingBottom: '0.5rem', gap: '0.5rem', flexWrap: 'wrap' }}>
                     {effectiveSteps.map((label, i) => {
                         const stepNum  = i + 1;
                         const isDone   = stepNum < currentStep;
                         const isActive = stepNum === currentStep;
 
                         return (
-                            <div key={label} style={{ display: 'flex', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                    <div style={{
-                                        width: '22px',
-                                        height: '22px',
-                                        borderRadius: '50%',
-                                        backgroundColor: isDone || isActive ? 'var(--color-gold)' : 'transparent',
-                                        border: `1.5px solid ${isDone || isActive ? 'var(--color-gold)' : 'rgba(212,175,55,0.25)'}`,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '0.65rem',
-                                        fontWeight: '800',
-                                        color: isDone || isActive ? 'var(--color-primary)' : 'rgba(212,175,55,0.25)',
-                                        flexShrink: 0,
-                                    }}>
-                                        {isDone ? '✓' : stepNum}
-                                    </div>
-                                    <span style={{
-                                        fontSize: isActive ? '0.75rem' : '0rem',
-                                        color: isActive
-                                            ? 'var(--color-gold)'
-                                            : isDone
-                                                ? 'rgba(212,175,55,0.7)'
-                                                : 'rgba(212,175,55,0.25)',
-                                        fontWeight: isActive ? '700' : '400',
-                                    }}>
-                                        {label}
-                                    </span>
+                            <a
+                                key={label}
+                                href={`/create-character?step=${stepNum}`}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.4rem',
+                                    padding: '0.35rem 0.75rem',
+                                    borderRadius: '1rem',
+                                    backgroundColor: isActive 
+                                        ? 'rgba(212,175,55,0.12)' 
+                                        : isDone 
+                                            ? 'rgba(212,175,55,0.05)' 
+                                            : 'transparent',
+                                    border: `1.5px solid ${
+                                        isActive 
+                                            ? 'var(--color-gold)' 
+                                            : isDone 
+                                                ? 'rgba(212,175,55,0.35)' 
+                                                : 'rgba(212,175,55,0.15)'
+                                    }`,
+                                    textDecoration: 'none',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.15s',
+                                }}
+                                onMouseEnter={(e) => {
+                                    if (!isActive) {
+                                        e.currentTarget.style.borderColor = 'rgba(212,175,55,0.6)';
+                                        e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)';
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (!isActive) {
+                                        e.currentTarget.style.borderColor = isDone 
+                                            ? 'rgba(212,175,55,0.35)' 
+                                            : 'rgba(212,175,55,0.15)';
+                                        e.currentTarget.style.backgroundColor = isDone 
+                                            ? 'rgba(212,175,55,0.05)' 
+                                            : 'transparent';
+                                    }
+                                }}
+                            >
+                                <div style={{
+                                    width: '22px',
+                                    height: '22px',
+                                    borderRadius: '50%',
+                                    backgroundColor: isDone || isActive ? 'var(--color-gold)' : 'transparent',
+                                    border: `1.5px solid ${isDone || isActive ? 'var(--color-gold)' : 'rgba(212,175,55,0.25)'}`,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.65rem',
+                                    fontWeight: '800',
+                                    color: isDone || isActive ? 'var(--color-primary)' : 'rgba(212,175,55,0.25)',
+                                    flexShrink: 0,
+                                }}>
+                                    {isDone ? '✓' : stepNum}
                                 </div>
-
-                                {i < effectiveSteps.length - 1 && (
-                                    <div style={{
-                                        width: '28px',
-                                        height: '1.5px',
-                                        margin: '0 0.375rem',
-                                        backgroundColor: isDone ? 'rgba(212,175,55,0.5)' : 'rgba(212,175,55,0.15)',
-                                    }} />
-                                )}
-                            </div>
+                                <span style={{
+                                    fontSize: '0.72rem',
+                                    color: isActive
+                                        ? 'var(--color-gold)'
+                                        : isDone
+                                            ? 'rgba(212,175,55,0.7)'
+                                            : 'rgba(212,175,55,0.4)',
+                                    fontWeight: isActive ? '700' : '600',
+                                    whiteSpace: 'nowrap',
+                                }}>
+                                    {label}
+                                </span>
+                            </a>
                         );
                     })}
                 </div>
@@ -181,60 +212,22 @@ export default async function CreateCharacterPage({
             {currentStep === 1 && (
                 <RaceSelectStep
                     races={data.results}
-                    preselect={params.preselect}
-                    preselectClass={params.preselect_class}
-                    name={params.name}
-                    background={params.background}
-                    alignment={params.alignment}
-                    height={params.height}
-                    weight={params.weight}
-                    age={params.age}
-                    proficiencies={params.proficiencies}
                 />
             )}
 
             {currentStep === 2 && (
                 <ClassSelectStep
                     classes={data.results}
-                    preselect={params.preselect_class}
-                    race={params.race}
-                    subclass={params.subclass}
-                    name={params.name}
-                    background={params.background}
-                    alignment={params.alignment}
-                    height={params.height}
-                    weight={params.weight}
-                    age={params.age}
-                    proficiencies={params.proficiencies}
                 />
             )}
 
-            {currentStep === 3 && needsSubclassStep && params.class && (
-                <SubclassSelectStep
-                    characterClass={params.class}
-                    race={params.race}
-                    name={params.name}
-                    background={params.background}
-                    alignment={params.alignment}
-                    height={params.height}
-                    weight={params.weight}
-                    age={params.age}
-                    proficiencies={params.proficiencies}
-                />
+            {currentStep === 3 && needsSubclassStep && (
+                <SubclassSelectStep />
             )}
 
             {currentStep === (needsSubclassStep ? 4 : 3) && (
                 <BackgroundStep
                     backgrounds={backgrounds as []}
-                    race={params.race}
-                    dndClass={params.class}
-                    subclass={params.subclass}
-                    name={params.name}
-                    background={params.background}
-                    alignment={params.alignment}
-                    height={params.height}
-                    weight={params.weight}
-                    age={params.age}
                 />
             )}
 

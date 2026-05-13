@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { getCharacterCreationData, updateCharacterCreationData } from '@/lib/character-creation-storage';
 
 type DndClass = { index: string; name: string; url: string };
 
@@ -447,30 +448,8 @@ function Section({ label, children }: { label: string; children: React.ReactNode
 
 export default function ClassSelectStep({
     classes,
-    preselect,
-    race,
-    // Preserve all later step data
-    subclass,
-    name,
-    background,
-    alignment,
-    height,
-    weight,
-    age,
-    proficiencies,
 }: {
     classes: DndClass[];
-    preselect?: string;
-    race?: string;
-    // Later step data to preserve
-    subclass?: string;
-    name?: string;
-    background?: string;
-    alignment?: string;
-    height?: string;
-    weight?: string;
-    age?: string;
-    proficiencies?: string;
 }) {
     const router = useRouter();
 
@@ -478,7 +457,13 @@ export default function ClassSelectStep({
     const [viewingClass, setViewingClass] = useState<string | null>(null);
     const [viewingData, setViewingData]   = useState<ClassDetail | null>(null);
     const [loadingDetail, setLoadingDetail] = useState(false);
-    const [selectedClass, setSelectedClass] = useState<string | null>(preselect ?? null);
+    const [selectedClass, setSelectedClass] = useState<string | null>(null);
+
+    // Load from localStorage on mount
+    useEffect(() => {
+        const saved = getCharacterCreationData();
+        if (saved.dndClass) setSelectedClass(saved.dndClass);
+    }, []);
 
     useEffect(() => {
         if (!viewingClass) { setViewingData(null); return; }
@@ -494,37 +479,25 @@ export default function ClassSelectStep({
 
     const selectedClassName = classes.find(c => c.index === selectedClass)?.name;
 
+    const handleSelectClass = (classIndex: string) => {
+        setSelectedClass(classIndex);
+        updateCharacterCreationData({ dndClass: classIndex });
+    };
+
     const handleBack = () => {
-        const params = new URLSearchParams({ step: '1' });
-        if (race) params.set('preselect', race);
-        if (selectedClass) params.set('preselect_class', selectedClass);
-        // Preserve all later step data
-        if (subclass) params.set('subclass', subclass);
-        if (name) params.set('name', name);
-        if (background) params.set('background', background);
-        if (alignment) params.set('alignment', alignment);
-        if (height) params.set('height', height);
-        if (weight) params.set('weight', weight);
-        if (age) params.set('age', age);
-        if (proficiencies) params.set('proficiencies', proficiencies);
-        router.push(`/create-character?${params.toString()}`);
+        router.push('/create-character?step=1');
     };
 
     const handleContinue = () => {
         if (!selectedClass) return;
-        const params = new URLSearchParams({ step: '3' });
-        if (race) params.set('race', race);
-        params.set('class', selectedClass);
-        // Preserve all later step data if user came back
-        if (subclass) params.set('subclass', subclass);
-        if (name) params.set('name', name);
-        if (background) params.set('background', background);
-        if (alignment) params.set('alignment', alignment);
-        if (height) params.set('height', height);
-        if (weight) params.set('weight', weight);
-        if (age) params.set('age', age);
-        if (proficiencies) params.set('proficiencies', proficiencies);
-        router.push(`/create-character?${params.toString()}`);
+        
+        // Determine if this class needs a subclass selection at level 1
+        const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
+        const needsSubclass = LEVEL_1_SUBCLASS_CLASSES.includes(selectedClass);
+        
+        // Navigate to subclass step (3) or background step (3, but actually 4 in flow)
+        const nextStep = needsSubclass ? '3' : '3'; // Step 3 is either subclass or background
+        router.push(`/create-character?step=${nextStep}`);
     };
 
     return (
@@ -543,7 +516,7 @@ export default function ClassSelectStep({
                                 dndClass={cls}
                                 isSelected={selectedClass === cls.index}
                                 onViewDetails={() => setViewingClass(cls.index)}
-                                onSelect={() => setSelectedClass(cls.index)}
+                                onSelect={() => handleSelectClass(cls.index)}
                             />
                         ))}
                     </div>
@@ -608,7 +581,10 @@ export default function ClassSelectStep({
                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }} className="class-footer-buttons">
                         {selectedClass && (
                             <button
-                                onClick={() => setSelectedClass(null)}
+                                onClick={() => {
+                                    setSelectedClass(null);
+                                    updateCharacterCreationData({ dndClass: undefined });
+                                }}
                                 style={{
                                     padding: '0.6rem 1rem',
                                     borderRadius: '0.375rem',
@@ -692,7 +668,7 @@ export default function ClassSelectStep({
                 <ClassDetailModal
                     data={viewingData}
                     isSelected={selectedClass === viewingData.index}
-                    onSelect={() => setSelectedClass(viewingData.index)}
+                    onSelect={() => handleSelectClass(viewingData.index)}
                     onClose={() => setViewingClass(null)}
                 />
             )}

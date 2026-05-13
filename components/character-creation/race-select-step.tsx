@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { getCharacterCreationData, updateCharacterCreationData } from '@/lib/character-creation-storage';
 
 type Race = { index: string; name: string; url: string };
 
@@ -431,29 +432,8 @@ function Section({ label, children }: { label: string; children: React.ReactNode
 
 export default function RaceSelectStep({
     races,
-    preselect,
-    preselectClass,
-    // Preserve all later step data
-    name,
-    background,
-    alignment,
-    height,
-    weight,
-    age,
-    proficiencies,
 }: {
     races: Race[];
-    preselect?: string;
-    /** Class index pre-selected from a class detail page,   carried forward to step 2 */
-    preselectClass?: string;
-    // Later step data to preserve
-    name?: string;
-    background?: string;
-    alignment?: string;
-    height?: string;
-    weight?: string;
-    age?: string;
-    proficiencies?: string;
 }) {
     const router = useRouter();
 
@@ -462,8 +442,14 @@ export default function RaceSelectStep({
     const [viewingData, setViewingData] = useState<RaceDetail | null>(null);
     const [loadingDetail, setLoadingDetail] = useState(false);
 
-    // The confirmed selection
-    const [selectedRace, setSelectedRace] = useState<string | null>(preselect ?? null);
+    // The confirmed selection - load from localStorage
+    const [selectedRace, setSelectedRace] = useState<string | null>(null);
+
+    // Load from localStorage on mount
+    useEffect(() => {
+        const saved = getCharacterCreationData();
+        if (saved.race) setSelectedRace(saved.race);
+    }, []);
 
     // Fetch detail data whenever the modal race changes
     useEffect(() => {
@@ -483,20 +469,14 @@ export default function RaceSelectStep({
 
     const selectedRaceName = races.find(r => r.index === selectedRace)?.name;
 
+    const handleSelectRace = (raceIndex: string) => {
+        setSelectedRace(raceIndex);
+        updateCharacterCreationData({ race: raceIndex });
+    };
+
     const handleContinue = () => {
         if (!selectedRace) return;
-        const params = new URLSearchParams({ step: '2', race: selectedRace });
-        // Carry a pre-selected class forward so step 2 auto-selects it
-        if (preselectClass) params.set('preselect_class', preselectClass);
-        // Preserve all later step data if user came back
-        if (name) params.set('name', name);
-        if (background) params.set('background', background);
-        if (alignment) params.set('alignment', alignment);
-        if (height) params.set('height', height);
-        if (weight) params.set('weight', weight);
-        if (age) params.set('age', age);
-        if (proficiencies) params.set('proficiencies', proficiencies);
-        router.push(`/create-character?${params.toString()}`);
+        router.push('/create-character?step=2');
     };
 
     return (
@@ -515,7 +495,7 @@ export default function RaceSelectStep({
                                 race={race}
                                 isSelected={selectedRace === race.index}
                                 onViewDetails={() => setViewingRace(race.index)}
-                                onSelect={() => setSelectedRace(race.index)}
+                                onSelect={() => handleSelectRace(race.index)}
                             />
                         ))}
                     </div>
@@ -638,7 +618,7 @@ export default function RaceSelectStep({
                 <RaceDetailModal
                     data={viewingData}
                     isSelected={selectedRace === viewingData.index}
-                    onSelect={() => setSelectedRace(viewingData.index)}
+                    onSelect={() => handleSelectRace(viewingData.index)}
                     onClose={() => setViewingRace(null)}
                 />
             )}

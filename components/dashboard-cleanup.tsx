@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { clearCharacterCreationData } from '@/hooks/use-character-creation-cleanup';
+import { clearCharacterCreationData } from '@/lib/character-creation-storage';
 
 /**
  * Wrapper component that clears any lingering character creation data

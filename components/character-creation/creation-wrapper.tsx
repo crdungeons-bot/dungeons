@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { clearCharacterCreationData } from '@/hooks/use-character-creation-cleanup';
+import { clearCharacterCreationData } from '@/lib/character-creation-storage';
 
 export default function CharacterCreationWrapper({ 
     children 

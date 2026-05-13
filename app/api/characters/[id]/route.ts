@@ -127,3 +127,36 @@ export async function PATCH(
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
+
+export async function DELETE(
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const { id } = await params;
+
+    if (!id || !ObjectId.isValid(id)) {
+        return NextResponse.json({ error: 'Invalid character ID' }, { status: 400 });
+    }
+
+    try {
+        const client = await clientPromise;
+        const db     = client.db('dnd-app');
+
+        const character = await db.collection('characters').findOne({ _id: new ObjectId(id) });
+
+        if (!character) {
+            return NextResponse.json({ error: 'Character not found' }, { status: 404 });
+        }
+
+        await db.collection('characters').deleteOne({ _id: new ObjectId(id) });
+
+        return NextResponse.json({ 
+            success: true, 
+            message: 'Character deleted successfully',
+            deletedId: id 
+        });
+    } catch (error) {
+        console.error('Delete character error:', error);
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    }
+}

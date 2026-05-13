@@ -61,6 +61,209 @@ type CharacterData = {
     createdAt:     string;
 };
 
+/* ═══════════════════════════════════════════════════════════════════
+   Delete Button Component
+═══════════════════════════════════════════════════════════════════ */
+
+function DeleteButton({ characterId, characterName }: { characterId: string; characterName: string }) {
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [confirmingDelete, setConfirmingDelete] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    const handleDelete = async () => {
+        setDeleting(true);
+        try {
+            const res = await fetch(`/api/characters/${characterId}`, {
+                method: 'DELETE',
+            });
+
+            if (!res.ok) {
+                throw new Error('Failed to delete character');
+            }
+
+            // Redirect back to characters list
+            window.location.href = '/dashboard?section=characters';
+        } catch (err) {
+            console.error('Delete error:', err);
+            alert('Failed to delete character. Please try again.');
+            setDeleting(false);
+        }
+    };
+
+    return (
+        <>
+            {/* Three-dot menu button */}
+            <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                style={{
+                    position:       'absolute',
+                    top:            '1rem',
+                    right:          '1rem',
+                    background:     'rgba(0,0,0,0.75)',
+                    border:         '1.5px solid rgba(212,175,55,0.3)',
+                    borderRadius:   '8px',
+                    width:          '36px',
+                    height:         '36px',
+                    display:        'flex',
+                    alignItems:     'center',
+                    justifyContent: 'center',
+                    color:          'rgba(212,175,55,0.7)',
+                    fontSize:       '1.2rem',
+                    cursor:         'pointer',
+                    backdropFilter: 'blur(4px)',
+                    transition:     'all 0.2s',
+                    zIndex:         10,
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(212,175,55,0.6)';
+                    e.currentTarget.style.color = 'var(--color-gold)';
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)';
+                    e.currentTarget.style.color = 'rgba(212,175,55,0.7)';
+                }}
+            >
+                ⋯
+            </button>
+
+            {/* Dropdown menu */}
+            {menuOpen && (
+                <div
+                    style={{
+                        position:       'absolute',
+                        top:            '3.5rem',
+                        right:          '1rem',
+                        background:     'rgba(10,8,6,0.98)',
+                        border:         '1px solid rgba(212,175,55,0.3)',
+                        borderRadius:   '8px',
+                        boxShadow:      '0 8px 24px rgba(0,0,0,0.6)',
+                        zIndex:         10,
+                        minWidth:       '160px',
+                        backdropFilter: 'blur(8px)',
+                    }}
+                >
+                    <button
+                        onClick={() => {
+                            setConfirmingDelete(true);
+                            setMenuOpen(false);
+                        }}
+                        style={{
+                            width:          '100%',
+                            padding:        '0.7rem 1rem',
+                            background:     'transparent',
+                            border:         'none',
+                            color:          'rgba(220,80,80,0.9)',
+                            fontSize:       '0.85rem',
+                            fontWeight:     '600',
+                            textAlign:      'left',
+                            cursor:         'pointer',
+                            display:        'flex',
+                            alignItems:     'center',
+                            gap:            '0.6rem',
+                            transition:     'background 0.2s',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(220,80,80,0.1)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                    >
+                        🗑️ Delete Character
+                    </button>
+                </div>
+            )}
+
+            {/* Click away handler for menu */}
+            {menuOpen && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top:      0,
+                        left:     0,
+                        right:    0,
+                        bottom:   0,
+                        zIndex:   9,
+                    }}
+                    onClick={() => setMenuOpen(false)}
+                />
+            )}
+
+            {/* Confirmation dialog */}
+            {confirmingDelete && (
+                <div
+                    style={{
+                        position:       'fixed',
+                        top:            0,
+                        left:           0,
+                        right:          0,
+                        bottom:         0,
+                        background:     'rgba(0,0,0,0.85)',
+                        display:        'flex',
+                        alignItems:     'center',
+                        justifyContent: 'center',
+                        zIndex:         1000,
+                    }}
+                    onClick={() => !deleting && setConfirmingDelete(false)}
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                            background:     'var(--color-primary-light)',
+                            border:         '1px solid rgba(212,175,55,0.3)',
+                            borderRadius:   '12px',
+                            padding:        '2.5rem',
+                            maxWidth:       '440px',
+                            boxShadow:      '0 20px 60px rgba(0,0,0,0.6)',
+                        }}
+                    >
+                        <h3 style={{ margin: '0 0 1rem', fontSize: '1.5rem', color: 'var(--color-gold)' }}>
+                            Delete {characterName}?
+                        </h3>
+                        <p style={{ margin: '0 0 1.75rem', fontSize: '0.95rem', color: 'rgba(244,232,208,0.7)', lineHeight: '1.6' }}>
+                            This will permanently delete this character and all associated data. This action cannot be undone.
+                        </p>
+                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                            <button
+                                onClick={() => setConfirmingDelete(false)}
+                                disabled={deleting}
+                                style={{
+                                    flex:         1,
+                                    padding:      '0.7rem',
+                                    background:   'transparent',
+                                    border:       '1px solid rgba(212,175,55,0.3)',
+                                    borderRadius: '6px',
+                                    color:        'var(--color-gold)',
+                                    fontSize:     '0.9rem',
+                                    fontWeight:   '600',
+                                    cursor:       deleting ? 'not-allowed' : 'pointer',
+                                    opacity:      deleting ? 0.5 : 1,
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                disabled={deleting}
+                                style={{
+                                    flex:         1,
+                                    padding:      '0.7rem',
+                                    background:   'rgba(220,80,80,0.2)',
+                                    border:       '1px solid rgba(220,80,80,0.5)',
+                                    borderRadius: '6px',
+                                    color:        'rgba(220,80,80,0.9)',
+                                    fontSize:     '0.9rem',
+                                    fontWeight:   '700',
+                                    cursor:       deleting ? 'not-allowed' : 'pointer',
+                                    opacity:      deleting ? 0.6 : 1,
+                                }}
+                            >
+                                {deleting ? 'Deleting...' : 'Delete'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
+    );
+}
+
 type Tab = 'overview' | 'magic' | 'gear' | 'loadouts' | 'lore';
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1517,6 +1720,9 @@ export default function CharacterDetailSection({ id }: { id: string }) {
                     url(/images/races/${char.race}.png) top / cover no-repeat
                 `,
             }}>
+                {/* Delete button */}
+                <DeleteButton characterId={char.id} characterName={char.name} />
+
                 <div style={{ padding: '1.5rem 2rem 2rem', width: '100%', maxWidth: '700px' }}>
 
                     {/* Level + back link row */}

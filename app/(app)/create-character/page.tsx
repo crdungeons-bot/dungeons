@@ -22,30 +22,13 @@ export default async function CreateCharacterPage({
 }: {
     searchParams: Promise<{
         step?: string;
-        preselect?: string;
-        preselect_class?: string;
-        race?: string;
-        class?: string;
-        subclass?: string;
-        name?: string;
-        background?: string;
-        alignment?: string;
-        height?: string;
-        weight?: string;
-        age?: string;
-        proficiencies?: string;
     }>;
 }) {
     const params = await searchParams;
     const currentStep = Number(params.step ?? '1');
 
-    // Check if we need to show subclass step
-    const needsSubclassStep = params.class && LEVEL_1_SUBCLASS_CLASSES.includes(params.class);
-    
-    // Adjust step display if subclass step is not needed
-    const effectiveSteps = needsSubclassStep 
-        ? STEPS 
-        : STEPS.filter(s => s !== 'Subclass');
+    // Always show all steps - the client components will handle conditional logic
+    const effectiveSteps = STEPS;
 
     // Query MongoDB directly (works in production without localhost)
     const client = await clientPromise;
@@ -67,19 +50,9 @@ export default async function CreateCharacterPage({
         };
     }
 
-    // For the proficiency step (now step 5 if subclass shown, step 4 otherwise), fetch race + class detail in parallel
-    const proficiencyStep = needsSubclassStep ? 5 : 4;
-    let raceApiData = null;
-    let classApiData = null;
-    if (currentStep === proficiencyStep && params.race && params.class) {
-        raceApiData = await db.collection('races').findOne({ index: params.race });
-        classApiData = await db.collection('classes').findOne({ index: params.class });
-    }
-
-    // For the background step, fetch all backgrounds
-    const backgroundStep = needsSubclassStep ? 4 : 3;
+    // For the background step (always step 4 now), fetch all backgrounds
     let backgrounds: object[] = [];
-    if (currentStep === backgroundStep) {
+    if (currentStep === 4) {
         backgrounds = await db.collection('backgrounds').find().sort({ name: 1 }).toArray();
     }
 
@@ -116,12 +89,14 @@ export default async function CreateCharacterPage({
                     fontWeight: '800',
                     margin: '0 0 1rem',
                 }}>
-                    {currentStep === effectiveSteps.length
-                        ? '⚔ Review & Create'
-                        : currentStep === proficiencyStep ? 'Step ' + currentStep + ': Choose Your Proficiencies' :
-                          currentStep === proficiencyStep + 1 ? 'Step ' + currentStep + ': Tell Your Story' :
-                          currentStep === proficiencyStep + 2 ? 'Step ' + currentStep + ': Roll Your Stats' :
-                          `Step ${currentStep}: Choose Your ${stepLabel}`}
+                    {currentStep === 1 ? 'Step 1: Choose Your Race' :
+                     currentStep === 2 ? 'Step 2: Choose Your Class' :
+                     currentStep === 3 ? 'Step 3: Choose Your Subclass' :
+                     currentStep === 4 ? 'Step 4: Choose Your Background' :
+                     currentStep === 5 ? 'Step 5: Choose Your Proficiencies' :
+                     currentStep === 6 ? 'Step 6: Tell Your Story' :
+                     currentStep === 7 ? 'Step 7: Roll Your Stats' :
+                     '⚔ Review & Create'}
                 </h1>
 
                 {/* Progress indicator - now clickable! */}
@@ -221,74 +196,66 @@ export default async function CreateCharacterPage({
                 />
             )}
 
-            {currentStep === 3 && needsSubclassStep && (
+            {currentStep === 3 && (
                 <SubclassSelectStep />
             )}
 
-            {currentStep === (needsSubclassStep ? 4 : 3) && (
+            {currentStep === 4 && (
                 <BackgroundStep
                     backgrounds={backgrounds as []}
                 />
             )}
 
-            {currentStep === (needsSubclassStep ? 5 : 4) && (
+            {currentStep === 5 && (
                 <ProficiencyStep
-                    race={params.race}
-                    dndClass={params.class}
-                    subclass={params.subclass}
-                    name={params.name}
-                    background={params.background}
-                    alignment={params.alignment}
-                    height={params.height}
-                    weight={params.weight}
-                    age={params.age}
-                    raceApiData={raceApiData}
-                    classApiData={classApiData}
+                    proficiencies={undefined}
+                    raceApiData={null}
+                    classApiData={null}
                 />
             )}
 
-            {currentStep === (needsSubclassStep ? 6 : 5) && (
+            {currentStep === 6 && (
                 <StoryStep
-                    race={params.race}
-                    dndClass={params.class}
-                    subclass={params.subclass}
-                    name={params.name}
-                    background={params.background}
-                    alignment={params.alignment}
-                    height={params.height}
-                    weight={params.weight}
-                    age={params.age}
-                    proficiencies={params.proficiencies}
+                    race={undefined}
+                    dndClass={undefined}
+                    subclass={undefined}
+                    name={undefined}
+                    background={undefined}
+                    alignment={undefined}
+                    height={undefined}
+                    weight={undefined}
+                    age={undefined}
+                    proficiencies={undefined}
                 />
             )}
 
-            {currentStep === (needsSubclassStep ? 7 : 6) && (
+            {currentStep === 7 && (
                 <StatsStep
-                    race={params.race}
-                    dndClass={params.class}
-                    subclass={params.subclass}
-                    name={params.name}
-                    background={params.background}
-                    alignment={params.alignment}
-                    height={params.height}
-                    weight={params.weight}
-                    age={params.age}
-                    proficiencies={params.proficiencies}
+                    race={undefined}
+                    dndClass={undefined}
+                    subclass={undefined}
+                    name={undefined}
+                    background={undefined}
+                    alignment={undefined}
+                    height={undefined}
+                    weight={undefined}
+                    age={undefined}
+                    proficiencies={undefined}
                 />
             )}
 
-            {currentStep === (needsSubclassStep ? 8 : 7) && (
+            {currentStep === 8 && (
                 <SummaryStep
-                    race={params.race}
-                    dndClass={params.class}
-                    subclass={params.subclass}
-                    name={params.name}
-                    background={params.background}
-                    alignment={params.alignment}
-                    height={params.height}
-                    weight={params.weight}
-                    age={params.age}
-                    proficiencies={params.proficiencies}
+                    race={undefined}
+                    dndClass={undefined}
+                    subclass={undefined}
+                    name={undefined}
+                    background={undefined}
+                    alignment={undefined}
+                    height={undefined}
+                    weight={undefined}
+                    age={undefined}
+                    proficiencies={undefined}
                 />
             )}
         </div>

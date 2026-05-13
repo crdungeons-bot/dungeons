@@ -491,13 +491,8 @@ export default function ClassSelectStep({
     const handleContinue = () => {
         if (!selectedClass) return;
         
-        // Determine if this class needs a subclass selection at level 1
-        const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
-        const needsSubclass = LEVEL_1_SUBCLASS_CLASSES.includes(selectedClass);
-        
-        // Navigate to subclass step (3) or background step (3, but actually 4 in flow)
-        const nextStep = needsSubclass ? '3' : '3'; // Step 3 is either subclass or background
-        router.push(`/create-character?step=${nextStep}`);
+        // Always navigate to step 3 (subclass), which will auto-skip if not needed
+        router.push('/create-character?step=3');
     };
 
     return (

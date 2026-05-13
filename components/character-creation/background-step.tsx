@@ -546,20 +546,14 @@ export default function BackgroundStep({
 
     const canContinue = characterName.trim().length > 0 && selectedBg !== null && selectedAlignment !== null;
 
-    // Determine correct step numbers based on whether class has level 1 subclass
-    const saved = getCharacterCreationData();
-    const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
-    const needsSubclassStep = saved.dndClass && LEVEL_1_SUBCLASS_CLASSES.includes(saved.dndClass);
-    const nextStepNumber = needsSubclassStep ? '5' : '4'; // Proficiencies
-    const prevStepNumber = needsSubclassStep ? '3' : '2'; // Subclass or Class
-
     const handleBack = () => {
-        router.push(`/create-character?step=${prevStepNumber}`);
+        // Always go back to step 3 (subclass), which will auto-skip if not needed
+        router.push('/create-character?step=3');
     };
 
     const handleContinue = () => {
         if (!canContinue) return;
-        router.push(`/create-character?step=${nextStepNumber}`);
+        router.push('/create-character?step=5'); // Proficiencies
     };
 
     const selectedBgName = backgrounds.find(b => b.index === selectedBg)?.name;
@@ -700,7 +694,7 @@ export default function BackgroundStep({
                             whiteSpace: 'nowrap',
                         }}
                     >
-                        &#8592; {saved.subclass ? 'Subclass' : 'Class'}
+                        &#8592; Subclass
                     </button>
 
                     {/* Quick-glance summary of what's been filled */}

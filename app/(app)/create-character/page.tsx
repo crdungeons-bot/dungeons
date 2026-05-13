@@ -8,14 +8,12 @@ import StatsStep         from '@/components/character-creation/stats-step';
 import SummaryStep       from '@/components/character-creation/summary-step';
 import clientPromise from '@/lib/mongo';
 import CharacterCreationWrapper from '@/components/character-creation/creation-wrapper';
+import CharacterCreationProgressNav from '@/components/character-creation/creation-progress-nav';
 
 type ApiItem = { index: string; name: string; url: string };
 type ApiList  = { count: number; results: ApiItem[] };
 
-const STEPS = ['Race', 'Class', 'Subclass', 'Background', 'Proficiencies', 'Story', 'Stats', 'Review'];
-
-// Classes that choose subclass at level 1
-const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
+const STEPS = ['Race', 'Class', 'Subclass', 'Background', 'Proficiencies', 'Story', 'Stats', 'Review'] as const;
 
 export default async function CreateCharacterPage({
     searchParams,
@@ -55,8 +53,6 @@ export default async function CreateCharacterPage({
     if (currentStep === 4) {
         backgrounds = await db.collection('backgrounds').find().sort({ name: 1 }).toArray();
     }
-
-    const stepLabel = effectiveSteps[currentStep - 1] ?? 'Race';
 
     return (
         <CharacterCreationWrapper>
@@ -99,88 +95,7 @@ export default async function CreateCharacterPage({
                      '⚔ Review & Create'}
                 </h1>
 
-                {/* Progress indicator - now clickable! */}
-                <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', paddingBottom: '0.5rem', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    {effectiveSteps.map((label, i) => {
-                        const stepNum  = i + 1;
-                        const isDone   = stepNum < currentStep;
-                        const isActive = stepNum === currentStep;
-
-                        return (
-                            <a
-                                key={label}
-                                href={`/create-character?step=${stepNum}`}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.4rem',
-                                    padding: '0.35rem 0.75rem',
-                                    borderRadius: '1rem',
-                                    backgroundColor: isActive 
-                                        ? 'rgba(212,175,55,0.12)' 
-                                        : isDone 
-                                            ? 'rgba(212,175,55,0.05)' 
-                                            : 'transparent',
-                                    border: `1.5px solid ${
-                                        isActive 
-                                            ? 'var(--color-gold)' 
-                                            : isDone 
-                                                ? 'rgba(212,175,55,0.35)' 
-                                                : 'rgba(212,175,55,0.15)'
-                                    }`,
-                                    textDecoration: 'none',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.15s',
-                                }}
-                                onMouseEnter={(e) => {
-                                    if (!isActive) {
-                                        e.currentTarget.style.borderColor = 'rgba(212,175,55,0.6)';
-                                        e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)';
-                                    }
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (!isActive) {
-                                        e.currentTarget.style.borderColor = isDone 
-                                            ? 'rgba(212,175,55,0.35)' 
-                                            : 'rgba(212,175,55,0.15)';
-                                        e.currentTarget.style.backgroundColor = isDone 
-                                            ? 'rgba(212,175,55,0.05)' 
-                                            : 'transparent';
-                                    }
-                                }}
-                            >
-                                <div style={{
-                                    width: '22px',
-                                    height: '22px',
-                                    borderRadius: '50%',
-                                    backgroundColor: isDone || isActive ? 'var(--color-gold)' : 'transparent',
-                                    border: `1.5px solid ${isDone || isActive ? 'var(--color-gold)' : 'rgba(212,175,55,0.25)'}`,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '0.65rem',
-                                    fontWeight: '800',
-                                    color: isDone || isActive ? 'var(--color-primary)' : 'rgba(212,175,55,0.25)',
-                                    flexShrink: 0,
-                                }}>
-                                    {isDone ? '✓' : stepNum}
-                                </div>
-                                <span style={{
-                                    fontSize: '0.72rem',
-                                    color: isActive
-                                        ? 'var(--color-gold)'
-                                        : isDone
-                                            ? 'rgba(212,175,55,0.7)'
-                                            : 'rgba(212,175,55,0.4)',
-                                    fontWeight: isActive ? '700' : '600',
-                                    whiteSpace: 'nowrap',
-                                }}>
-                                    {label}
-                                </span>
-                            </a>
-                        );
-                    })}
-                </div>
+                <CharacterCreationProgressNav steps={effectiveSteps} currentStep={currentStep} />
             </div>
 
             {/* ── Step content ── */}

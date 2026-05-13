@@ -7,8 +7,7 @@ import {
     useCharacterCreationStore,
     useCharacterCreationHydrated,
 } from '@/stores/character-creation-store';
-
-const LEVEL_1_SUBCLASS_CLASSES = ['cleric', 'warlock'];
+import { characterCreationNeedsSubclassStep } from '@/lib/subclass-levels';
 
 export default function SubclassSelectStep() {
     const router = useRouter();
@@ -19,7 +18,7 @@ export default function SubclassSelectStep() {
 
     useEffect(() => {
         if (!hydrated) return;
-        if (dndClass && !LEVEL_1_SUBCLASS_CLASSES.includes(dndClass)) {
+        if (dndClass && !characterCreationNeedsSubclassStep(dndClass)) {
             router.replace('/create-character?step=4');
         }
     }, [hydrated, dndClass, router]);
@@ -37,7 +36,7 @@ export default function SubclassSelectStep() {
         router.push('/create-character?step=2');
     };
 
-    if (!hydrated || !dndClass) {
+    if (!hydrated || !dndClass || !characterCreationNeedsSubclassStep(dndClass)) {
         return (
             <div style={{
                 display:         'flex',

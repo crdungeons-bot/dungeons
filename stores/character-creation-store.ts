@@ -105,6 +105,30 @@ type CharacterCreationStore = {
     resetDraft: () => void;
 };
 
+/** Deep-merge `draft` so rehydration never replaces the whole object with a stale partial snapshot. */
+function mergePersistedCharacterCreation(
+    persistedState: unknown,
+    currentState: CharacterCreationStore,
+): CharacterCreationStore {
+    if (
+        persistedState === null ||
+        persistedState === undefined ||
+        typeof persistedState !== 'object' ||
+        !('draft' in persistedState)
+    ) {
+        return currentState;
+    }
+    const p = persistedState as PersistedSlice;
+    return {
+        ...currentState,
+        ...p,
+        draft: {
+            ...p.draft,
+            ...currentState.draft,
+        },
+    };
+}
+
 export const useCharacterCreationStore = create<CharacterCreationStore>()(
     persist(
         (set) => ({
@@ -119,6 +143,7 @@ export const useCharacterCreationStore = create<CharacterCreationStore>()(
             name: STORAGE_KEY,
             storage: customPersistStorage,
             partialize: (state): PersistedSlice => ({ draft: state.draft }),
+            merge: mergePersistedCharacterCreation,
         },
     ),
 );

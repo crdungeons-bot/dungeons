@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
-import { useCharacterCreationStore } from '@/stores/character-creation-store';
+import { useCharacterCreationStore, useCharacterCreationHydrated } from '@/stores/character-creation-store';
 
 // ── Styled textarea ───────────────────────────────────────────────────────────
 
@@ -126,6 +126,7 @@ function SectionDivider({ title, subtitle }: { title: string; subtitle?: string 
 
 export default function StoryStep() {
     const router = useRouter();
+    const hydrated = useCharacterCreationHydrated();
     const {
         name,
         backstory,
@@ -167,6 +168,20 @@ export default function StoryStep() {
         });
         router.push('/create-character?step=7');
     };
+
+    if (!hydrated) {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                color: 'var(--color-gold)',
+            }}>
+                Loading…
+            </div>
+        );
+    }
 
     return (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

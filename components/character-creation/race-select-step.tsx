@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useCharacterCreationStore } from '@/stores/character-creation-store';
+import { useCharacterCreationStore, useCharacterCreationHydrated } from '@/stores/character-creation-store';
 
 type Race = { index: string; name: string; url: string };
 
@@ -438,6 +438,7 @@ export default function RaceSelectStep({
     const router = useRouter();
     const draftRace = useCharacterCreationStore(s => s.draft.race);
     const patchDraft = useCharacterCreationStore(s => s.patchDraft);
+    const hydrated = useCharacterCreationHydrated();
 
     // Which race's modal is open
     const [viewingRace, setViewingRace] = useState<string | null>(null);
@@ -472,6 +473,20 @@ export default function RaceSelectStep({
         if (!selectedRace) return;
         router.push('/create-character?step=2');
     };
+
+    if (!hydrated) {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                color: 'var(--color-gold)',
+            }}>
+                Loading…
+            </div>
+        );
+    }
 
     return (
         <>

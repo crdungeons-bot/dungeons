@@ -4,7 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Background } from '@/types/background';
 import { useShallow } from 'zustand/react/shallow';
-import { useCharacterCreationStore } from '@/stores/character-creation-store';
+import {
+    useCharacterCreationStore,
+    useCharacterCreationHydrated,
+} from '@/stores/character-creation-store';
+import { characterCreationNeedsSubclassStep } from '@/lib/subclass-levels';
 
 // Alias so internal code stays readable
 type BgDetail = Background;
@@ -507,6 +511,7 @@ export default function BackgroundStep({
     backgrounds: BgDetail[];
 }) {
     const router = useRouter();
+    const hydrated = useCharacterCreationHydrated();
 
     const {
         patchDraft,
@@ -516,6 +521,7 @@ export default function BackgroundStep({
         height,
         weight,
         age,
+        dndClass,
     } = useCharacterCreationStore(
         useShallow((s) => ({
             patchDraft: s.patchDraft,
@@ -525,6 +531,7 @@ export default function BackgroundStep({
             height: s.draft.height ?? '',
             weight: s.draft.weight ?? '',
             age: s.draft.age ?? '',
+            dndClass: s.draft.dndClass,
         })),
     );
 
@@ -537,8 +544,8 @@ export default function BackgroundStep({
     const canContinue = characterName.trim().length > 0 && selectedBg !== null && selectedAlignment !== null;
 
     const handleBack = () => {
-        // Always go back to step 3 (subclass), which will auto-skip if not needed
-        router.push('/create-character?step=3');
+        const prev = characterCreationNeedsSubclassStep(dndClass) ? 3 : 2;
+        router.push(`/create-character?step=${prev}`);
     };
 
     const handleContinue = () => {
@@ -547,6 +554,20 @@ export default function BackgroundStep({
     };
 
     const selectedBgName = backgrounds.find(b => b.index === selectedBg)?.name;
+
+    if (!hydrated) {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                color: 'var(--color-gold)',
+            }}>
+                Loading…
+            </div>
+        );
+    }
 
     return (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

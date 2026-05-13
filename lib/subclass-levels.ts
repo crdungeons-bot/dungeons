@@ -1,3 +1,13 @@
+/** Classes that use the dedicated subclass step during character creation (URL step 3). */
+export const LEVEL_1_SUBCLASS_CHARACTER_CREATION_CLASSES = ['cleric', 'warlock'] as const;
+
+export function characterCreationNeedsSubclassStep(dndClass: string | undefined): boolean {
+    return (
+        !!dndClass &&
+        (LEVEL_1_SUBCLASS_CHARACTER_CREATION_CLASSES as readonly string[]).includes(dndClass)
+    );
+}
+
 /**
  * Maps D&D class names to the level at which they choose their subclass
  */

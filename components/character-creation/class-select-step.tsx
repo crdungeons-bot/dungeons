@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useCharacterCreationStore } from '@/stores/character-creation-store';
+import { useCharacterCreationStore, useCharacterCreationHydrated } from '@/stores/character-creation-store';
+import { characterCreationNeedsSubclassStep } from '@/lib/subclass-levels';
 
 type DndClass = { index: string; name: string; url: string };
 
@@ -454,6 +455,7 @@ export default function ClassSelectStep({
     const router = useRouter();
     const draftClass = useCharacterCreationStore(s => s.draft.dndClass);
     const patchDraft = useCharacterCreationStore(s => s.patchDraft);
+    const hydrated = useCharacterCreationHydrated();
 
     // Which class's modal is open
     const [viewingClass, setViewingClass] = useState<string | null>(null);
@@ -486,10 +488,23 @@ export default function ClassSelectStep({
 
     const handleContinue = () => {
         if (!selectedClass) return;
-        
-        // Always navigate to step 3 (subclass), which will auto-skip if not needed
-        router.push('/create-character?step=3');
+        const next = characterCreationNeedsSubclassStep(selectedClass) ? 3 : 4;
+        router.push(`/create-character?step=${next}`);
     };
+
+    if (!hydrated) {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                color: 'var(--color-gold)',
+            }}>
+                Loading…
+            </div>
+        );
+    }
 
     return (
         <>

@@ -1,5 +1,8 @@
 'use client';
 
+import { useCharacterCreationStore } from '@/stores/character-creation-store';
+import { characterCreationNeedsSubclassStep } from '@/lib/subclass-levels';
+
 export default function CharacterCreationProgressNav({
     steps,
     currentStep,
@@ -7,6 +10,8 @@ export default function CharacterCreationProgressNav({
     steps: readonly string[];
     currentStep: number;
 }) {
+    const dndClass = useCharacterCreationStore((s) => s.draft.dndClass);
+
     return (
         <div
             style={{
@@ -23,10 +28,17 @@ export default function CharacterCreationProgressNav({
                 const isDone = stepNum < currentStep;
                 const isActive = stepNum === currentStep;
 
+                const href =
+                    stepNum === 3 &&
+                    dndClass &&
+                    !characterCreationNeedsSubclassStep(dndClass)
+                        ? '/create-character?step=4'
+                        : `/create-character?step=${stepNum}`;
+
                 return (
                     <a
                         key={label}
-                        href={`/create-character?step=${stepNum}`}
+                        href={href}
                         style={{
                             display: 'flex',
                             alignItems: 'center',

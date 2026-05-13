@@ -7,6 +7,7 @@ import { shouldDisplaySubclass } from '@/lib/subclass-levels';
 import {
     clearCharacterCreationData,
     useCharacterCreationStore,
+    useCharacterCreationHydrated,
 } from '@/stores/character-creation-store';
 import type { CharacterDraft } from '@/stores/character-creation-store';
 
@@ -176,6 +177,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export default function SummaryStep() {
     const router = useRouter();
+    const hydrated = useCharacterCreationHydrated();
 
     const {
         race,
@@ -325,6 +327,20 @@ export default function SummaryStep() {
     /* ── back handler ── */
     function handleBack() {
         router.push('/create-character?step=7');
+    }
+
+    if (!hydrated) {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                color: 'var(--color-gold)',
+            }}>
+                Loading…
+            </div>
+        );
     }
 
     /* ── layout ── */

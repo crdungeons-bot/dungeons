@@ -305,16 +305,18 @@ export default function ProficiencyStep() {
 
     /* ── User selection state,   one selected-set per choice group ── */
     const [selections, setSelections] = useState<Set<string>[]>([]);
+    const [restoredFromDraft, setRestoredFromDraft] = useState(false);
 
-    // Keep selection row count in sync when API data arrives (jumping to this step used to crash: selections[i] undefined).
-    // Do not reset once the user has the same number of choice rows as the UI — avoids wiping picks when background JSON loads later.
+    // Restore selections from draft.proficiencies on mount/hydration
     useEffect(() => {
-        if (!hydrated) return;
-        if (choiceGroups.length > 0 && selections.length === choiceGroups.length) return;
+        if (!hydrated || restoredFromDraft) return;
+        if (choiceGroups.length === 0) return;
 
         const profList = normalizeSavedProficiencies(draft.proficiencies);
-        setSelections(buildSelectionsForGroups(choiceGroups, lockedMap, profList));
-    }, [hydrated, choiceGroups, lockedMap, draft.proficiencies, selections.length]);
+        const restored = buildSelectionsForGroups(choiceGroups, lockedMap, profList);
+        setSelections(restored);
+        setRestoredFromDraft(true);
+    }, [hydrated, choiceGroups, lockedMap, draft.proficiencies, restoredFromDraft]);
 
     /* ── Which skills are in ANY available choice pool ── */
     const inPool = useMemo(() => {

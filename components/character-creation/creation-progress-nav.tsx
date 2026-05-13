@@ -2,6 +2,7 @@
 
 import { useCharacterCreationStore } from '@/stores/character-creation-store';
 import { characterCreationNeedsSubclassStep } from '@/lib/subclass-levels';
+import { isCharacterDraftComplete } from '@/lib/character-creation-validation';
 
 export default function CharacterCreationProgressNav({
     steps,
@@ -10,7 +11,9 @@ export default function CharacterCreationProgressNav({
     steps: readonly string[];
     currentStep: number;
 }) {
-    const dndClass = useCharacterCreationStore((s) => s.draft.dndClass);
+    const draft = useCharacterCreationStore((s) => s.draft);
+    const dndClass = draft.dndClass;
+    const isComplete = isCharacterDraftComplete(draft);
 
     return (
         <div
@@ -28,17 +31,31 @@ export default function CharacterCreationProgressNav({
                 const isDone = stepNum < currentStep;
                 const isActive = stepNum === currentStep;
 
+                // Block Review step if character is incomplete
+                const isReviewStep = stepNum === 8;
+                const isBlocked = isReviewStep && !isComplete;
+
                 const href =
                     stepNum === 3 &&
                     dndClass &&
                     !characterCreationNeedsSubclassStep(dndClass)
                         ? '/create-character?step=4'
-                        : `/create-character?step=${stepNum}`;
+                        : isBlocked
+                            ? '#'
+                            : `/create-character?step=${stepNum}`;
+
+                const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+                    if (isBlocked) {
+                        e.preventDefault();
+                        alert('Please complete all required steps before reviewing your character.');
+                    }
+                };
 
                 return (
                     <a
                         key={label}
                         href={href}
+                        onClick={handleClick}
                         style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -58,17 +75,18 @@ export default function CharacterCreationProgressNav({
                                         : 'rgba(212,175,55,0.15)'
                             }`,
                             textDecoration: 'none',
-                            cursor: 'pointer',
+                            cursor: isBlocked ? 'not-allowed' : 'pointer',
+                            opacity: isBlocked ? 0.5 : 1,
                             transition: 'all 0.15s',
                         }}
                         onMouseEnter={(e) => {
-                            if (!isActive) {
+                            if (!isActive && !isBlocked) {
                                 e.currentTarget.style.borderColor = 'rgba(212,175,55,0.6)';
                                 e.currentTarget.style.backgroundColor = 'rgba(212,175,55,0.08)';
                             }
                         }}
                         onMouseLeave={(e) => {
-                            if (!isActive) {
+                            if (!isActive && !isBlocked) {
                                 e.currentTarget.style.borderColor = isDone
                                     ? 'rgba(212,175,55,0.35)'
                                     : 'rgba(212,175,55,0.15)';

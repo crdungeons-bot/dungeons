@@ -9,6 +9,7 @@ import {
     useCharacterCreationStore,
     useCharacterCreationHydrated,
 } from '@/stores/character-creation-store';
+import { isCharacterDraftComplete } from '@/lib/character-creation-validation';
 import type { CharacterDraft } from '@/stores/character-creation-store';
 
 /* ─── types ─────────────────────────────────────────────────────── */
@@ -179,6 +180,16 @@ export default function SummaryStep() {
     const router = useRouter();
     const hydrated = useCharacterCreationHydrated();
 
+    const draft = useCharacterCreationStore(useShallow((s) => s.draft));
+    
+    // Redirect if draft is incomplete
+    useEffect(() => {
+        if (!hydrated) return;
+        if (!isCharacterDraftComplete(draft)) {
+            router.replace('/create-character?step=1');
+        }
+    }, [hydrated, draft, router]);
+
     const {
         race,
         dndClass,
@@ -196,28 +207,9 @@ export default function SummaryStep() {
         bonds,
         flaws,
         appearance,
-        draftStats,
-    } = useCharacterCreationStore(
-        useShallow((s) => ({
-            race: s.draft.race,
-            dndClass: s.draft.dndClass,
-            subclass: s.draft.subclass,
-            name: s.draft.name,
-            background: s.draft.background,
-            alignment: s.draft.alignment,
-            height: s.draft.height,
-            weight: s.draft.weight,
-            age: s.draft.age,
-            proficiencies: s.draft.proficiencies,
-            backstory: s.draft.backstory,
-            personality: s.draft.personality,
-            ideals: s.draft.ideals,
-            bonds: s.draft.bonds,
-            flaws: s.draft.flaws,
-            appearance: s.draft.appearance,
-            draftStats: s.draft.stats,
-        })),
-    );
+    } = draft;
+    
+    const draftStats = draft.stats;
 
     const stats = useMemo(() => extractAbilityScores(draftStats), [draftStats]);
 

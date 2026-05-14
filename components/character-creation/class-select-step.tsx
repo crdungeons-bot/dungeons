@@ -21,6 +21,7 @@ type ClassDetail = {
 };
 
 const CLASS_FLAVORS: Record<string, string> = {
+    artificer: 'Artificers forge the impossible, blending arcane power with ingenious invention. They turn scrap into sentient steel guardians and imbue ordinary objects with devastating magic.',
     barbarian: 'Barbarians charge headlong into battle, shrugging off wounds through sheer unstoppable rage.',
     bard:      'Bards inspire allies, mock enemies, and bend the world to their will with words alone. Equally at home in a royal court or a dungeon.',
     cleric:    'Clerics walk the line between mortal and divine,   smiting enemies with holy power one moment and restoring the fallen the next.',

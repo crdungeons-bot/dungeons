@@ -10,6 +10,7 @@ type Character = {
     id:         string;
     name:       string;
     race:       string;
+    subrace?:   string | null;
     class:      string;
     subclass?:  { name: string; class: string; level_chosen: number } | null;
     background: string;
@@ -30,6 +31,10 @@ function CharacterCard({ char, onDelete }: { char: Character; onDelete: (id: str
     const [hovered, setHovered] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+    const displayRace = char.subrace 
+        ? fmt(char.subrace)
+        : fmt(char.race);
 
     const displayClass = (char.subclass && shouldDisplaySubclass(char.class, char.level ?? 1, true))
         ? `${fmt(char.class)} (${char.subclass.name})`
@@ -177,7 +182,7 @@ function CharacterCard({ char, onDelete }: { char: Character; onDelete: (id: str
                         textOverflow: 'ellipsis',
                         whiteSpace:   'nowrap',
                     }}>
-                        {fmt(char.race)} · {displayClass}
+                        {displayRace} · {displayClass}
                     </p>
                 </div>
             </Link>

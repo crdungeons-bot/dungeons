@@ -192,6 +192,7 @@ export default function SummaryStep() {
 
     const {
         race,
+        subrace,
         dndClass,
         subclass,
         name,
@@ -257,7 +258,11 @@ export default function SummaryStep() {
 
     /* ── derived display values ── */
     const displayName       = name       ? fmt(name)       : 'Unnamed Hero';
-    const displayRace       = race       ? fmt(race)       : ', ';
+    const displayRace       = subrace 
+        ? fmt(subrace)
+        : race 
+            ? fmt(race) 
+            : ', ';
     const displayClass      = dndClass && subclass && shouldDisplaySubclass(dndClass, 1, true)
         ? `${fmt(dndClass)} (${fmt(subclass)})`
         : dndClass
@@ -282,6 +287,7 @@ export default function SummaryStep() {
             userId,
             name:           name ?? '',
             race:           race ?? '',
+            subrace:        subrace ?? null,
             dndClass:       dndClass ?? '',
             background:     background ?? '',
             alignment:      alignment ?? '',

@@ -17,7 +17,10 @@ export function middleware(request: NextRequest) {
             request.nextUrl.pathname === '/maintenance' ||
             request.nextUrl.pathname.startsWith('/_next') ||
             request.nextUrl.pathname.startsWith('/images') ||
-            request.nextUrl.pathname.startsWith('/favicon')
+            request.nextUrl.pathname.startsWith('/favicon') ||
+            request.nextUrl.pathname === '/dnd-guru-logo-512.png' ||
+            request.nextUrl.pathname === '/site.webmanifest' ||
+            request.nextUrl.pathname.match(/\.(png|jpg|jpeg|gif|svg|ico|webp)$/)
         ) {
             return NextResponse.next();
         }

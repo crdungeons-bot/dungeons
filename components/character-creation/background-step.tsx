@@ -120,7 +120,14 @@ function BackgroundAccordionRow({
     onToggle: () => void;
     onSelect: () => void;
 }) {
-    const skills = bg.starting_proficiencies.map(p => p.name.replace('Skill: ', ''));
+    const skills = bg.skill_proficiencies.map(p => p.name.replace('Skill: ', ''));
+    
+    // Format ability scores for display
+    const abilityScoreLabels: Record<string, string> = {
+        str: 'STR', dex: 'DEX', con: 'CON',
+        int: 'INT', wis: 'WIS', cha: 'CHA'
+    };
+    const abilityStr = bg.ability_scores.map(a => abilityScoreLabels[a] || a.toUpperCase()).join(', ');
 
     return (
         <div style={{
@@ -214,7 +221,7 @@ function BackgroundAccordionRow({
 
             {/* ── Expanded detail ── */}
             <div style={{
-                maxHeight:  isExpanded ? '800px' : '0',
+                maxHeight:  isExpanded ? '1200px' : '0',
                 overflow:   'hidden',
                 transition: 'max-height 0.35s ease',
             }}>
@@ -226,7 +233,7 @@ function BackgroundAccordionRow({
                     gap:        '1rem',
                 }}>
 
-                    {/* Feature */}
+                    {/* Background description */}
                     <div style={{ paddingTop: '1rem' }}>
                         <p style={{
                             margin:        '0 0 0.25rem',
@@ -235,29 +242,82 @@ function BackgroundAccordionRow({
                             letterSpacing: '0.14em',
                             textTransform: 'uppercase',
                             color:         'rgba(212,175,55,0.5)',
-                        }}>Background Feature</p>
+                        }}>Background Story</p>
+                        {bg.desc.map((para, i) => (
+                            <p key={i} style={{
+                                margin:      i === 0 ? '0 0 0.5rem' : '0.5rem 0',
+                                fontSize:    '0.83rem',
+                                lineHeight:  '1.7',
+                                color:       'rgba(244,232,208,0.7)',
+                                borderLeft:  '2px solid rgba(212,175,55,0.25)',
+                                paddingLeft: '0.75rem',
+                            }}>{para}</p>
+                        ))}
+                    </div>
+
+                    {/* Ability Scores */}
+                    <div>
+                        <p style={{
+                            margin:        '0 0 0.4rem',
+                            fontSize:      '0.6rem',
+                            fontWeight:    '800',
+                            letterSpacing: '0.14em',
+                            textTransform: 'uppercase',
+                            color:         'rgba(212,175,55,0.5)',
+                        }}>Ability Score Increases</p>
+                        <p style={{
+                            margin:      '0 0 0.25rem',
+                            fontSize:    '0.82rem',
+                            lineHeight:  '1.6',
+                            color:       'rgba(244,232,208,0.85)',
+                            fontWeight:  '600',
+                        }}>
+                            {abilityStr}
+                        </p>
+                        <p style={{
+                            margin:     0,
+                            fontSize:   '0.73rem',
+                            lineHeight: '1.6',
+                            color:      'rgba(244,232,208,0.45)',
+                            fontStyle:  'italic',
+                        }}>
+                            Choose one ability to increase by +2 and another by +1, or increase all three by +1
+                        </p>
+                    </div>
+
+                    {/* Origin Feat */}
+                    <div>
+                        <p style={{
+                            margin:        '0 0 0.25rem',
+                            fontSize:      '0.6rem',
+                            fontWeight:    '800',
+                            letterSpacing: '0.14em',
+                            textTransform: 'uppercase',
+                            color:         'rgba(212,175,55,0.5)',
+                        }}>Origin Feat</p>
                         <p style={{
                             margin:     '0 0 0.5rem',
                             fontSize:   '0.9rem',
                             fontWeight: '700',
                             color:      'var(--color-gold)',
-                        }}>{bg.feature.name}</p>
-                        <p style={{
-                            margin:      0,
-                            fontSize:    '0.83rem',
-                            lineHeight:  '1.7',
-                            color:       'rgba(244,232,208,0.7)',
-                            fontStyle:   'italic',
-                            borderLeft:  '2px solid rgba(212,175,55,0.25)',
-                            paddingLeft: '0.75rem',
-                        }}>{bg.feature.desc[0]}</p>
+                        }}>{bg.feat.name}</p>
+                        {bg.feat.desc.map((para, i) => (
+                            <p key={i} style={{
+                                margin:      i === 0 ? '0' : '0.5rem 0 0',
+                                fontSize:    '0.79rem',
+                                lineHeight:  '1.7',
+                                color:       'rgba(244,232,208,0.65)',
+                                borderLeft:  '2px solid rgba(212,175,55,0.2)',
+                                paddingLeft: '0.75rem',
+                            }}>{para}</p>
+                        ))}
                     </div>
 
-                    {/* Skills + Equipment side by side on wider screens */}
+                    {/* Skills + Tool side by side on wider screens */}
                     <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
 
                         {/* Skill proficiencies */}
-                        {bg.starting_proficiencies.length > 0 && (
+                        {bg.skill_proficiencies.length > 0 && (
                             <div style={{ flex: '1', minWidth: '140px' }}>
                                 <p style={{
                                     margin:        '0 0 0.4rem',
@@ -268,7 +328,7 @@ function BackgroundAccordionRow({
                                     color:         'rgba(212,175,55,0.5)',
                                 }}>Skill Proficiencies</p>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-                                    {bg.starting_proficiencies.map(p => (
+                                    {bg.skill_proficiencies.map(p => (
                                         <span key={p.index} style={{
                                             backgroundColor: 'rgba(212,175,55,0.1)',
                                             border:          '1px solid rgba(212,175,55,0.3)',
@@ -283,55 +343,62 @@ function BackgroundAccordionRow({
                             </div>
                         )}
 
-                        {/* Starting equipment */}
-                        {bg.starting_equipment.length > 0 && (
-                            <div style={{ flex: '2', minWidth: '200px' }}>
-                                <p style={{
-                                    margin:        '0 0 0.4rem',
-                                    fontSize:      '0.6rem',
-                                    fontWeight:    '800',
-                                    letterSpacing: '0.14em',
-                                    textTransform: 'uppercase',
-                                    color:         'rgba(212,175,55,0.5)',
-                                }}>Starting Equipment</p>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
-                                    {bg.starting_equipment.map((item, i) => (
-                                        <span key={i} style={{
-                                            fontSize:        '0.75rem',
-                                            color:           'rgba(244,232,208,0.65)',
-                                            backgroundColor: 'rgba(255,255,255,0.04)',
-                                            border:          '1px solid rgba(255,255,255,0.08)',
-                                            borderRadius:    '6px',
-                                            padding:         '0.15rem 0.5rem',
-                                            whiteSpace:      'nowrap',
-                                        }}>
-                                            {item.equipment.name}{item.quantity > 1 ? ` ×${item.quantity}` : ''}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Sample personality trait */}
-                    {(bg.personality_traits?.from?.length ?? 0) > 0 && (
-                        <div>
+                        {/* Tool proficiency */}
+                        <div style={{ flex: '1', minWidth: '140px' }}>
                             <p style={{
-                                margin:        '0 0 0.3rem',
+                                margin:        '0 0 0.4rem',
                                 fontSize:      '0.6rem',
                                 fontWeight:    '800',
                                 letterSpacing: '0.14em',
                                 textTransform: 'uppercase',
                                 color:         'rgba(212,175,55,0.5)',
-                            }}>Sample Trait</p>
+                            }}>Tool Proficiency</p>
+                            <span style={{
+                                backgroundColor: 'rgba(212,175,55,0.1)',
+                                border:          '1px solid rgba(212,175,55,0.3)',
+                                color:           'rgba(212,175,55,0.9)',
+                                padding:         '0.2rem 0.6rem',
+                                borderRadius:    '999px',
+                                fontSize:        '0.78rem',
+                                fontWeight:      '600',
+                                display:         'inline-block',
+                            }}>{bg.tool_proficiency}</span>
+                        </div>
+                    </div>
+
+                    {/* Starting equipment */}
+                    {bg.equipment_choice.package_a.length > 0 && (
+                        <div>
+                            <p style={{
+                                margin:        '0 0 0.4rem',
+                                fontSize:      '0.6rem',
+                                fontWeight:    '800',
+                                letterSpacing: '0.14em',
+                                textTransform: 'uppercase',
+                                color:         'rgba(212,175,55,0.5)',
+                            }}>Equipment Package A</p>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '0.5rem' }}>
+                                {bg.equipment_choice.package_a.map((item, i) => (
+                                    <span key={i} style={{
+                                        fontSize:        '0.75rem',
+                                        color:           'rgba(244,232,208,0.65)',
+                                        backgroundColor: 'rgba(255,255,255,0.04)',
+                                        border:          '1px solid rgba(255,255,255,0.08)',
+                                        borderRadius:    '6px',
+                                        padding:         '0.15rem 0.5rem',
+                                        whiteSpace:      'nowrap',
+                                    }}>
+                                        {item.equipment.name}{item.quantity > 1 ? ` ×${item.quantity}` : ''}
+                                    </span>
+                                ))}
+                            </div>
                             <p style={{
                                 margin:     0,
-                                fontSize:   '0.82rem',
-                                lineHeight: '1.65',
-                                color:      'rgba(244,232,208,0.55)',
+                                fontSize:   '0.73rem',
+                                color:      'rgba(244,232,208,0.4)',
                                 fontStyle:  'italic',
                             }}>
-                                &ldquo;{bg.personality_traits!.from[0].desc}&rdquo;
+                                Or choose Package B: {bg.equipment_choice.package_b_gold} GP
                             </p>
                         </div>
                     )}
@@ -603,7 +670,7 @@ export default function BackgroundStep({
                     margin: '0 0 1.25rem',
                     maxWidth: '560px',
                 }}>
-                    Your background shapes who your character was before they became an adventurer. It grants skill proficiencies, equipment, and a unique feature.
+                    Your background shapes who your character was before they became an adventurer. It grants ability score increases, an Origin feat, skill & tool proficiencies, and equipment.
                 </p>
 
                 {/* Background accordion list */}

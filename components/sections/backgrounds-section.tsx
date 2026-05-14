@@ -1,15 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-type StaticBackground = {
-    index: string;
-    name: string;
-    starting_proficiencies: { index: string; name: string }[];
-    feature: { name: string; desc: string[] };
-    starting_equipment: { equipment: { name: string }; quantity: number }[];
-    personality_traits?: { from: { desc: string }[] };
-};
+import type { Background } from '@/types/background';
 
 // ── Left column: compact row for each background ──────────────────────────────
 
@@ -18,11 +10,11 @@ function BackgroundRow({
     isSelected,
     onSelect,
 }: {
-    bg: StaticBackground;
+    bg: Background;
     isSelected: boolean;
     onSelect: () => void;
 }) {
-    const skills = bg.starting_proficiencies.map(p => p.name.replace('Skill: ', ''));
+    const skills = bg.skill_proficiencies.map(p => p.name.replace('Skill: ', ''));
 
     return (
         <button
@@ -93,8 +85,15 @@ function BackgroundRow({
 
 // ── Right column: full detail for the selected background ─────────────────────
 
-function BackgroundDetail({ bg }: { bg: StaticBackground }) {
-    const skills = bg.starting_proficiencies.map(p => p.name.replace('Skill: ', ''));
+function BackgroundDetail({ bg }: { bg: Background }) {
+    const skills = bg.skill_proficiencies.map(p => p.name.replace('Skill: ', ''));
+    
+    // Format ability scores for display
+    const abilityScoreLabels: Record<string, string> = {
+        str: 'STR', dex: 'DEX', con: 'CON',
+        int: 'INT', wis: 'WIS', cha: 'CHA'
+    };
+    const abilityScores = bg.ability_scores.map(a => abilityScoreLabels[a] || a.toUpperCase());
 
     return (
         <div style={{
@@ -105,7 +104,7 @@ function BackgroundDetail({ bg }: { bg: StaticBackground }) {
             flexDirection: 'column',
             gap: '1.5rem',
         }}>
-            {/* Name + feature label */}
+            {/* Name + feat label */}
             <div>
                 <p style={{
                     color: 'rgba(212,175,55,0.45)',
@@ -115,7 +114,7 @@ function BackgroundDetail({ bg }: { bg: StaticBackground }) {
                     textTransform: 'uppercase',
                     margin: '0 0 0.25rem',
                 }}>
-                    Background
+                    Background (2024 5.5e)
                 </p>
                 <h2 style={{
                     color: 'var(--color-gold)',
@@ -133,9 +132,73 @@ function BackgroundDetail({ bg }: { bg: StaticBackground }) {
                     textTransform: 'uppercase',
                     margin: 0,
                 }}>
-                    Feature: {bg.feature.name}
+                    Origin Feat: {bg.feat.name}
                 </p>
             </div>
+
+            {/* Background description */}
+            <Section label="Description">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                    {bg.desc.map((para, i) => (
+                        <p key={i} style={{
+                            color: 'rgba(244,232,208,0.78)',
+                            fontSize: '0.875rem',
+                            lineHeight: '1.8',
+                            margin: 0,
+                            borderLeft: '2px solid rgba(212,175,55,0.25)',
+                            paddingLeft: '0.875rem',
+                        }}>
+                            {para}
+                        </p>
+                    ))}
+                </div>
+            </Section>
+
+            {/* Ability Scores */}
+            <Section label="Ability Score Increases">
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+                    {abilityScores.map(s => (
+                        <span key={s} style={{
+                            backgroundColor: 'rgba(212,175,55,0.1)',
+                            border: '1px solid rgba(212,175,55,0.3)',
+                            color: 'var(--color-gold)',
+                            padding: '0.3rem 0.75rem',
+                            borderRadius: '9999px',
+                            fontSize: '0.82rem',
+                            fontWeight: '700',
+                        }}>
+                            {s}
+                        </span>
+                    ))}
+                </div>
+                <p style={{
+                    color: 'rgba(244,232,208,0.5)',
+                    fontSize: '0.79rem',
+                    lineHeight: '1.7',
+                    fontStyle: 'italic',
+                    margin: 0,
+                }}>
+                    Choose one to increase by +2 and another by +1, or increase all three by +1
+                </p>
+            </Section>
+
+            {/* Origin Feat */}
+            <Section label={`Origin Feat: ${bg.feat.name}`}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                    {bg.feat.desc.map((para, i) => (
+                        <p key={i} style={{
+                            color: 'rgba(244,232,208,0.78)',
+                            fontSize: '0.875rem',
+                            lineHeight: '1.8',
+                            margin: 0,
+                            borderLeft: '2px solid rgba(212,175,55,0.25)',
+                            paddingLeft: '0.875rem',
+                        }}>
+                            {para}
+                        </p>
+                    ))}
+                </div>
+            </Section>
 
             {/* Skill proficiencies */}
             <Section label="Skill Proficiencies">
@@ -156,29 +219,33 @@ function BackgroundDetail({ bg }: { bg: StaticBackground }) {
                 </div>
             </Section>
 
-            {/* Feature description */}
-            <Section label={`Feature: ${bg.feature.name}`}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-                    {bg.feature.desc.map((para, i) => (
-                        <p key={i} style={{
-                            color: 'rgba(244,232,208,0.78)',
-                            fontSize: '0.875rem',
-                            lineHeight: '1.8',
-                            margin: 0,
-                            borderLeft: '2px solid rgba(212,175,55,0.25)',
-                            paddingLeft: '0.875rem',
-                        }}>
-                            {para}
-                        </p>
-                    ))}
-                </div>
+            {/* Tool proficiency */}
+            <Section label="Tool Proficiency">
+                <span style={{
+                    backgroundColor: 'rgba(212,175,55,0.1)',
+                    border: '1px solid rgba(212,175,55,0.3)',
+                    color: 'var(--color-gold)',
+                    padding: '0.3rem 0.75rem',
+                    borderRadius: '9999px',
+                    fontSize: '0.82rem',
+                    fontWeight: '700',
+                    display: 'inline-block',
+                }}>
+                    {bg.tool_proficiency}
+                </span>
             </Section>
 
             {/* Starting equipment */}
-            {bg.starting_equipment.length > 0 && (
-                <Section label="Starting Equipment">
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
-                        {bg.starting_equipment.map((item, i) => (
+            {bg.equipment_choice.package_a.length > 0 && (
+                <Section label="Equipment Choices">
+                    <p style={{
+                        margin: '0 0 0.5rem',
+                        fontSize: '0.75rem',
+                        fontWeight: '700',
+                        color: 'rgba(212,175,55,0.7)',
+                    }}>Package A:</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', marginBottom: '0.75rem' }}>
+                        {bg.equipment_choice.package_a.map((item, i) => (
                             <span key={i} style={{
                                 backgroundColor: 'rgba(212,175,55,0.05)',
                                 border: '1px solid rgba(212,175,55,0.12)',
@@ -196,21 +263,12 @@ function BackgroundDetail({ bg }: { bg: StaticBackground }) {
                             </span>
                         ))}
                     </div>
-                </Section>
-            )}
-
-            {/* Personality trait sample */}
-            {bg.personality_traits && bg.personality_traits.from.length > 0 && (
-                <Section label="Sample Personality Trait">
                     <p style={{
-                        color: 'rgba(244,232,208,0.55)',
-                        fontStyle: 'italic',
-                        fontSize: '0.875rem',
-                        lineHeight: '1.75',
                         margin: 0,
-                    }}>
-                        "{bg.personality_traits.from[0].desc}"
-                    </p>
+                        fontSize: '0.75rem',
+                        fontWeight: '700',
+                        color: 'rgba(212,175,55,0.7)',
+                    }}>Package B: {bg.equipment_choice.package_b_gold} GP</p>
                 </Section>
             )}
 
@@ -276,7 +334,7 @@ function EmptyDetail() {
 
 export default function BackgroundsSection() {
     const [selected, setSelected] = useState<string | null>(null);
-    const [backgrounds, setBackgrounds] = useState<StaticBackground[]>([]);
+    const [backgrounds, setBackgrounds] = useState<Background[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -316,7 +374,7 @@ export default function BackgroundsSection() {
                     textTransform: 'uppercase',
                     marginBottom: '0.375rem',
                 }}>
-                    Resources
+                    Resources • D&D 2024 (5.5e)
                 </p>
                 <h1 style={{ color: 'var(--color-gold)', margin: '0 0 0.375rem' }}>
                     Backgrounds ({backgrounds.length})
@@ -327,7 +385,7 @@ export default function BackgroundsSection() {
                     lineHeight: '1.7',
                     margin: 0,
                 }}>
-                    Select a background to explore its feature, skills, and equipment.
+                    Select a background to explore its Origin feat, ability scores, skills, tool proficiencies, and equipment.
                 </p>
             </div>
 

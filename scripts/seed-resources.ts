@@ -18,7 +18,7 @@ import RACES                from './races-data.js';
 import SUBRACES             from './subraces-data.js';
 import CLASSES_COMPLETE      from './classes-complete-data.js';
 import SUBCLASSES_COMPLETE   from './subclasses-complete-data.js';
-import { STATIC_BACKGROUNDS } from './backgrounds-data.js';
+import { BACKGROUNDS_2024 } from './backgrounds-data-2024.js';
 
 // Load .env.local (Next.js convention) so MONGODB_URI is available when
 // running this script outside of the Next.js server process.
@@ -238,12 +238,14 @@ async function seedBackgrounds(db: ReturnType<MongoClient['db']>) {
 
     const collection = db.collection(col);
 
-    await collection.insertMany(STATIC_BACKGROUNDS as object[]);
-    log(`Inserted ${STATIC_BACKGROUNDS.length} backgrounds`);
+    await collection.insertMany(BACKGROUNDS_2024 as object[]);
+    log(`Inserted ${BACKGROUNDS_2024.length} backgrounds (2024 5.5e rules)`);
 
     await collection.createIndex({ index: 1 },                          { name: 'index', unique: true });
     await collection.createIndex({ name: 1 },                           { name: 'name' });
-    await collection.createIndex({ name: 'text' },                      { name: 'text_search' });
+    await collection.createIndex({ 'ability_scores': 1 },               { name: 'ability_scores' });
+    await collection.createIndex({ 'feat.name': 1 },                    { name: 'feat_name' });
+    await collection.createIndex({ name: 'text', desc: 'text' },        { name: 'text_search' });
 
     log('Indexes created for backgrounds');
 }

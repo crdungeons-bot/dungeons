@@ -6764,6 +6764,202 @@ const SPELLS_AND_ABILITIES: SpellEntry[] = [
 		"duration": "Instantaneous",
 		"castingTime": "1 action",
 		"description": "You flourish the weapon used in the casting and then vanish to strike like the wind. Choose up to five creatures you can see within range. Make a melee spell attack against each target. On a hit, a target takes 6d10 force damage. You can then teleport to an unoccupied space you can see within 5 feet of one of the targets you hit or missed."
+	},
+	// ── Aarakocra racial abilities ─────────────────────────────────────────
+	{
+		"name": "Flight",
+		"type": "racial-ability",
+		"races": ["aarakocra"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You have a flying speed of 50 feet. To use this speed, you can't be wearing medium or heavy armor."
+	},
+	{
+		"name": "Talons",
+		"type": "racial-ability",
+		"races": ["aarakocra"],
+		"levelGained": 1,
+		"actionType": "action",
+		"recharge": "at will",
+		"description": "Your talons are natural weapons, which you can use to make unarmed strikes. If you hit with them, you deal slashing damage equal to 1d4 + your Strength modifier, instead of the bludgeoning damage normal for an unarmed strike."
+	},
+	// ── Firbolg racial abilities ───────────────────────────────────────────
+	{
+		"name": "Firbolg Magic",
+		"type": "racial-ability",
+		"races": ["firbolg"],
+		"levelGained": 1,
+		"actionType": "action",
+		"recharge": "short rest",
+		"description": "You can cast Detect Magic and Disguise Self with this trait, using Wisdom as your spellcasting ability for them. Once you cast either spell, you can't cast it again with this trait until you finish a short or long rest. When you use this version of Disguise Self, you can seem up to 3 feet shorter than normal, allowing you to more easily blend in with humans and elves."
+	},
+	{
+		"name": "Hidden Step",
+		"type": "racial-ability",
+		"races": ["firbolg"],
+		"levelGained": 1,
+		"actionType": "bonus action",
+		"recharge": "short rest",
+		"description": "As a bonus action, you can magically turn invisible until the start of your next turn or until you attack, make a damage roll, or force someone to make a saving throw. Once you use this trait, you can't use it again until you finish a short or long rest."
+	},
+	{
+		"name": "Powerful Build",
+		"type": "racial-ability",
+		"races": ["firbolg", "goliath"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You count as one size larger when determining your carrying capacity and the weight you can push, drag, or lift."
+	},
+	{
+		"name": "Speech of Beast and Leaf",
+		"type": "racial-ability",
+		"races": ["firbolg"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You have the ability to communicate in a limited manner with beasts and plants. They can understand the meaning of your words, though you have no special ability to understand them in return. You have advantage on all Charisma checks you make to influence them."
+	},
+	// ── Goliath racial abilities ───────────────────────────────────────────
+	{
+		"name": "Stone's Endurance",
+		"type": "racial-ability",
+		"races": ["goliath"],
+		"levelGained": 1,
+		"actionType": "reaction",
+		"recharge": "short rest",
+		"description": "You can focus yourself to occasionally shrug off injury. When you take damage, you can use your reaction to roll a d12. Add your Constitution modifier to the number rolled, and reduce the damage by that total. After you use this trait, you can't use it again until you finish a short or long rest."
+	},
+	{
+		"name": "Mountain Born",
+		"type": "racial-ability",
+		"races": ["goliath"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You have resistance to cold damage. You're also acclimated to high altitude, including elevations above 20,000 feet."
+	},
+	// ── Kenku racial abilities ─────────────────────────────────────────────
+	{
+		"name": "Expert Forgery",
+		"type": "racial-ability",
+		"races": ["kenku"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You can duplicate other creatures' handwriting and craftwork. You have advantage on all checks made to produce forgeries or duplicates of existing objects."
+	},
+	{
+		"name": "Kenku Training",
+		"type": "racial-ability",
+		"races": ["kenku"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You are proficient in your choice of two of the following skills: Acrobatics, Deception, Stealth, and Sleight of Hand."
+	},
+	{
+		"name": "Mimicry",
+		"type": "racial-ability",
+		"races": ["kenku"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You can mimic sounds you have heard, including voices. A creature that hears the sounds can tell they are imitations with a successful Wisdom (Insight) check opposed by your Charisma (Deception) check."
+	},
+	// ── Tabaxi racial abilities ────────────────────────────────────────────
+	{
+		"name": "Feline Agility",
+		"type": "racial-ability",
+		"races": ["tabaxi"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "special",
+		"description": "Your reflexes and agility allow you to move with a burst of speed. When you move on your turn in combat, you can double your speed until the end of the turn. Once you use this trait, you can't use it again until you move 0 feet on one of your turns."
+	},
+	{
+		"name": "Cat's Claws",
+		"type": "racial-ability",
+		"races": ["tabaxi"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "at will",
+		"description": "Because of your claws, you have a climbing speed of 20 feet. In addition, your claws are natural weapons, which you can use to make unarmed strikes. If you hit with them, you deal slashing damage equal to 1d4 + your Strength modifier, instead of the bludgeoning damage normal for an unarmed strike."
+	},
+	{
+		"name": "Cat's Talent",
+		"type": "racial-ability",
+		"races": ["tabaxi"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You have proficiency in the Perception and Stealth skills."
+	},
+	// ── Triton racial abilities ────────────────────────────────────────────
+	{
+		"name": "Amphibious",
+		"type": "racial-ability",
+		"races": ["triton"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You can breathe air and water."
+	},
+	{
+		"name": "Control Air and Water",
+		"type": "racial-ability",
+		"races": ["triton"],
+		"levelGained": 1,
+		"actionType": "action",
+		"recharge": "long rest",
+		"description": "You can cast Fog Cloud with this trait. Starting at 3rd level, you can cast Gust of Wind with it, and starting at 5th level, you can also cast Wall of Water with it. Once you cast a spell with this trait, you can't cast that spell with it again until you finish a long rest. Charisma is your spellcasting ability for these spells."
+	},
+	{
+		"name": "Emissary of the Sea",
+		"type": "racial-ability",
+		"races": ["triton"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "Aquatic beasts have an extraordinary affinity with your people. You can communicate simple ideas with beasts that can breathe water. They can understand the meaning of your words, though you have no special ability to understand them in return."
+	},
+	{
+		"name": "Guardians of the Depths",
+		"type": "racial-ability",
+		"races": ["triton"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "Adapted to even the most extreme ocean depths, you have resistance to cold damage, and you ignore any of the drawbacks caused by a deep, underwater environment."
+	},
+	// ── Warforged racial abilities ─────────────────────────────────────────
+	{
+		"name": "Constructed Resilience",
+		"type": "racial-ability",
+		"races": ["warforged"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "You were created to have remarkable fortitude, represented by the following benefits: You have advantage on saving throws against being poisoned, and you have resistance to poison damage. You don't need to eat, drink, or breathe. You are immune to disease. You don't need to sleep, and magic can't put you to sleep."
+	},
+	{
+		"name": "Sentry's Rest",
+		"type": "racial-ability",
+		"races": ["warforged"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "When you take a long rest, you must spend at least six hours in an inactive, motionless state, rather than sleeping. In this state, you appear inert, but it doesn't render you unconscious, and you can see and hear as normal."
+	},
+	{
+		"name": "Integrated Protection",
+		"type": "racial-ability",
+		"races": ["warforged"],
+		"levelGained": 1,
+		"actionType": "passive",
+		"recharge": "passive",
+		"description": "Your body has built-in defensive layers, which can be enhanced with armor: You gain a +1 bonus to Armor Class. You can don only armor with which you have proficiency. To don armor, you must incorporate it into your body over the course of 1 hour, during which you remain in contact with the armor. To doff armor, you must spend 1 hour removing it. You can rest while donning or doffing armor in this way. While you live, your armor can't be removed from your body against your will."
 	}
 ];
 

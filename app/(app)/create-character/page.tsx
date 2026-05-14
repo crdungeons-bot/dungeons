@@ -1,4 +1,5 @@
 import RaceSelectStep    from '@/components/character-creation/race-select-step';
+import SubraceSelectStep from '@/components/character-creation/subrace-select-step';
 import ClassSelectStep   from '@/components/character-creation/class-select-step';
 import SubclassSelectStep from '@/components/character-creation/subclass-select-step';
 import BackgroundStep    from '@/components/character-creation/background-step';
@@ -23,7 +24,9 @@ export default async function CreateCharacterPage({
     }>;
 }) {
     const params = await searchParams;
-    const currentStep = Number(params.step ?? '1');
+    const stepParam = params.step ?? '1';
+    const currentStep = Number(stepParam);
+    const isSubraceStep = stepParam === '1.5';
 
     // Always show all steps - the client components will handle conditional logic
     const effectiveSteps = STEPS;
@@ -86,6 +89,7 @@ export default async function CreateCharacterPage({
                     margin: '0 0 1rem',
                 }}>
                     {currentStep === 1 ? 'Step 1: Choose Your Race' :
+                     isSubraceStep ? 'Step 1.5: Choose Your Subrace' :
                      currentStep === 2 ? 'Step 2: Choose Your Class' :
                      currentStep === 3 ? 'Step 3: Choose Your Subclass' :
                      currentStep === 4 ? 'Step 4: Choose Your Background' :
@@ -103,6 +107,10 @@ export default async function CreateCharacterPage({
                 <RaceSelectStep
                     races={data.results}
                 />
+            )}
+
+            {isSubraceStep && (
+                <SubraceSelectStepWrapper />
             )}
 
             {currentStep === 2 && (
@@ -133,4 +141,27 @@ export default async function CreateCharacterPage({
         </div>
         </CharacterCreationWrapper>
     );
+}
+
+// Client wrapper to get race name from store
+function SubraceSelectStepWrapper() {
+    'use client';
+    const { useCharacterCreationStore } = require('@/stores/character-creation-store');
+    const draftRace = useCharacterCreationStore((s: any) => s.draft.race);
+    
+    if (!draftRace) {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                color: 'var(--color-gold)',
+            }}>
+                No race selected…
+            </div>
+        );
+    }
+    
+    return <SubraceSelectStep raceName={draftRace} />;
 }

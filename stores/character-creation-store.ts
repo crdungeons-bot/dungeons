@@ -7,6 +7,7 @@ import { persist, type PersistStorage, type StorageValue } from 'zustand/middlew
 /** Single source of truth for in-progress character creation */
 export type CharacterDraft = {
     race?: string;
+    subrace?: string;
     dndClass?: string;
     subclass?: string;
     name?: string;

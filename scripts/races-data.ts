@@ -55,9 +55,85 @@ export const RACES = [
         "url": "/api/2014/traits/damage-resistance"
       }
     ],
-    "subraces": [],
+    "subraces": [
+      {
+        "index": "black-dragonborn",
+        "name": "Black Dragonborn (Chromatic)",
+        "url": "/api/2014/subraces/black-dragonborn"
+      },
+      {
+        "index": "blue-dragonborn",
+        "name": "Blue Dragonborn (Chromatic)",
+        "url": "/api/2014/subraces/blue-dragonborn"
+      },
+      {
+        "index": "green-dragonborn",
+        "name": "Green Dragonborn (Chromatic)",
+        "url": "/api/2014/subraces/green-dragonborn"
+      },
+      {
+        "index": "red-dragonborn",
+        "name": "Red Dragonborn (Chromatic)",
+        "url": "/api/2014/subraces/red-dragonborn"
+      },
+      {
+        "index": "white-dragonborn",
+        "name": "White Dragonborn (Chromatic)",
+        "url": "/api/2014/subraces/white-dragonborn"
+      },
+      {
+        "index": "brass-dragonborn",
+        "name": "Brass Dragonborn (Metallic)",
+        "url": "/api/2014/subraces/brass-dragonborn"
+      },
+      {
+        "index": "bronze-dragonborn",
+        "name": "Bronze Dragonborn (Metallic)",
+        "url": "/api/2014/subraces/bronze-dragonborn"
+      },
+      {
+        "index": "copper-dragonborn",
+        "name": "Copper Dragonborn (Metallic)",
+        "url": "/api/2014/subraces/copper-dragonborn"
+      },
+      {
+        "index": "gold-dragonborn",
+        "name": "Gold Dragonborn (Metallic)",
+        "url": "/api/2014/subraces/gold-dragonborn"
+      },
+      {
+        "index": "silver-dragonborn",
+        "name": "Silver Dragonborn (Metallic)",
+        "url": "/api/2014/subraces/silver-dragonborn"
+      },
+      {
+        "index": "amethyst-dragonborn",
+        "name": "Amethyst Dragonborn (Gem)",
+        "url": "/api/2014/subraces/amethyst-dragonborn"
+      },
+      {
+        "index": "crystal-dragonborn",
+        "name": "Crystal Dragonborn (Gem)",
+        "url": "/api/2014/subraces/crystal-dragonborn"
+      },
+      {
+        "index": "emerald-dragonborn",
+        "name": "Emerald Dragonborn (Gem)",
+        "url": "/api/2014/subraces/emerald-dragonborn"
+      },
+      {
+        "index": "sapphire-dragonborn",
+        "name": "Sapphire Dragonborn (Gem)",
+        "url": "/api/2014/subraces/sapphire-dragonborn"
+      },
+      {
+        "index": "topaz-dragonborn",
+        "name": "Topaz Dragonborn (Gem)",
+        "url": "/api/2014/subraces/topaz-dragonborn"
+      }
+    ],
     "url": "/api/2014/races/dragonborn",
-    "updated_at": "2026-04-01T20:35:38.675Z"
+    "updated_at": "2026-05-14T11:05:00.000Z"
   },
   {
     "index": "dwarf",
@@ -122,6 +198,11 @@ export const RACES = [
         "index": "hill-dwarf",
         "name": "Hill Dwarf",
         "url": "/api/2014/subraces/hill-dwarf"
+      },
+      {
+        "index": "mountain-dwarf",
+        "name": "Mountain Dwarf",
+        "url": "/api/2014/subraces/mountain-dwarf"
       }
     ],
     "url": "/api/2014/races/dwarf",
@@ -185,6 +266,16 @@ export const RACES = [
         "index": "high-elf",
         "name": "High Elf",
         "url": "/api/2014/subraces/high-elf"
+      },
+      {
+        "index": "wood-elf",
+        "name": "Wood Elf",
+        "url": "/api/2014/subraces/wood-elf"
+      },
+      {
+        "index": "dark-elf-drow",
+        "name": "Dark Elf (Drow)",
+        "url": "/api/2014/subraces/dark-elf-drow"
       }
     ],
     "url": "/api/2014/races/elf",
@@ -238,6 +329,11 @@ export const RACES = [
         "index": "rock-gnome",
         "name": "Rock Gnome",
         "url": "/api/2014/subraces/rock-gnome"
+      },
+      {
+        "index": "forest-gnome",
+        "name": "Forest Gnome",
+        "url": "/api/2014/subraces/forest-gnome"
       }
     ],
     "url": "/api/2014/races/gnome",
@@ -588,6 +684,11 @@ export const RACES = [
         "index": "lightfoot-halfling",
         "name": "Lightfoot Halfling",
         "url": "/api/2014/subraces/lightfoot-halfling"
+      },
+      {
+        "index": "stout-halfling",
+        "name": "Stout Halfling",
+        "url": "/api/2014/subraces/stout-halfling"
       }
     ],
     "url": "/api/2014/races/halfling",
@@ -852,6 +953,332 @@ export const RACES = [
     "subraces": [],
     "url": "/api/2014/races/tiefling",
     "updated_at": "2026-04-01T20:35:38.675Z"
+  },
+  {
+    "index": "aarakocra",
+    "name": "Aarakocra",
+    "speed": 25,
+    "ability_bonuses": [
+      {
+        "ability_score": { "index": "dex", "name": "DEX", "url": "/api/2014/ability-scores/dex" },
+        "bonus": 2
+      },
+      {
+        "ability_score": { "index": "wis", "name": "WIS", "url": "/api/2014/ability-scores/wis" },
+        "bonus": 1
+      }
+    ],
+    "age": "Aarakocra reach maturity by age 3 and don't usually live longer than 30 years.",
+    "alignment": "Most aarakocra are good and rarely choose sides when it comes to law and chaos.",
+    "size": "Medium",
+    "size_description": "Aarakocra are about 5 feet tall. They have thin, lightweight bodies that weigh between 80 and 100 pounds. Your size is Medium.",
+    "languages": [
+      { "index": "common", "name": "Common", "url": "/api/2014/languages/common" },
+      { "index": "aarakocra", "name": "Aarakocra", "url": "/api/2014/languages/aarakocra" },
+      { "index": "auran", "name": "Auran", "url": "/api/2014/languages/auran" }
+    ],
+    "language_desc": "You can speak, read, and write Common, Aarakocra, and Auran.",
+    "traits": [
+      { "index": "flight", "name": "Flight", "url": "/api/2014/traits/flight" },
+      { "index": "talons", "name": "Talons", "url": "/api/2014/traits/talons" }
+    ],
+    "subraces": [],
+    "url": "/api/2014/races/aarakocra",
+    "updated_at": "2026-05-14T11:05:00.000Z"
+  },
+  {
+    "index": "aasimar",
+    "name": "Aasimar",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": { "index": "cha", "name": "CHA", "url": "/api/2014/ability-scores/cha" },
+        "bonus": 2
+      }
+    ],
+    "age": "Aasimar mature at the same rate as humans, but they can live up to 160 years.",
+    "alignment": "Imbued with celestial power, most aasimar are good. Outcast aasimar are most often neutral or even evil.",
+    "size": "Medium",
+    "size_description": "Aasimar have the same range of height and weight as humans.",
+    "languages": [
+      { "index": "common", "name": "Common", "url": "/api/2014/languages/common" },
+      { "index": "celestial", "name": "Celestial", "url": "/api/2014/languages/celestial" }
+    ],
+    "language_desc": "You can speak, read, and write Common and Celestial.",
+    "traits": [
+      { "index": "darkvision", "name": "Darkvision", "url": "/api/2014/traits/darkvision" },
+      { "index": "celestial-resistance", "name": "Celestial Resistance", "url": "/api/2014/traits/celestial-resistance" },
+      { "index": "healing-hands", "name": "Healing Hands", "url": "/api/2014/traits/healing-hands" },
+      { "index": "light-bearer", "name": "Light Bearer", "url": "/api/2014/traits/light-bearer" }
+    ],
+    "subraces": [
+      { "index": "protector-aasimar", "name": "Protector Aasimar", "url": "/api/2014/subraces/protector-aasimar" },
+      { "index": "scourge-aasimar", "name": "Scourge Aasimar", "url": "/api/2014/subraces/scourge-aasimar" },
+      { "index": "fallen-aasimar", "name": "Fallen Aasimar", "url": "/api/2014/subraces/fallen-aasimar" }
+    ],
+    "url": "/api/2014/races/aasimar",
+    "updated_at": "2026-05-14T11:05:00.000Z"
+  },
+  {
+    "index": "firbolg",
+    "name": "Firbolg",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": { "index": "wis", "name": "WIS", "url": "/api/2014/ability-scores/wis" },
+        "bonus": 2
+      },
+      {
+        "ability_score": { "index": "str", "name": "STR", "url": "/api/2014/ability-scores/str" },
+        "bonus": 1
+      }
+    ],
+    "age": "As humanoids related to the fey, firbolg have long lifespans. A firbolg reaches adulthood around 30, and the oldest of them can live for 500 years.",
+    "alignment": "Firbolg are generally good-aligned and tend toward a lawful nature.",
+    "size": "Medium",
+    "size_description": "Firbolg are between 7 and 8 feet tall and weigh between 240 and 300 pounds. Your size is Medium.",
+    "languages": [
+      { "index": "common", "name": "Common", "url": "/api/2014/languages/common" },
+      { "index": "elvish", "name": "Elvish", "url": "/api/2014/languages/elvish" },
+      { "index": "giant", "name": "Giant", "url": "/api/2014/languages/giant" }
+    ],
+    "language_desc": "You can speak, read, and write Common, Elvish, and Giant.",
+    "traits": [
+      { "index": "firbolg-magic", "name": "Firbolg Magic", "url": "/api/2014/traits/firbolg-magic" },
+      { "index": "hidden-step", "name": "Hidden Step", "url": "/api/2014/traits/hidden-step" },
+      { "index": "powerful-build", "name": "Powerful Build", "url": "/api/2014/traits/powerful-build" },
+      { "index": "speech-of-beast-and-leaf", "name": "Speech of Beast and Leaf", "url": "/api/2014/traits/speech-of-beast-and-leaf" }
+    ],
+    "subraces": [],
+    "url": "/api/2014/races/firbolg",
+    "updated_at": "2026-05-14T11:05:00.000Z"
+  },
+  {
+    "index": "goliath",
+    "name": "Goliath",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": { "index": "str", "name": "STR", "url": "/api/2014/ability-scores/str" },
+        "bonus": 2
+      },
+      {
+        "ability_score": { "index": "con", "name": "CON", "url": "/api/2014/ability-scores/con" },
+        "bonus": 1
+      }
+    ],
+    "age": "Goliaths have lifespans comparable to humans. They enter adulthood in their late teens and usually live less than a century.",
+    "alignment": "Goliath society is highly competitive, with a strong lawful bent. Goliaths follow the rules of fair play and tend toward good.",
+    "size": "Medium",
+    "size_description": "Goliaths are between 7 and 8 feet tall and weigh between 280 and 340 pounds. Your size is Medium.",
+    "languages": [
+      { "index": "common", "name": "Common", "url": "/api/2014/languages/common" },
+      { "index": "giant", "name": "Giant", "url": "/api/2014/languages/giant" }
+    ],
+    "language_desc": "You can speak, read, and write Common and Giant.",
+    "traits": [
+      { "index": "natural-athlete", "name": "Natural Athlete", "url": "/api/2014/traits/natural-athlete" },
+      { "index": "stones-endurance", "name": "Stone's Endurance", "url": "/api/2014/traits/stones-endurance" },
+      { "index": "powerful-build", "name": "Powerful Build", "url": "/api/2014/traits/powerful-build" },
+      { "index": "mountain-born", "name": "Mountain Born", "url": "/api/2014/traits/mountain-born" }
+    ],
+    "subraces": [],
+    "url": "/api/2014/races/goliath",
+    "updated_at": "2026-05-14T11:05:00.000Z"
+  },
+  {
+    "index": "kenku",
+    "name": "Kenku",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": { "index": "dex", "name": "DEX", "url": "/api/2014/ability-scores/dex" },
+        "bonus": 2
+      },
+      {
+        "ability_score": { "index": "wis", "name": "WIS", "url": "/api/2014/ability-scores/wis" },
+        "bonus": 1
+      }
+    ],
+    "age": "Kenku have shorter lifespans than humans. They reach maturity at about 12 years old and can live to 60.",
+    "alignment": "Kenku are chaotic creatures, rarely making enduring commitments, and they care mostly for preserving their own hides. They are generally chaotic neutral in outlook.",
+    "size": "Medium",
+    "size_description": "Kenku are around 5 feet tall and weigh between 90 and 120 pounds. Your size is Medium.",
+    "languages": [
+      { "index": "common", "name": "Common", "url": "/api/2014/languages/common" },
+      { "index": "auran", "name": "Auran", "url": "/api/2014/languages/auran" }
+    ],
+    "language_desc": "You can read and write Common and Auran, but you can speak only by using your Mimicry trait.",
+    "traits": [
+      { "index": "expert-forgery", "name": "Expert Forgery", "url": "/api/2014/traits/expert-forgery" },
+      { "index": "kenku-training", "name": "Kenku Training", "url": "/api/2014/traits/kenku-training" },
+      { "index": "mimicry", "name": "Mimicry", "url": "/api/2014/traits/mimicry" }
+    ],
+    "subraces": [],
+    "url": "/api/2014/races/kenku",
+    "updated_at": "2026-05-14T11:05:00.000Z"
+  },
+  {
+    "index": "tabaxi",
+    "name": "Tabaxi",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": { "index": "dex", "name": "DEX", "url": "/api/2014/ability-scores/dex" },
+        "bonus": 2
+      },
+      {
+        "ability_score": { "index": "cha", "name": "CHA", "url": "/api/2014/ability-scores/cha" },
+        "bonus": 1
+      }
+    ],
+    "age": "Tabaxi have lifespans equivalent to humans.",
+    "alignment": "Tabaxi tend toward chaotic alignments, as they let impulse and fancy guide their decisions. They are rarely evil, with most of them driven by curiosity rather than greed or other dark impulses.",
+    "size": "Medium",
+    "size_description": "Tabaxi are taller on average than humans and relatively slender. Your size is Medium.",
+    "languages": [
+      { "index": "common", "name": "Common", "url": "/api/2014/languages/common" }
+    ],
+    "language_options": {
+      "choose": 1,
+      "type": "languages",
+      "from": {
+        "option_set_type": "options_array",
+        "options": [
+          { "option_type": "reference", "item": { "index": "dwarvish", "name": "Dwarvish", "url": "/api/2014/languages/dwarvish" } },
+          { "option_type": "reference", "item": { "index": "elvish", "name": "Elvish", "url": "/api/2014/languages/elvish" } }
+        ]
+      }
+    },
+    "language_desc": "You can speak, read, and write Common and one other language of your choice.",
+    "traits": [
+      { "index": "darkvision", "name": "Darkvision", "url": "/api/2014/traits/darkvision" },
+      { "index": "feline-agility", "name": "Feline Agility", "url": "/api/2014/traits/feline-agility" },
+      { "index": "cats-claws", "name": "Cat's Claws", "url": "/api/2014/traits/cats-claws" },
+      { "index": "cats-talent", "name": "Cat's Talent", "url": "/api/2014/traits/cats-talent" }
+    ],
+    "subraces": [],
+    "url": "/api/2014/races/tabaxi",
+    "updated_at": "2026-05-14T11:05:00.000Z"
+  },
+  {
+    "index": "triton",
+    "name": "Triton",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": { "index": "str", "name": "STR", "url": "/api/2014/ability-scores/str" },
+        "bonus": 1
+      },
+      {
+        "ability_score": { "index": "con", "name": "CON", "url": "/api/2014/ability-scores/con" },
+        "bonus": 1
+      },
+      {
+        "ability_score": { "index": "cha", "name": "CHA", "url": "/api/2014/ability-scores/cha" },
+        "bonus": 1
+      }
+    ],
+    "age": "Tritons reach maturity around age 15 and can live up to 200 years.",
+    "alignment": "Tritons tend toward lawful good. As guardians of the darkest reaches of the sea, their culture pushes them toward order and benevolence.",
+    "size": "Medium",
+    "size_description": "Tritons are slightly shorter than humans, averaging about 5 feet tall. Your size is Medium.",
+    "languages": [
+      { "index": "common", "name": "Common", "url": "/api/2014/languages/common" },
+      { "index": "primordial", "name": "Primordial", "url": "/api/2014/languages/primordial" }
+    ],
+    "language_desc": "You can speak, read, and write Common and Primordial.",
+    "traits": [
+      { "index": "amphibious", "name": "Amphibious", "url": "/api/2014/traits/amphibious" },
+      { "index": "control-air-and-water", "name": "Control Air and Water", "url": "/api/2014/traits/control-air-and-water" },
+      { "index": "emissary-of-the-sea", "name": "Emissary of the Sea", "url": "/api/2014/traits/emissary-of-the-sea" },
+      { "index": "guardians-of-the-depths", "name": "Guardians of the Depths", "url": "/api/2014/traits/guardians-of-the-depths" }
+    ],
+    "subraces": [],
+    "url": "/api/2014/races/triton",
+    "updated_at": "2026-05-14T11:05:00.000Z"
+  },
+  {
+    "index": "warforged",
+    "name": "Warforged",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": { "index": "con", "name": "CON", "url": "/api/2014/ability-scores/con" },
+        "bonus": 2
+      }
+    ],
+    "ability_bonus_options": {
+      "choose": 1,
+      "type": "ability_bonuses",
+      "from": {
+        "option_set_type": "options_array",
+        "options": [
+          { "option_type": "ability_bonus", "ability_score": { "index": "str", "name": "STR", "url": "/api/2014/ability-scores/str" }, "bonus": 1 },
+          { "option_type": "ability_bonus", "ability_score": { "index": "dex", "name": "DEX", "url": "/api/2014/ability-scores/dex" }, "bonus": 1 },
+          { "option_type": "ability_bonus", "ability_score": { "index": "int", "name": "INT", "url": "/api/2014/ability-scores/int" }, "bonus": 1 },
+          { "option_type": "ability_bonus", "ability_score": { "index": "wis", "name": "WIS", "url": "/api/2014/ability-scores/wis" }, "bonus": 1 },
+          { "option_type": "ability_bonus", "ability_score": { "index": "cha", "name": "CHA", "url": "/api/2014/ability-scores/cha" }, "bonus": 1 }
+        ]
+      }
+    },
+    "age": "A typical warforged is between two and thirty years old. The maximum lifespan of the warforged remains a mystery; so far, warforged have shown no signs of deterioration due to age.",
+    "alignment": "Most warforged take comfort in order and discipline, tending toward law and neutrality. But some have absorbed the morality – or lack thereof – of the beings with which they served.",
+    "size": "Medium",
+    "size_description": "Your size is Medium. Most warforged stand between 6 and 7 feet tall. Weight and build are affected by your subrace.",
+    "languages": [
+      { "index": "common", "name": "Common", "url": "/api/2014/languages/common" }
+    ],
+    "language_options": {
+      "choose": 1,
+      "type": "languages",
+      "from": {
+        "option_set_type": "options_array",
+        "options": [
+          { "option_type": "reference", "item": { "index": "dwarvish", "name": "Dwarvish", "url": "/api/2014/languages/dwarvish" } },
+          { "option_type": "reference", "item": { "index": "elvish", "name": "Elvish", "url": "/api/2014/languages/elvish" } }
+        ]
+      }
+    },
+    "language_desc": "You can speak, read, and write Common and one other language of your choice.",
+    "traits": [
+      { "index": "constructed-resilience", "name": "Constructed Resilience", "url": "/api/2014/traits/constructed-resilience" },
+      { "index": "sentrys-rest", "name": "Sentry's Rest", "url": "/api/2014/traits/sentrys-rest" },
+      { "index": "integrated-protection", "name": "Integrated Protection", "url": "/api/2014/traits/integrated-protection" },
+      { "index": "specialized-design", "name": "Specialized Design", "url": "/api/2014/traits/specialized-design" }
+    ],
+    "subraces": [],
+    "url": "/api/2014/races/warforged",
+    "updated_at": "2026-05-14T11:05:00.000Z"
+  },
+  {
+    "index": "genasi",
+    "name": "Genasi",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": { "index": "con", "name": "CON", "url": "/api/2014/ability-scores/con" },
+        "bonus": 2
+      }
+    ],
+    "age": "Genasi mature at about the same rate as humans and reach adulthood in their late teens. They live somewhat longer than humans do, up to 120 years.",
+    "alignment": "Independent and self-reliant, genasi tend toward a neutral alignment.",
+    "size": "Medium",
+    "size_description": "Genasi are as varied as their mortal parents but are generally built like humans, standing anywhere from 5 feet to over 6 feet tall. Your size is Medium.",
+    "languages": [
+      { "index": "common", "name": "Common", "url": "/api/2014/languages/common" },
+      { "index": "primordial", "name": "Primordial", "url": "/api/2014/languages/primordial" }
+    ],
+    "language_desc": "You can speak, read, and write Common and Primordial. Primordial is a guttural language, filled with harsh syllables and hard consonants.",
+    "traits": [],
+    "subraces": [
+      { "index": "air-genasi", "name": "Air Genasi", "url": "/api/2014/subraces/air-genasi" },
+      { "index": "earth-genasi", "name": "Earth Genasi", "url": "/api/2014/subraces/earth-genasi" },
+      { "index": "fire-genasi", "name": "Fire Genasi", "url": "/api/2014/subraces/fire-genasi" },
+      { "index": "water-genasi", "name": "Water Genasi", "url": "/api/2014/subraces/water-genasi" }
+    ],
+    "url": "/api/2014/races/genasi",
+    "updated_at": "2026-05-14T11:05:00.000Z"
   }
 ] as const;
 

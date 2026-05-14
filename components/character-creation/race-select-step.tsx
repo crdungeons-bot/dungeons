@@ -469,9 +469,26 @@ export default function RaceSelectStep({
         patchDraft({ race: raceIndex });
     };
 
-    const handleContinue = () => {
+    const handleContinue = async () => {
         if (!selectedRace) return;
-        router.push('/create-character?step=2');
+        
+        // Check if this race has subraces
+        try {
+            const response = await fetch(`/api/resources/races?index=${selectedRace}`);
+            const data = await response.json();
+            const raceData = data.results[0];
+            
+            if (raceData?.subraces && raceData.subraces.length > 0) {
+                // Race has subraces, go to subrace selection
+                router.push('/create-character?step=1.5');
+            } else {
+                // No subraces, go directly to class selection
+                router.push('/create-character?step=2');
+            }
+        } catch (error) {
+            // On error, continue to class selection
+            router.push('/create-character?step=2');
+        }
     };
 
     if (!hydrated) {

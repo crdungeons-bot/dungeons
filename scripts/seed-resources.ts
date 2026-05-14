@@ -15,6 +15,7 @@ import SPELLS_AND_ABILITIES from '../data/spells.js';
 import ITEMS                from './items-data.js';
 import { FEATS }            from './feats-data.js';
 import RACES                from './races-data.js';
+import SUBRACES             from './subraces-data.js';
 import CLASSES_COMPLETE      from './classes-complete-data.js';
 import SUBCLASSES_COMPLETE   from './subclasses-complete-data.js';
 import { STATIC_BACKGROUNDS } from './backgrounds-data.js';
@@ -147,9 +148,33 @@ async function seedRaces(db: ReturnType<MongoClient['db']>) {
     await collection.createIndex({ index: 1 },                          { name: 'index', unique: true });
     await collection.createIndex({ name: 1 },                           { name: 'name' });
     await collection.createIndex({ size: 1 },                           { name: 'size' });
+    await collection.createIndex({ 'subraces.index': 1 },               { name: 'subrace_index' });
     await collection.createIndex({ name: 'text', alignment: 'text' },   { name: 'text_search' });
 
     log('Indexes created for races');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Seed subraces
+═══════════════════════════════════════════════════════════════════ */
+
+async function seedSubraces(db: ReturnType<MongoClient['db']>) {
+    const col = 'subraces';
+    await dropIfExists(db, col);
+
+    const collection = db.collection(col);
+
+    await collection.insertMany(SUBRACES as object[]);
+    log(`Inserted ${SUBRACES.length} subraces`);
+
+    await collection.createIndex({ index: 1 },                           { name: 'index', unique: true });
+    await collection.createIndex({ name: 1 },                            { name: 'name' });
+    await collection.createIndex({ race: 1 },                            { name: 'race' });
+    await collection.createIndex({ race: 1, name: 1 },                   { name: 'race_name', unique: true });
+    await collection.createIndex({ source: 1 },                          { name: 'source' });
+    await collection.createIndex({ name: 'text', desc: 'text' },         { name: 'text_search' });
+
+    log('Indexes created for subraces');
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -248,6 +273,9 @@ async function main() {
 
         console.log('\n─── races ──────────────────────────────────────────');
         await seedRaces(db);
+
+        console.log('\n─── subraces ───────────────────────────────────────');
+        await seedSubraces(db);
 
         console.log('\n─── classes ────────────────────────────────────────');
         await seedClasses(db);

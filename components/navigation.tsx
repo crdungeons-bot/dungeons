@@ -376,6 +376,22 @@ export default function Navigation() {
                 </div>
             </div>
 
+            {/* Maintenance Banner */}
+            <div style={{
+                backgroundColor: 'rgba(212, 175, 55, 0.15)',
+                borderTop: '1px solid var(--color-gold)',
+                padding: '0.5rem 1rem',
+                textAlign: 'center',
+                fontSize: '0.9rem',
+                color: 'var(--color-gold)',
+                fontWeight: '500',
+                letterSpacing: '0.02em'
+            }}>
+                <span style={{ marginRight: '0.5rem' }}>🔧</span>
+                Under Maintenance - We're making improvements to enhance your experience!
+                <span style={{ marginLeft: '0.5rem' }}>🔧</span>
+            </div>
+
             <style jsx>{`
                 @media (max-width: 768px) {
                     .desktop-nav {

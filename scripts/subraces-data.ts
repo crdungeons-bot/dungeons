@@ -703,7 +703,7 @@ export const SUBRACES: SubraceData[] = [
     index: "scourge-aasimar",
     name: "Scourge Aasimar",
     race: "aasimar",
-    desc: "Scourge aasimar are imbued with a divine energy that blazes intensely within them. It feeds a powerful desire to destroy evil—a desire that is, at its best, unflinching and, at its worst, all-consuming.",
+    desc: "Scourge aasimar are imbued with a divine energy that blazes intensely within them. It feeds a powerful desire to destroy evil, a desire that is, at its best, unflinching and, at its worst, all-consuming.",
     ability_bonuses: [
       { ability_score: { index: "con", name: "CON" }, bonus: 1 }
     ],
@@ -720,7 +720,7 @@ export const SUBRACES: SubraceData[] = [
     index: "fallen-aasimar",
     name: "Fallen Aasimar",
     race: "aasimar",
-    desc: "An aasimar who was touched by dark powers as a youth or who turns to evil in early adulthood can become one of the fallen—a group of aasimar whose inner light has been replaced by shadow.",
+    desc: "An aasimar who was touched by dark powers as a youth or who turns to evil in early adulthood can become one of the fallen, a group of aasimar whose inner light has been replaced by shadow.",
     ability_bonuses: [
       { ability_score: { index: "str", name: "STR" }, bonus: 1 }
     ],
@@ -812,7 +812,7 @@ export const SUBRACES: SubraceData[] = [
     index: "water-genasi",
     name: "Water Genasi",
     race: "genasi",
-    desc: "The lapping of waves, the spray of sea foam on the wind, the ocean depths—all of these things call to your heart. You wander freely and take pride in your independence, though others might consider you selfish.",
+    desc: "The lapping of waves, the spray of sea foam on the wind, the ocean depths, all of these things call to your heart. You wander freely and take pride in your independence, though others might consider you selfish.",
     ability_bonuses: [
       { ability_score: { index: "wis", name: "WIS" }, bonus: 1 }
     ],

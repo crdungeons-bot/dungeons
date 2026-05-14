@@ -6556,7 +6556,7 @@ const SPELLS_AND_ABILITIES: SpellEntry[] = [
 		"components": ["s"],
 		"duration": "Instantaneous or 1 hour",
 		"castingTime": "1 action",
-		"description": "You choose nonmagical flame that you can see within range and that fits within a 5-foot cube. You affect it in one of the following ways: You instantaneously expand the flame 5 feet in one direction, provided that wood or other fuel is present in the new location. You instantaneously extinguish the flames within the cube. You double or halve the area of bright light and dim light cast by the flame, change its color, or both. The change lasts for 1 hour. You cause simple shapes—such as the vague form of a creature, an inanimate object, or a location—to appear within the flames and animate as you like. The shapes last for 1 hour."
+		"description": "You choose nonmagical flame that you can see within range and that fits within a 5-foot cube. You affect it in one of the following ways: You instantaneously expand the flame 5 feet in one direction, provided that wood or other fuel is present in the new location. You instantaneously extinguish the flames within the cube. You double or halve the area of bright light and dim light cast by the flame, change its color, or both. The change lasts for 1 hour. You cause simple shapes, such as the vague form of a creature, an inanimate object, or a location, to appear within the flames and animate as you like. The shapes last for 1 hour."
 	},
 	{
 		"name": "Magic Stone",
@@ -6614,7 +6614,7 @@ const SPELLS_AND_ABILITIES: SpellEntry[] = [
 		"components": ["v", "s"],
 		"duration": "Instantaneous",
 		"castingTime": "1 action",
-		"description": "You hurl an undulating, warbling mass of chaotic energy at one creature in range. Make a ranged spell attack against the target. On a hit, the target takes 2d8 + 1d6 damage. Choose one of the d8s. The number rolled on that die determines the attack's damage type: 1—acid, 2—cold, 3—fire, 4—force, 5—lightning, 6—poison, 7—psychic, 8—thunder. If you roll the same number on both d8s, the chaotic energy leaps from the target to a different creature of your choice within 30 feet of it. Make a new attack roll against the new target, and make a new damage roll, which could cause the chaotic energy to leap again.",
+		"description": "You hurl an undulating, warbling mass of chaotic energy at one creature in range. Make a ranged spell attack against the target. On a hit, the target takes 2d8 + 1d6 damage. Choose one of the d8s. The number rolled on that die determines the attack's damage type: 1, acid, 2, cold, 3, fire, 4, force, 5, lightning, 6, poison, 7, psychic, 8, thunder. If you roll the same number on both d8s, the chaotic energy leaps from the target to a different creature of your choice within 30 feet of it. Make a new attack roll against the new target, and make a new damage roll, which could cause the chaotic energy to leap again.",
 		"higherLevelSlot": "When you cast this spell using a spell slot of 2nd level or higher, each target takes 1d6 extra damage of the type rolled for each slot level above 1st."
 	},
 	{

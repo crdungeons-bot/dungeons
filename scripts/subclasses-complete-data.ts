@@ -403,7 +403,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
     
     {
         name: 'Path of the Berserker',
-        description: 'For some barbarians, rage is a means to an end—that end being violence. The Path of the Berserker is a path of untrammeled fury, slick with blood. As you enter the berserker\'s rage, you thrill in the chaos of battle, heedless of your own health or well-being.',
+        description: 'For some barbarians, rage is a means to an end, that end being violence. The Path of the Berserker is a path of untrammeled fury, slick with blood. As you enter the berserker\'s rage, you thrill in the chaos of battle, heedless of your own health or well-being.',
         class: 'barbarian',
         subclass_level: 3,
         sourcebook: 'PHB',
@@ -692,7 +692,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
                 {
                     name: 'Totem Spirit',
                     level: 3,
-                    description: 'You choose a totem spirit and gain its feature. You must make or acquire a physical totem object—an amulet or similar adornment—that incorporates fur or feathers, claws, teeth, or bones of the totem animal. At your option, you also gain minor physical attributes that are reminiscent of your totem spirit. Choose from Bear, Eagle, Wolf, Elk, or Tiger.\n\n**Bear.** While raging, you have resistance to all damage except psychic damage. The spirit of the bear makes you tough enough to stand up to any punishment.\n\n**Eagle.** While you\'re raging and aren\'t wearing heavy armor, other creatures have disadvantage on opportunity attack rolls against you, and you can use the Dash action as a bonus action on your turn. The spirit of the eagle makes you into a predator who can weave through the fray with ease.\n\n**Wolf.** While you\'re raging, your friends have advantage on melee attack rolls against any creature within 5 feet of you that is hostile to you. The spirit of the wolf makes you a leader of hunters.\n\n**Elk.** While you\'re raging and aren\'t wearing heavy armor, your walking speed increases by 15 feet. The spirit of the elk makes you extraordinarily swift.\n\n**Tiger.** While raging, you can add 10 feet to your long jump distance and 3 feet to your high jump distance. The spirit of the tiger empowers your leaps.',
+                    description: 'You choose a totem spirit and gain its feature. You must make or acquire a physical totem object, an amulet or similar adornment, that incorporates fur or feathers, claws, teeth, or bones of the totem animal. At your option, you also gain minor physical attributes that are reminiscent of your totem spirit. Choose from Bear, Eagle, Wolf, Elk, or Tiger.\n\n**Bear.** While raging, you have resistance to all damage except psychic damage. The spirit of the bear makes you tough enough to stand up to any punishment.\n\n**Eagle.** While you\'re raging and aren\'t wearing heavy armor, other creatures have disadvantage on opportunity attack rolls against you, and you can use the Dash action as a bonus action on your turn. The spirit of the eagle makes you into a predator who can weave through the fray with ease.\n\n**Wolf.** While you\'re raging, your friends have advantage on melee attack rolls against any creature within 5 feet of you that is hostile to you. The spirit of the wolf makes you a leader of hunters.\n\n**Elk.** While you\'re raging and aren\'t wearing heavy armor, your walking speed increases by 15 feet. The spirit of the elk makes you extraordinarily swift.\n\n**Tiger.** While raging, you can add 10 feet to your long jump distance and 3 feet to your high jump distance. The spirit of the tiger empowers your leaps.',
                     actionType: 'passive',
                     providesChoice: true,
                     choices: ['Bear', 'Eagle', 'Wolf', 'Elk', 'Tiger'],
@@ -791,7 +791,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
     
     {
         name: 'Path of the Zealot',
-        description: 'Some deities inspire their followers to pitch themselves into a ferocious battle fury. These barbarians are zealots—warriors who channel their rage into powerful displays of divine power. A variety of gods across the worlds of D&D inspire their followers to embrace this path. Tempus from the Forgotten Realms and Hextor and Erythnul of Greyhawk are all prime examples.',
+        description: 'Some deities inspire their followers to pitch themselves into a ferocious battle fury. These barbarians are zealots, warriors who channel their rage into powerful displays of divine power. A variety of gods across the worlds of D&D inspire their followers to embrace this path. Tempus from the Forgotten Realms and Hextor and Erythnul of Greyhawk are all prime examples.',
         class: 'barbarian',
         subclass_level: 3,
         sourcebook: 'XGtE',
@@ -1189,7 +1189,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
     
     {
         name: 'College of Spirits',
-        description: 'Bards of the College of Spirits seek tales with inherent power—be they legends, histories, or fictions—and bring their subjects to life. Using occult trappings, these bards conjure spiritual embodiments of powerful forces to change the world once more.',
+        description: 'Bards of the College of Spirits seek tales with inherent power, be they legends, histories, or fictions, and bring their subjects to life. Using occult trappings, these bards conjure spiritual embodiments of powerful forces to change the world once more.',
         class: 'bard',
         subclass_level: 3,
         sourcebook: 'VRGtR',
@@ -1310,7 +1310,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
     
     {
         name: 'Life Domain',
-        description: 'The Life domain focuses on the vibrant positive energy—one of the fundamental forces of the universe—that sustains all life. The gods of life promote vitality and health through healing the sick and wounded, caring for those in need, and driving away the forces of death and undeath.',
+        description: 'The Life domain focuses on the vibrant positive energy, one of the fundamental forces of the universe, that sustains all life. The gods of life promote vitality and health through healing the sick and wounded, caring for those in need, and driving away the forces of death and undeath.',
         class: 'cleric',
         subclass_level: 1,
         sourcebook: 'PHB',
@@ -3258,7 +3258,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
                 {
                     name: 'Giant\'s Might',
                     level: 3,
-                    description: 'You have learned how to imbue yourself with the might of giants. As a bonus action, you magically gain the following benefits, which last for 1 minute: If you are smaller than Large, you become Large, along with anything you are wearing. Your size increases by one category—from Medium to Large, for example. Your weapons also grow to match your new size. You have advantage on Strength checks and Strength saving throws. Once on each of your turns, one of your attacks with a weapon or an unarmed strike can deal extra damage to a target on a hit. The extra damage equals 1d6 (1d8 at 10th level, 1d10 at 18th level). You can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.',
+                    description: 'You have learned how to imbue yourself with the might of giants. As a bonus action, you magically gain the following benefits, which last for 1 minute: If you are smaller than Large, you become Large, along with anything you are wearing. Your size increases by one category, from Medium to Large, for example. Your weapons also grow to match your new size. You have advantage on Strength checks and Strength saving throws. Once on each of your turns, one of your attacks with a weapon or an unarmed strike can deal extra damage to a target on a hit. The extra damage equals 1d6 (1d8 at 10th level, 1d10 at 18th level). You can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.',
                     actionType: 'bonus action',
                     usesPerRest: 'proficiency bonus',
                     restType: 'long',
@@ -3761,7 +3761,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
     
     {
         name: 'Way of Mercy',
-        description: 'Monks of the Way of Mercy learn to manipulate the life force of others to bring aid to those in need. They are wandering physicians to the poor and hurt. However, to those beyond their help—whether ailing or evil—they bring a swift end as an act of mercy. Those who follow the Way of Mercy might be members of a religious order, administering to the needy and making grim choices rooted in reality rather than idealism.',
+        description: 'Monks of the Way of Mercy learn to manipulate the life force of others to bring aid to those in need. They are wandering physicians to the poor and hurt. However, to those beyond their help, whether ailing or evil, they bring a swift end as an act of mercy. Those who follow the Way of Mercy might be members of a religious order, administering to the needy and making grim choices rooted in reality rather than idealism.',
         class: 'monk',
         subclass_level: 3,
         sourcebook: 'TCoE',
@@ -4027,7 +4027,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
     
     {
         name: 'Oath of Vengeance',
-        description: 'The Oath of Vengeance is a solemn commitment to punish those who have committed a grievous sin. When evil forces slaughter helpless villagers, when an entire people turns against the will of the gods, when a thieves\' guild grows too violent and powerful, when a dragon rampages through the countryside—at times like these, paladins arise and swear an Oath of Vengeance to set right that which has gone wrong.',
+        description: 'The Oath of Vengeance is a solemn commitment to punish those who have committed a grievous sin. When evil forces slaughter helpless villagers, when an entire people turns against the will of the gods, when a thieves\' guild grows too violent and powerful, when a dragon rampages through the countryside, at times like these, paladins arise and swear an Oath of Vengeance to set right that which has gone wrong.',
         class: 'paladin',
         subclass_level: 3,
         sourcebook: 'PHB',
@@ -4276,7 +4276,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
                 {
                     name: 'Living Legend',
                     level: 20,
-                    description: 'You can empower yourself with the legends—whether true or exaggerated—of your great deeds. As a bonus action, you gain the following benefits for 1 minute: You are blessed with an otherworldly presence, gaining advantage on all Charisma checks. Once on each of your turns when you miss with a weapon attack, you can cause that attack to hit instead. If you fail a saving throw, you can use your reaction to reroll it. You must use this new roll. Once you use this feature, you can\'t use it again until you finish a long rest, unless you expend a 5th-level spell slot to use it again.',
+                    description: 'You can empower yourself with the legends, whether true or exaggerated, of your great deeds. As a bonus action, you gain the following benefits for 1 minute: You are blessed with an otherworldly presence, gaining advantage on all Charisma checks. Once on each of your turns when you miss with a weapon attack, you can cause that attack to hit instead. If you fail a saving throw, you can use your reaction to reroll it. You must use this new roll. Once you use this feature, you can\'t use it again until you finish a long rest, unless you expend a 5th-level spell slot to use it again.',
                     actionType: 'bonus action',
                     usesPerRest: '1 (or 5th-level spell slot)',
                     restType: 'long',
@@ -5844,7 +5844,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
     },
     {
         name: 'Clockwork Soul',
-        description: 'The cosmic force of order has suffused you with magic. That power arises from Mechanus or a realm like it— a plane of existence shaped entirely by clockwork efficiency. You, or someone from your lineage, might have become entangled in the machinations of the modrons, the orderly beings who inhabit Mechanus. Perhaps your ancestor even took part in the Great Modron March. Whatever its origin within you, the power of order can seem strange to others, but for you, it is part of a vast and glorious system.',
+        description: 'The cosmic force of order has suffused you with magic. That power arises from Mechanus or a realm like it,  a plane of existence shaped entirely by clockwork efficiency. You, or someone from your lineage, might have become entangled in the machinations of the modrons, the orderly beings who inhabit Mechanus. Perhaps your ancestor even took part in the Great Modron March. Whatever its origin within you, the power of order can seem strange to others, but for you, it is part of a vast and glorious system.',
         class: 'sorcerer',
         subclass_level: 1,
         sourcebook: 'TCoE',
@@ -5985,7 +5985,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
                 {
                     name: 'Ignite',
                     level: 1,
-                    description: 'At 1st level, you gain the ability to start fires with a touch. As an action, you can magically ignite a flammable object you touch with your hand—an object such as a torch, a piece of tinder, or the hem of drapes.',
+                    description: 'At 1st level, you gain the ability to start fires with a touch. As an action, you can magically ignite a flammable object you touch with your hand, an object such as a torch, a piece of tinder, or the hem of drapes.',
                     actionType: 'action',
                 },
                 {
@@ -7230,7 +7230,7 @@ export const SUBCLASSES_COMPLETE: SubclassComplete[] = [
     },
     {
         name: 'Order of Scribes',
-        description: 'Magic of the book—that\'s what many folk call wizardry. The name is apt, given how much time wizards spend poring over tomes and penning theories about the nature of magic. It\'s rare to see wizards traveling without books and scrolls sprouting from their bags, and a wizard would go to great lengths to plumb an archive of ancient knowledge. Among wizards, the Order of Scribes is the most book-bound. It takes many forms in different worlds, but its primary mission is the same everywhere: recording magical discoveries so that wizardry can flourish. And while all wizards value spellbooks, a wizard in the Order of Scribes magically awakens their book, turning it into a trusted companion.',
+        description: 'Magic of the book, that\'s what many folk call wizardry. The name is apt, given how much time wizards spend poring over tomes and penning theories about the nature of magic. It\'s rare to see wizards traveling without books and scrolls sprouting from their bags, and a wizard would go to great lengths to plumb an archive of ancient knowledge. Among wizards, the Order of Scribes is the most book-bound. It takes many forms in different worlds, but its primary mission is the same everywhere: recording magical discoveries so that wizardry can flourish. And while all wizards value spellbooks, a wizard in the Order of Scribes magically awakens their book, turning it into a trusted companion.',
         class: 'wizard',
         subclass_level: 2,
         sourcebook: 'TCoE',

@@ -12,6 +12,7 @@ export function characterCreationNeedsSubclassStep(dndClass: string | undefined)
  * Maps D&D class names to the level at which they choose their subclass
  */
 export const SUBCLASS_LEVELS: Record<string, number> = {
+    artificer: 3,
     barbarian: 3,
     bard: 3,
     cleric: 1,

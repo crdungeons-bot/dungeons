@@ -19,7 +19,10 @@ type RaceDetail = {
     name: string;
     speed: number;
     size: string;
+    /** Legacy PHB field; often alignment tendencies. Shown only if short_description is absent. */
     alignment: string;
+    /** Player-facing overview: what this people are and how they feel at the table. */
+    short_description?: string;
     ability_bonuses: AbilityBonus[];
     traits: TraitRef[];
     languages: { index: string; name: string }[];
@@ -282,7 +285,7 @@ function RaceDetailModal({
 
                 {/* Scrollable content */}
                 <div style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
-                    {/* Personality / alignment flavor */}
+                    {/* Overview: dedicated blurb when present, else PHB-style alignment tendencies */}
                     <p style={{
                         color: 'rgba(244,232,208,0.85)',
                         fontStyle: 'italic',
@@ -292,7 +295,7 @@ function RaceDetailModal({
                         paddingLeft: '1.25rem',
                         margin: '0 0 2rem',
                     }}>
-                        {data.alignment}
+                        {data.short_description?.trim() || data.alignment}
                     </p>
 
                     {/* Ability bonuses */}

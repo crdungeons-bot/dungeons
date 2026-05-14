@@ -970,6 +970,7 @@ export const RACES = [
     ],
     "age": "Aarakocra reach maturity by age 3 and don't usually live longer than 30 years.",
     "alignment": "Most aarakocra are good and rarely choose sides when it comes to law and chaos.",
+    "short_description": "Aarakocra are birdlike people of wind, cliff, and open sky—keen-eyed, lightly built, and born to glide on thermals far above the ground. Many serve as scouts, couriers, or guardians of lonely peaks, carrying messages and warnings faster than boots on a road ever could.",
     "size": "Medium",
     "size_description": "Aarakocra are about 5 feet tall. They have thin, lightweight bodies that weigh between 80 and 100 pounds. Your size is Medium.",
     "languages": [
@@ -998,6 +999,7 @@ export const RACES = [
     ],
     "age": "Aasimar mature at the same rate as humans, but they can live up to 160 years.",
     "alignment": "Imbued with celestial power, most aasimar are good. Outcast aasimar are most often neutral or even evil.",
+    "short_description": "Aasimar are mortals touched by celestial light—sometimes a blessing, sometimes a burden few others understand. Their inner radiance can inspire hope, reveal hidden evil, or mark them as heirs to a destiny that pulls them toward heroism, penance, or a darker path.",
     "size": "Medium",
     "size_description": "Aasimar have the same range of height and weight as humans.",
     "languages": [
@@ -1035,6 +1037,7 @@ export const RACES = [
     ],
     "age": "As humanoids related to the fey, firbolg have long lifespans. A firbolg reaches adulthood around 30, and the oldest of them can live for 500 years.",
     "alignment": "Firbolg are generally good-aligned and tend toward a lawful nature.",
+    "short_description": "Firbolg are gentle fey-touched giants who prefer hidden vales, old forests, and quiet herds to crowded cities. They speak with beasts and plants, weave subtle magic, and often act as unseen caretakers—slow to anger, swift to defend the wild places they call home.",
     "size": "Medium",
     "size_description": "Firbolg are between 7 and 8 feet tall and weigh between 240 and 300 pounds. Your size is Medium.",
     "languages": [
@@ -1069,6 +1072,7 @@ export const RACES = [
     ],
     "age": "Goliaths have lifespans comparable to humans. They enter adulthood in their late teens and usually live less than a century.",
     "alignment": "Goliath society is highly competitive, with a strong lawful bent. Goliaths follow the rules of fair play and tend toward good.",
+    "short_description": "Goliaths are towering mountain folk who treat hardship as a teacher and competition as a kind of kinship. They seek worthy rivals, honor fair play, and carry their deeds like trophies—each scar and story proof they rose to meet the world at its hardest.",
     "size": "Medium",
     "size_description": "Goliaths are between 7 and 8 feet tall and weigh between 280 and 340 pounds. Your size is Medium.",
     "languages": [
@@ -1102,6 +1106,7 @@ export const RACES = [
     ],
     "age": "Kenku have shorter lifespans than humans. They reach maturity at about 12 years old and can live to 60.",
     "alignment": "Kenku are chaotic creatures, rarely making enduring commitments, and they care mostly for preserving their own hides. They are generally chaotic neutral in outlook.",
+    "short_description": "Kenku are ravenlike humanoids shaped by loss and cunning—unable to speak in a voice of their own, yet able to echo any sound they have heard. Exiles, thieves, and artisans of mimicry, they survive through sharp memory, teamwork, and a talent for turning borrowed words into truth or lies.",
     "size": "Medium",
     "size_description": "Kenku are around 5 feet tall and weigh between 90 and 120 pounds. Your size is Medium.",
     "languages": [
@@ -1134,6 +1139,7 @@ export const RACES = [
     ],
     "age": "Tabaxi have lifespans equivalent to humans.",
     "alignment": "Tabaxi tend toward chaotic alignments, as they let impulse and fancy guide their decisions. They are rarely evil, with most of them driven by curiosity rather than greed or other dark impulses.",
+    "short_description": "Tabaxi are inquisitive, feline wanderers who chase rumors like prey—collecting stories, maps, and odd treasures, then drifting onward when curiosity tugs again. Quick of paw and wit, they shine as explorers, skalds, and spies who treat the world as one vast, fascinating yarn.",
     "size": "Medium",
     "size_description": "Tabaxi are taller on average than humans and relatively slender. Your size is Medium.",
     "languages": [
@@ -1181,6 +1187,7 @@ export const RACES = [
     ],
     "age": "Tritons reach maturity around age 15 and can live up to 200 years.",
     "alignment": "Tritons tend toward lawful good. As guardians of the darkest reaches of the sea, their culture pushes them toward order and benevolence.",
+    "short_description": "Tritons are proud folk of the crushing deep—amphibious heirs to undersea realms who surface only when duty demands. They wield ancient magic over currents and pressure, seeing themselves as wardens against horrors land-dwellers rarely glimpse.",
     "size": "Medium",
     "size_description": "Tritons are slightly shorter than humans, averaging about 5 feet tall. Your size is Medium.",
     "languages": [
@@ -1224,6 +1231,7 @@ export const RACES = [
     },
     "age": "A typical warforged is between two and thirty years old. The maximum lifespan of the warforged remains a mystery; so far, warforged have shown no signs of deterioration due to age.",
     "alignment": "Most warforged take comfort in order and discipline, tending toward law and neutrality. But some have absorbed the morality – or lack thereof – of the beings with which they served.",
+    "short_description": "Warforged are living constructs of wood, metal, and stone—soldiers and laborers given soul, then left to find meaning after the war forges cooled. Each one is a person learning hunger, faith, art, or vengeance on their own terms, equal parts resilience and quiet wonder at a world not built for them.",
     "size": "Medium",
     "size_description": "Your size is Medium. Most warforged stand between 6 and 7 feet tall. Weight and build are affected by your subrace.",
     "languages": [
@@ -1263,6 +1271,7 @@ export const RACES = [
     ],
     "age": "Genasi mature at about the same rate as humans and reach adulthood in their late teens. They live somewhat longer than humans do, up to 120 years.",
     "alignment": "Independent and self-reliant, genasi tend toward a neutral alignment.",
+    "short_description": "Genasi are mortals whose lineage carries elemental power—air, earth, fire, or water made visible in skin, eyes, and uncanny gifts. They walk between ordinary communities and the raw might of the Inner Planes, often feeling the tug of storm, stone, flame, or tide as surely as another person feels weather in their bones.",
     "size": "Medium",
     "size_description": "Genasi are as varied as their mortal parents but are generally built like humans, standing anywhere from 5 feet to over 6 feet tall. Your size is Medium.",
     "languages": [

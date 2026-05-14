@@ -28,6 +28,8 @@ export type RaceDetail = {
   name: string;
   speed: number;
   alignment: string;
+  /** Player-facing overview when present (supplement races); else use alignment text. */
+  short_description?: string;
   age: string;
   size: string;
   size_description: string;

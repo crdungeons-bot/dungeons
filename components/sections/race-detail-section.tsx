@@ -78,7 +78,7 @@ export default async function RaceDetailSection({ race }: { race: string }) {
                     margin: 0,
                     textShadow: '1px 1px 8px rgba(0,0,0,0.9)',
                 }}>
-                    {data.alignment}
+                    {data.short_description?.trim() || data.alignment}
                 </p>
             </div>
 

@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
             filter.$or = [
                 { name: { $regex: q.trim(), $options: 'i' } },
                 { alignment: { $regex: q.trim(), $options: 'i' } },
+                { short_description: { $regex: q.trim(), $options: 'i' } },
             ];
         }
 

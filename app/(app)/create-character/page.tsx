@@ -110,7 +110,7 @@ export default async function CreateCharacterPage({
             )}
 
             {isSubraceStep && (
-                <SubraceSelectStepWrapper />
+                <SubraceSelectStep />
             )}
 
             {currentStep === 2 && (
@@ -141,27 +141,4 @@ export default async function CreateCharacterPage({
         </div>
         </CharacterCreationWrapper>
     );
-}
-
-// Client wrapper to get race name from store
-function SubraceSelectStepWrapper() {
-    'use client';
-    const { useCharacterCreationStore } = require('@/stores/character-creation-store');
-    const draftRace = useCharacterCreationStore((s: any) => s.draft.race);
-    
-    if (!draftRace) {
-        return (
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flex: 1,
-                color: 'var(--color-gold)',
-            }}>
-                No race selected…
-            </div>
-        );
-    }
-    
-    return <SubraceSelectStep raceName={draftRace} />;
 }

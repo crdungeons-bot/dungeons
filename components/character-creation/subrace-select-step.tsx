@@ -498,8 +498,9 @@ function Section({ label, children }: { label: string; children: React.ReactNode
 
 // ── Main exported component ───────────────────────────────────────────────────
 
-export default function SubraceSelectStep({ raceName }: { raceName: string }) {
+export default function SubraceSelectStep() {
     const router = useRouter();
+    const draftRace = useCharacterCreationStore(s => s.draft.race);
     const draftSubrace = useCharacterCreationStore(s => s.draft.subrace);
     const patchDraft = useCharacterCreationStore(s => s.patchDraft);
     const hydrated = useCharacterCreationHydrated();
@@ -509,20 +510,34 @@ export default function SubraceSelectStep({ raceName }: { raceName: string }) {
     const [viewingSubrace, setViewingSubrace] = useState<Subrace | null>(null);
 
     const selectedSubrace = draftSubrace ?? null;
+    const raceName = draftRace ?? '';
 
     // Fetch subraces for the selected race
     useEffect(() => {
-        if (!raceName) return;
+        if (!raceName) {
+            // No race selected, redirect back to step 1
+            router.push('/create-character?step=1');
+            return;
+        }
         
         setLoading(true);
         fetch(`/api/resources/subraces?race=${raceName}`)
             .then(r => r.json())
             .then((d: { results: Subrace[] }) => {
-                setSubraces(d.results || []);
-                setLoading(false);
+                const results = d.results || [];
+                if (results.length === 0) {
+                    // No subraces, skip to class selection
+                    router.push('/create-character?step=2');
+                } else {
+                    setSubraces(results);
+                    setLoading(false);
+                }
             })
-            .catch(() => setLoading(false));
-    }, [raceName]);
+            .catch(() => {
+                // On error, skip to class selection
+                router.push('/create-character?step=2');
+            });
+    }, [raceName, router]);
 
     const handleSelectSubrace = (subraceIndex: string) => {
         patchDraft({ subrace: subraceIndex });
@@ -551,12 +566,6 @@ export default function SubraceSelectStep({ raceName }: { raceName: string }) {
                 Loading subraces…
             </div>
         );
-    }
-
-    if (subraces.length === 0) {
-        // No subraces for this race, auto-continue
-        router.push('/create-character?step=2');
-        return null;
     }
 
     const selectedSubraceName = subraces.find(s => s.index === selectedSubrace)?.name;

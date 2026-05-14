@@ -20,6 +20,15 @@ type Story = {
     bonds: string; flaws: string; appearance: string;
 };
 
+type AbilityBonus = {
+    ability_score: { index: string; name: string };
+    bonus: number;
+};
+
+type RacialBonuses = {
+    str: number; dex: number; con: number; int: number; wis: number; cha: number;
+};
+
 function extractAbilityScores(stats: CharacterDraft['stats'] | undefined): Stats | null {
     if (!stats) return null;
     const keys: (keyof Stats)[] = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
@@ -38,7 +47,7 @@ function extractAbilityScores(stats: CharacterDraft['stats'] | undefined): Stats
 const HIT_DICE: Record<string, number> = {
     barbarian: 12,
     fighter: 10, paladin: 10, ranger: 10,
-    bard: 8, cleric: 8, druid: 8, monk: 8, rogue: 8, warlock: 8,
+    artificer: 8, bard: 8, cleric: 8, druid: 8, monk: 8, rogue: 8, warlock: 8,
     sorcerer: 6, wizard: 6,
 };
 
@@ -77,9 +86,15 @@ function getModColor(score: number): string {
 
 /* ─── sub-components ─────────────────────────────────────────────── */
 
-function StatBlock({ def, value }: { def: typeof STAT_DEFS[number]; value: number }) {
+function StatBlock({ def, value, baseValue, bonus }: { 
+    def: typeof STAT_DEFS[number]; 
+    value: number;
+    baseValue?: number;
+    bonus?: number;
+}) {
     const mod      = getMod(value);
     const modColor = getModColor(value);
+    const hasBonus = bonus && bonus > 0;
 
     return (
         <div style={{
@@ -116,6 +131,18 @@ function StatBlock({ def, value }: { def: typeof STAT_DEFS[number]; value: numbe
                 color:      '#fff',
                 marginTop:  '0.15rem',
             }}>{value}</span>
+
+            {/* Show racial bonus breakdown if applicable */}
+            {hasBonus && baseValue && (
+                <span style={{
+                    fontSize: '0.65rem',
+                    fontWeight: '600',
+                    color: 'rgba(134,198,120,0.7)',
+                    marginTop: '-0.1rem',
+                }}>
+                    ({baseValue} + {bonus})
+                </span>
+            )}
 
             <div style={{
                 marginTop:    '0.3rem',
@@ -182,6 +209,12 @@ export default function SummaryStep() {
 
     const draft = useCharacterCreationStore(useShallow((s) => s.draft));
     
+    // State for racial bonuses
+    const [racialBonuses, setRacialBonuses] = useState<RacialBonuses>({
+        str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0,
+    });
+    const [loadingBonuses, setLoadingBonuses] = useState(true);
+    
     // Redirect if draft is incomplete
     useEffect(() => {
         if (!hydrated) return;
@@ -212,7 +245,71 @@ export default function SummaryStep() {
     
     const draftStats = draft.stats;
 
-    const stats = useMemo(() => extractAbilityScores(draftStats), [draftStats]);
+    // Base stats from character creation (without racial bonuses)
+    const baseStats = useMemo(() => extractAbilityScores(draftStats), [draftStats]);
+
+    // Final stats (base + racial bonuses)
+    const stats = useMemo(() => {
+        if (!baseStats) return null;
+        return {
+            str: baseStats.str + racialBonuses.str,
+            dex: baseStats.dex + racialBonuses.dex,
+            con: baseStats.con + racialBonuses.con,
+            int: baseStats.int + racialBonuses.int,
+            wis: baseStats.wis + racialBonuses.wis,
+            cha: baseStats.cha + racialBonuses.cha,
+        };
+    }, [baseStats, racialBonuses]);
+
+    // Fetch racial and subracial bonuses
+    useEffect(() => {
+        if (!race) {
+            setLoadingBonuses(false);
+            return;
+        }
+
+        const fetchBonuses = async () => {
+            setLoadingBonuses(true);
+            const bonuses: RacialBonuses = {
+                str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0,
+            };
+
+            try {
+                // Fetch race bonuses
+                const raceRes = await fetch(`/api/resources/races?index=${race}`);
+                const raceData = await raceRes.json();
+                const raceInfo = raceData.results[0];
+                
+                if (raceInfo?.ability_bonuses) {
+                    raceInfo.ability_bonuses.forEach((ab: AbilityBonus) => {
+                        const statKey = ab.ability_score.index as keyof RacialBonuses;
+                        bonuses[statKey] += ab.bonus;
+                    });
+                }
+
+                // Fetch subrace bonuses if subrace exists
+                if (subrace) {
+                    const subraceRes = await fetch(`/api/resources/subraces?name=${subrace}`);
+                    const subraceData = await subraceRes.json();
+                    const subraceInfo = subraceData.results[0];
+                    
+                    if (subraceInfo?.ability_bonuses) {
+                        subraceInfo.ability_bonuses.forEach((ab: AbilityBonus) => {
+                            const statKey = ab.ability_score.index as keyof RacialBonuses;
+                            bonuses[statKey] += ab.bonus;
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch racial bonuses:', err);
+            }
+
+            setRacialBonuses(bonuses);
+            setLoadingBonuses(false);
+        };
+
+        fetchBonuses();
+    }, [race, subrace]);
 
     const story = useMemo((): Story | null => {
         const s: Story = {
@@ -295,7 +392,7 @@ export default function SummaryStep() {
             weight:         weight ?? null,
             age:            age ?? null,
             proficiencies:  proficiencies ?? [],
-            stats:          stats ?? {},
+            stats:          stats ?? {}, // Final stats with racial bonuses
             story:          story ?? {},
             hp,
             subclass:       subclass ? { name: subclass, class: dndClass ?? '', level_chosen: 1 } : null,
@@ -313,9 +410,24 @@ export default function SummaryStep() {
                 throw new Error(data.error ?? 'Something went wrong');
             }
 
+            // Clear the draft data
             clearCharacterCreationData();
-
+            
+            // Redirect to characters page
+            // Using both router.push and a fallback for maximum reliability
+            console.log('[SummaryStep] Redirecting to /dashboard?section=characters');
+            
+            // Try router.push first
             router.push('/dashboard?section=characters');
+            
+            // Fallback: use window.location after a short delay if router.push fails
+            setTimeout(() => {
+                if (window.location.pathname !== '/dashboard') {
+                    console.log('[SummaryStep] Fallback redirect triggered');
+                    window.location.href = '/dashboard?section=characters';
+                }
+            }, 500);
+            
         } catch (e: unknown) {
             setError(e instanceof Error ? e.message : 'Failed to create character');
             setCreating(false);
@@ -416,7 +528,7 @@ export default function SummaryStep() {
             <div style={{ flex: 1, padding: '2rem 2rem 1rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
                 {/* ── Stats ── */}
-                {stats && (
+                {stats && baseStats && (
                     <section>
                         <SectionLabel>Ability Scores</SectionLabel>
                         <div style={{
@@ -429,6 +541,8 @@ export default function SummaryStep() {
                                     key={def.key}
                                     def={def}
                                     value={stats[def.key] ?? 10}
+                                    baseValue={baseStats[def.key] ?? 10}
+                                    bonus={racialBonuses[def.key]}
                                 />
                             ))}
                         </div>

@@ -655,25 +655,30 @@ function MagicTab({ char }: { char: CharacterData }) {
     const isCaster = FULL_CASTERS.has(charClass) || HALF_CASTERS.has(charClass);
 
     const [allEntries, setAllEntries] = useState<SpellEntry[]>([]);
+    const [classFeatures, setClassFeatures] = useState<any[]>([]);
+    const [subclassFeatures, setSubclassFeatures] = useState<any[]>([]);
     const [loadingMagic, setLoadingMagic] = useState(true);
 
     useEffect(() => {
         setLoadingMagic(true);
         
-        // Build query URL with subclass filtering if applicable
-        let url = `/api/resources/spells-abilities?class=${encodeURIComponent(charClass)}&race=${encodeURIComponent(charRace)}`;
+        // Use new unified endpoint that fetches class features, subclass features, and spells
+        let url = `/api/resources/character-abilities?class=${encodeURIComponent(charClass)}&race=${encodeURIComponent(charRace)}&level=${charLevel}`;
         
-        // If character has a subclass, fetch subclass-specific spells too
         if (charSubclass) {
-            const subclassQueryTag = `${charSubclass.name.toLowerCase()} ${charClass}`;
-            url += `&subclass=${encodeURIComponent(subclassQueryTag)}`;
+            url += `&subclass=${encodeURIComponent(charSubclass.name)}`;
         }
         
         fetch(url)
             .then(r => r.json())
-            .then(data => { setAllEntries(data.results ?? data.entries ?? []); setLoadingMagic(false); })
+            .then(data => {
+                setClassFeatures(data.classFeatures ?? []);
+                setSubclassFeatures(data.subclassFeatures ?? []);
+                setAllEntries(data.spellsAndAbilities ?? []);
+                setLoadingMagic(false);
+            })
             .catch(() => setLoadingMagic(false));
-    }, [charClass, charRace, charSubclass]);
+    }, [charClass, charRace, charLevel, charSubclass]);
 
     const { racialAbilities, classAbilities, cantrips, spellsByLevel } = useMemo(() => {
         const racial: SpellEntry[] = [];
@@ -714,7 +719,7 @@ function MagicTab({ char }: { char: CharacterData }) {
         );
     }
 
-    const totalAbilities = racialAbilities.length + classAbilities.length + cantrips.length + spellLevels.reduce((s, l) => s + spellsByLevel[l].length, 0);
+    const totalAbilities = racialAbilities.length + classAbilities.length + cantrips.length + spellLevels.reduce((s, l) => s + spellsByLevel[l].length, 0) + classFeatures.length + subclassFeatures.length;
 
     if (totalAbilities === 0) {
         return (
@@ -747,9 +752,27 @@ function MagicTab({ char }: { char: CharacterData }) {
                 </section>
             )}
 
+            {classFeatures.length > 0 && (
+                <section>
+                    <MagicGroupHeader title={`${fmt(charClass)} Features (Level ${charLevel})`} count={classFeatures.length} color="rgba(212,175,55,0.8)" />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        {classFeatures.map((f, i) => <MagicCard key={`cf-${i}`} entry={f} subclassTag={subclassTag} />)}
+                    </div>
+                </section>
+            )}
+
+            {subclassFeatures.length > 0 && (
+                <section>
+                    <MagicGroupHeader title={`${charSubclass?.name} Features (Level ${charLevel})`} count={subclassFeatures.length} color="rgba(193,93,232,0.8)" />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        {subclassFeatures.map((f, i) => <MagicCard key={`sf-${i}`} entry={f} subclassTag={subclassTag} />)}
+                    </div>
+                </section>
+            )}
+
             {classAbilities.length > 0 && (
                 <section>
-                    <MagicGroupHeader title={`${fmt(charClass)} Abilities, Level ${charLevel}`} count={classAbilities.length} color="rgba(212,175,55,0.8)" />
+                    <MagicGroupHeader title={`Additional Abilities`} count={classAbilities.length} color="rgba(228,160,74,0.8)" />
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                         {classAbilities.map((e, i) => <MagicCard key={`c-${i}`} entry={e} subclassTag={subclassTag} />)}
                     </div>

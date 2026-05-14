@@ -15,8 +15,8 @@ import SPELLS_AND_ABILITIES from '../data/spells.js';
 import ITEMS                from './items-data.js';
 import { FEATS }            from './feats-data.js';
 import RACES                from './races-data.js';
-import CLASSES              from './classes-data.js';
-import SUBCLASSES_DATA      from './subclasses-data.js';
+import CLASSES_COMPLETE      from './classes-complete-data.js';
+import SUBCLASSES_COMPLETE   from './subclasses-complete-data.js';
 import { STATIC_BACKGROUNDS } from './backgrounds-data.js';
 
 // Load .env.local (Next.js convention) so MONGODB_URI is available when
@@ -162,13 +162,16 @@ async function seedClasses(db: ReturnType<MongoClient['db']>) {
 
     const collection = db.collection(col);
 
-    await collection.insertMany(CLASSES as object[]);
-    log(`Inserted ${CLASSES.length} classes`);
+    await collection.insertMany(CLASSES_COMPLETE as object[]);
+    log(`Inserted ${CLASSES_COMPLETE.length} classes with comprehensive feature data`);
 
     await collection.createIndex({ index: 1 },                          { name: 'index', unique: true });
-    await collection.createIndex({ name: 1 },                           { name: 'name' });
+    await collection.createIndex({ name: 1 },                           { name: 'name', unique: true });
     await collection.createIndex({ hit_die: 1 },                        { name: 'hit_die' });
+    await collection.createIndex({ 'sourcebook.name': 1 },              { name: 'sourcebook' });
     await collection.createIndex({ name: 'text' },                      { name: 'text_search' });
+    // Index for querying features by level
+    await collection.createIndex({ 'features_by_level': 1 },            { name: 'features_by_level' });
 
     log('Indexes created for classes');
 }
@@ -183,30 +186,19 @@ async function seedSubclasses(db: ReturnType<MongoClient['db']>) {
 
     const collection = db.collection(col);
 
-    // Convert the nested object structure into individual documents
-    // Each document represents one subclass with its parent class info
-    const subclassDocs = [];
-    
-    for (const [className, classData] of Object.entries(SUBCLASSES_DATA)) {
-        for (const subclass of classData.subclasses) {
-            subclassDocs.push({
-                name: subclass.name,
-                description: subclass.description,
-                class: className,
-                subclass_level: classData.subclass_level,
-            });
-        }
-    }
-
-    await collection.insertMany(subclassDocs);
-    log(`Inserted ${subclassDocs.length} subclasses across ${Object.keys(SUBCLASSES_DATA).length} classes`);
+    // New structure: already an array of complete subclass documents
+    await collection.insertMany(SUBCLASSES_COMPLETE as object[]);
+    log(`Inserted ${SUBCLASSES_COMPLETE.length} subclasses with comprehensive feature data`);
 
     // Indexes for efficient querying
-    await collection.createIndex({ class: 1 },                          { name: 'class' });
-    await collection.createIndex({ name: 1 },                           { name: 'name' });
-    await collection.createIndex({ subclass_level: 1 },                 { name: 'subclass_level' });
-    await collection.createIndex({ class: 1, name: 1 },                 { name: 'class_name', unique: true });
-    await collection.createIndex({ name: 'text', description: 'text' }, { name: 'text_search' });
+    await collection.createIndex({ class: 1 },                           { name: 'class' });
+    await collection.createIndex({ name: 1 },                            { name: 'name' });
+    await collection.createIndex({ subclass_level: 1 },                  { name: 'subclass_level' });
+    await collection.createIndex({ class: 1, name: 1 },                  { name: 'class_name', unique: true });
+    await collection.createIndex({ 'sourcebook.name': 1 },               { name: 'sourcebook' });
+    await collection.createIndex({ name: 'text', description: 'text' },  { name: 'text_search' });
+    // Index for querying features by level
+    await collection.createIndex({ 'features_by_level': 1 },             { name: 'features_by_level' });
 
     log('Indexes created for subclasses');
 }

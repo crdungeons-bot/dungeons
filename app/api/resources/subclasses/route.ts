@@ -41,6 +41,12 @@ export async function GET(request: NextRequest) {
                 description: doc.description,
                 class: doc.class,
                 subclass_level: doc.subclass_level,
+                sourcebook: doc.sourcebook,
+                features: doc.features || {},
+                spells: doc.spells,
+                proficiencies: doc.proficiencies,
+                resources: doc.resources,
+                restrictions: doc.restrictions,
             })),
             count: results.length,
         });

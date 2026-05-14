@@ -12,7 +12,7 @@
 **All 13 Core Classes** - Full 20-level feature progressions (3,190 lines)
 - Artificer, Barbarian, Bard, Cleric, Druid, Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard
 
-**78 Subclasses Complete** (5,007 lines)
+**106 Subclasses Complete** (updated line count TBD)
 - 4 Artificer subclasses ✅
 - 6 Barbarian subclasses ✅
 - 8 Bard subclasses ✅
@@ -21,15 +21,15 @@
 - 9 Fighter subclasses ✅
 - 10 Monk subclasses ✅
 - 9 Paladin subclasses ✅
-- **8 Ranger subclasses ✅ (NEWLY ADDED THIS SESSION)**
-- 0 Rogue subclasses (NEXT)
-- 0 Sorcerer subclasses (AFTER ROGUE)
-- 0 Warlock subclasses (AFTER SORCERER)
-- 0 Wizard subclasses (LAST)
+- 8 Ranger subclasses ✅
+- 9 Rogue subclasses ✅
+- 10 Sorcerer subclasses ✅
+- **9 Warlock subclasses ✅ (NEWLY ADDED THIS SESSION)**
+- 0 Wizard subclasses (FINAL CLASS - START HERE!)
 
 **Database Migration**: ✅ Successfully seeded to MongoDB
 - All 13 classes with comprehensive features
-- 78 subclasses with full mechanical details
+- 106 subclasses with full mechanical details
 - Proper indexes created
 
 **TypeScript Types**: ✅ Updated and compiling cleanly
@@ -41,45 +41,11 @@
 
 ## 🎯 REMAINING WORK
 
-### Phase 2: Add Remaining 43 Subclasses
+### Phase 2: Add Remaining 14 Subclasses (FINAL STRETCH!)
 
 **Priority Order:**
 
-1. **9 Rogue Archetypes** (Next - START HERE)
-   - Thief
-   - Assassin
-   - Arcane Trickster
-   - Inquisitive
-   - Mastermind
-   - Scout
-   - Swashbuckler
-   - Phantom
-   - Soulknife
-
-2. **10 Sorcerer Origins**
-   - Draconic Bloodline
-   - Wild Magic
-   - Divine Soul
-   - Shadow Magic
-   - Storm Sorcery
-   - Aberrant Mind
-   - Clockwork Soul
-   - Lunar Sorcery
-   - Phoenix Sorcery
-   - Stone Sorcery
-
-3. **9 Warlock Patrons**
-   - The Archfey
-   - The Fiend
-   - The Great Old One
-   - The Celestial
-   - The Hexblade
-   - The Fathomless
-   - The Genie
-   - The Undead
-   - The Undying
-
-4. **14 Wizard Schools** (Last)
+1. **14 Wizard Schools** (LAST CLASS - START HERE!)
    - School of Abjuration
    - School of Conjuration
    - School of Divination
@@ -95,84 +61,92 @@
    - War Magic
    - Onomancy (potentially UA, verify)
 
+3. **COMPLETED: 9 Rogue Archetypes** ✅
+   - Thief ✅
+   - Assassin ✅
+   - Arcane Trickster ✅
+   - Inquisitive ✅
+   - Mastermind ✅
+   - Scout ✅
+   - Swashbuckler ✅
+   - Phantom ✅
+   - Soulknife ✅
+
+4. **COMPLETED: 10 Sorcerer Origins** ✅
+   - Draconic Bloodline ✅
+   - Wild Magic ✅
+   - Divine Soul ✅
+   - Shadow Magic ✅
+   - Storm Sorcery ✅
+   - Aberrant Mind ✅
+   - Clockwork Soul ✅
+   - Lunar Sorcery ✅
+   - Phoenix Sorcery (UA) ✅
+   - Stone Sorcery (UA) ✅
+
+5. **COMPLETED: 9 Warlock Patrons** ✅
+   - The Archfey ✅
+   - The Fiend ✅
+   - The Great Old One ✅
+   - The Celestial ✅
+   - The Hexblade ✅
+   - The Fathomless ✅
+   - The Genie ✅
+   - The Undead ✅
+   - The Undying ✅
+
 ---
 
 ## 📝 HOW TO CONTINUE (For Next Session)
 
 ### Step 1: Review Research Materials
 
-**Rogue Research Already Gathered:**
-- File: `C:\Users\REEDGAMER\.cursor\projects\c-dungeons\agent-tools\19235d81-675a-46cc-993f-a3737119a456.txt`
-- Contains: Complete Rogue 5E guide with all archetype features
+**Wizard Research To Gather:**
+- Search for: "D&D 5e Wizard schools subclasses guide complete 2026"
+- Or individual searches: "D&D 5e [School Name] features by level 2026"
 
-**Key Rogue Feature Levels:** 3, 9, 13, 17
+**Key Wizard Feature Levels:** 2, 6, 10, 14
 
-### Step 2: Add Rogue Subclasses to File
+### Step 2: Add Wizard Subclasses to File
 
 Location: `scripts/subclasses-complete-data.ts`
 
-**Insert After Line 4998** (after the Drakewarden closing brace)
+**Insert After Line** (check current line - after The Undying closing brace)
 
 **Template Structure:**
 ```typescript
 {
-    name: 'Subclass Name',
+    name: 'School of [Name]',
     description: 'Full description',
-    class: 'rogue',
-    subclass_level: 3,
+    class: 'wizard',
+    subclass_level: 2,
     sourcebook: 'PHB' | 'XGtE' | 'TCoE' | etc.,
     
-    // Optional: spells (for Arcane Trickster)
-    spells: {
-        cantripsKnown: { 3: 3, 10: 4 },
-        spellsKnown: { 3: 3, 4: 4, ... },
-        spellSlots: {
-            3: { 1: 2 },
-            4: { 1: 3 },
-            ...
-        },
-        spellcastingAbility: 'int',
-        progression: 'third',
-    },
-    
-    // Optional: proficiencies
+    // Optional: proficiencies (some wizard schools grant weapon/armor proficiencies)
     proficiencies: {
-        tools: ['disguise-kit', 'poisoner-kit'],
-        skills: ['Nature', 'Survival'],
+        armor: ['light-armor'],
+        weapons: ['longsword', 'shortsword'],
     },
-    
-    // Optional: resources (for Soulknife)
-    resources: [
-        {
-            name: 'Psionic Energy Dice',
-            type: 'psionic_energy',
-            uses: { 3: 'proficiency bonus × 2' },
-            restType: 'long',
-            levelGained: 3,
-            diceType: 'd6 (d8 at 5th, d10 at 11th, d12 at 17th)',
-            description: 'Resource description',
-        },
-    ],
     
     features: {
-        3: [
+        2: [
             {
                 name: 'Feature Name',
-                level: 3,
+                level: 1,
                 description: 'Full mechanical description',
                 actionType: 'action' | 'bonus action' | 'reaction' | 'special' | 'passive',
-                usesPerRest?: '1' | 'proficiency bonus' | 'Wisdom modifier',
+                usesPerRest?: '1' | 'proficiency bonus' | 'Charisma modifier',
                 restType?: 'short' | 'long',
                 damage?: {
                     dice: '1d6',
-                    type: 'psychic',
+                    type: 'fire',
                     scaling: 'Description of how it scales',
                 },
             },
         ],
-        9: [...],
-        13: [...],
-        17: [...],
+        6: [...],
+        14: [...],
+        18: [...],
     },
 },
 ```
@@ -351,17 +325,18 @@ When you finish a session, ensure:
 ## 📊 Expected Final Numbers
 
 - **Total Subclasses**: 121
-- **Current**: 78
-- **Remaining**: 43
+- **Current**: 106
+- **Remaining**: 14 (FINAL STRETCH!)
 - **Target Completion**: 121 subclasses across all 13 classes
+- **Completion**: 87.6%
 
 ---
 
 ## 🚀 Ready to Start?
 
-**Next Action**: Begin adding the 9 Rogue archetypes
+**Next Action**: Begin adding the 14 Wizard Schools (FINAL CLASS!)
 
-**First Subclass**: Thief (PHB)
-**Research File**: `C:\Users\REEDGAMER\.cursor\projects\c-dungeons\agent-tools\19235d81-675a-46cc-993f-a3737119a456.txt`
+**First Subclass**: School of Abjuration (PHB)
+**Research Search**: "D&D 5e Wizard schools subclasses guide complete 2026"
 
 Good luck! The hard work is already done - just systematic data entry from here. 💪

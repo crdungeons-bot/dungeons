@@ -3,22 +3,55 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Subclass data structure
+ * Subclass feature from the database
+ */
+type SubclassFeature = {
+    name: string;
+    level: number;
+    description: string;
+    actionType?: string;
+    usesPerRest?: string;
+    restType?: string;
+    damage?: {
+        dice: string;
+        type: string;
+        scaling?: string;
+    };
+};
+
+/**
+ * Subclass data structure (now with full feature data)
  */
 type Subclass = {
     name: string;
     description: string;
     class: string;
     subclass_level: number;
-};
-
-/**
- * Sample spell/ability to display
- */
-type SubclassSample = {
-    name: string;
-    level: number;
-    description: string;
+    sourcebook?: string;
+    features?: {
+        [level: number]: SubclassFeature[];
+    };
+    spells?: {
+        byCharacterLevel?: {
+            [level: number]: string[];
+        };
+        alwaysPrepared?: boolean;
+        spellcastingAbility?: string;
+    };
+    proficiencies?: {
+        armor?: string[];
+        weapons?: string[];
+        tools?: string[];
+        skills?: string[] | { choose: number; from: string[] };
+    };
+    resources?: Array<{
+        name: string;
+        type: string;
+        usesPerRest?: string;
+        restType: string;
+        levelGained: number;
+        description?: string;
+    }>;
 };
 
 /**
@@ -42,7 +75,6 @@ export default function SubclassSelectionModal({
     const [subclasses, setSubclasses] = useState<Subclass[]>([]);
     const [loading, setLoading] = useState(true);
     const [viewingSubclass, setViewingSubclass] = useState<string | null>(null);
-    const [subclassSamples, setSubclassSamples] = useState<Record<string, SubclassSample[]>>({});
 
     // Fetch subclasses for this class
     useEffect(() => {
@@ -58,40 +90,6 @@ export default function SubclassSelectionModal({
                 setLoading(false);
             });
     }, [characterClass]);
-
-    // Fetch sample spells for each subclass
-    useEffect(() => {
-        if (subclasses.length === 0) return;
-
-        // Fetch spells for all subclasses
-        const fetchSamples = async () => {
-            const samples: Record<string, SubclassSample[]> = {};
-            
-            for (const subclass of subclasses) {
-                try {
-                    // Build subclass tag (e.g., "forge domain cleric")
-                    const tag = `${subclass.name.toLowerCase()} ${characterClass}`;
-                    
-                    // Fetch spells with this subclass tag
-                    const response = await fetch(`/api/resources/spells-abilities?subclass=${encodeURIComponent(tag)}&limit=3`);
-                    const data = await response.json();
-                    
-                    samples[subclass.name] = (data.results || []).slice(0, 3).map((spell: any) => ({
-                        name: spell.name,
-                        level: spell.level ?? 0,
-                        description: spell.description?.substring(0, 100) + '...' || '',
-                    }));
-                } catch (err) {
-                    console.error(`Failed to fetch samples for ${subclass.name}:`, err);
-                    samples[subclass.name] = [];
-                }
-            }
-            
-            setSubclassSamples(samples);
-        };
-
-        fetchSamples();
-    }, [subclasses, characterClass]);
 
     const classDisplayName = characterClass.charAt(0).toUpperCase() + characterClass.slice(1);
 
@@ -176,10 +174,27 @@ export default function SubclassSelectionModal({
                                 display: 'grid',
                                 gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                                 gap: '1rem',
-                            }}>
+                            }}                            >
                                 {subclasses.map(subclass => {
                                     const isSelected = selectedSubclass === subclass.name;
-                                    const samples = subclassSamples[subclass.name] || [];
+                                    
+                                    // Get first 3 features for preview
+                                    const featurePreview: Array<{ name: string; level: number }> = [];
+                                    if (subclass.features) {
+                                        const sortedLevels = Object.keys(subclass.features)
+                                            .map(Number)
+                                            .sort((a, b) => a - b);
+                                        
+                                        for (const level of sortedLevels) {
+                                            const features = subclass.features[level];
+                                            for (const feature of features) {
+                                                if (featurePreview.length < 3) {
+                                                    featurePreview.push({ name: feature.name, level });
+                                                }
+                                            }
+                                            if (featurePreview.length >= 3) break;
+                                        }
+                                    }
 
                                     return (
                                         <div
@@ -243,8 +258,8 @@ export default function SubclassSelectionModal({
                                                     {subclass.description}
                                                 </p>
 
-                                                {/* Sample spells */}
-                                                {samples.length > 0 && (
+                                                {/* Feature preview */}
+                                                {featurePreview.length > 0 && (
                                                     <div>
                                                         <p style={{
                                                             color: 'rgba(212,175,55,0.5)',
@@ -254,12 +269,12 @@ export default function SubclassSelectionModal({
                                                             textTransform: 'uppercase',
                                                             margin: '0 0 0.5rem',
                                                         }}>
-                                                            Sample Abilities
+                                                            Key Features
                                                         </p>
                                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                                            {samples.map(sample => (
+                                                            {featurePreview.map((feature, idx) => (
                                                                 <div
-                                                                    key={sample.name}
+                                                                    key={idx}
                                                                     style={{
                                                                         padding: '0.5rem',
                                                                         backgroundColor: 'rgba(212,175,55,0.05)',
@@ -273,16 +288,14 @@ export default function SubclassSelectionModal({
                                                                         fontWeight: '600',
                                                                         margin: 0,
                                                                     }}>
-                                                                        {sample.name}
-                                                                        {sample.level > 0 && (
-                                                                            <span style={{
-                                                                                marginLeft: '0.4rem',
-                                                                                color: 'rgba(212,175,55,0.4)',
-                                                                                fontSize: '0.75rem',
-                                                                            }}>
-                                                                                Lv{sample.level}
-                                                                            </span>
-                                                                        )}
+                                                                        {feature.name}
+                                                                        <span style={{
+                                                                            marginLeft: '0.4rem',
+                                                                            color: 'rgba(212,175,55,0.4)',
+                                                                            fontSize: '0.75rem',
+                                                                        }}>
+                                                                            Lv{feature.level}
+                                                                        </span>
                                                                     </p>
                                                                 </div>
                                                             ))}
@@ -434,23 +447,20 @@ function SubclassDetailModal({
     onSelect: () => void;
     isSelected: boolean;
 }) {
-    const [allSpells, setAllSpells] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const tag = `${subclass.name.toLowerCase()} ${characterClass}`;
+    // Sort features by level
+    const featuresByLevel: Array<{ level: number; features: SubclassFeature[] }> = [];
+    if (subclass.features) {
+        const sortedLevels = Object.keys(subclass.features)
+            .map(Number)
+            .sort((a, b) => a - b);
         
-        fetch(`/api/resources/spells-abilities?subclass=${encodeURIComponent(tag)}`)
-            .then(r => r.json())
-            .then(data => {
-                setAllSpells(data.results || []);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error('Failed to fetch subclass spells:', err);
-                setLoading(false);
+        for (const level of sortedLevels) {
+            featuresByLevel.push({
+                level,
+                features: subclass.features[level],
             });
-    }, [subclass.name, characterClass]);
+        }
+    }
 
     return (
         <div
@@ -536,14 +546,128 @@ function SubclassDetailModal({
                         color: 'rgba(244,232,208,0.8)',
                         fontSize: '1rem',
                         lineHeight: '1.6',
-                        margin: 0,
+                        margin: '0 0 0.5rem',
                     }}>
                         {subclass.description}
                     </p>
+                    {subclass.sourcebook && (
+                        <p style={{
+                            color: 'rgba(212,175,55,0.5)',
+                            fontSize: '0.75rem',
+                            fontWeight: '600',
+                            letterSpacing: '0.1em',
+                            textTransform: 'uppercase',
+                            margin: 0,
+                        }}>
+                            Source: {subclass.sourcebook}
+                        </p>
+                    )}
                 </div>
 
                 {/* Content */}
                 <div style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
+                    {/* Proficiencies */}
+                    {subclass.proficiencies && (
+                        <div style={{ marginBottom: '2rem' }}>
+                            <h3 style={{
+                                color: 'rgba(212,175,55,0.5)',
+                                fontSize: '0.7rem',
+                                fontWeight: '800',
+                                letterSpacing: '0.15em',
+                                textTransform: 'uppercase',
+                                margin: '0 0 1rem',
+                            }}>
+                                Bonus Proficiencies
+                            </h3>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                {subclass.proficiencies.armor?.map((armor, idx) => (
+                                    <span key={idx} style={{
+                                        backgroundColor: 'rgba(180,50,50,0.15)',
+                                        border: '1px solid rgba(180,50,50,0.35)',
+                                        color: '#fca5a5',
+                                        padding: '0.4rem 0.9rem',
+                                        borderRadius: '9999px',
+                                        fontSize: '0.85rem',
+                                        fontWeight: '600',
+                                    }}>
+                                        {armor}
+                                    </span>
+                                ))}
+                                {subclass.proficiencies.weapons?.map((weapon, idx) => (
+                                    <span key={idx} style={{
+                                        backgroundColor: 'rgba(212,175,55,0.08)',
+                                        border: '1px solid rgba(212,175,55,0.2)',
+                                        color: 'rgba(212,175,55,0.8)',
+                                        padding: '0.4rem 0.9rem',
+                                        borderRadius: '9999px',
+                                        fontSize: '0.85rem',
+                                        fontWeight: '600',
+                                    }}>
+                                        {weapon}
+                                    </span>
+                                ))}
+                                {subclass.proficiencies.tools?.map((tool, idx) => (
+                                    <span key={idx} style={{
+                                        backgroundColor: 'rgba(100,150,200,0.15)',
+                                        border: '1px solid rgba(100,150,200,0.35)',
+                                        color: '#93c5fd',
+                                        padding: '0.4rem 0.9rem',
+                                        borderRadius: '9999px',
+                                        fontSize: '0.85rem',
+                                        fontWeight: '600',
+                                    }}>
+                                        {tool}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Expanded Spell List */}
+                    {subclass.spells?.byCharacterLevel && (
+                        <div style={{ marginBottom: '2rem' }}>
+                            <h3 style={{
+                                color: 'rgba(212,175,55,0.5)',
+                                fontSize: '0.7rem',
+                                fontWeight: '800',
+                                letterSpacing: '0.15em',
+                                textTransform: 'uppercase',
+                                margin: '0 0 1rem',
+                            }}>
+                                Expanded Spell List {subclass.spells.alwaysPrepared && '(Always Prepared)'}
+                            </h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                {Object.entries(subclass.spells.byCharacterLevel)
+                                    .sort(([a], [b]) => Number(a) - Number(b))
+                                    .map(([level, spells]) => (
+                                        <div key={level} style={{
+                                            padding: '0.75rem',
+                                            backgroundColor: 'rgba(212,175,55,0.05)',
+                                            border: '1px solid rgba(212,175,55,0.15)',
+                                            borderRadius: '0.5rem',
+                                        }}>
+                                            <p style={{
+                                                color: 'var(--color-gold)',
+                                                fontSize: '0.85rem',
+                                                fontWeight: '700',
+                                                margin: '0 0 0.5rem',
+                                            }}>
+                                                Level {level}
+                                            </p>
+                                            <p style={{
+                                                color: 'rgba(244,232,208,0.8)',
+                                                fontSize: '0.9rem',
+                                                margin: 0,
+                                            }}>
+                                                {spells.join(', ')}
+                                            </p>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Features by Level */}
                     <h3 style={{
                         color: 'rgba(212,175,55,0.5)',
                         fontSize: '0.7rem',
@@ -552,70 +676,145 @@ function SubclassDetailModal({
                         textTransform: 'uppercase',
                         margin: '0 0 1rem',
                     }}>
-                        Subclass Spells & Abilities
+                        Subclass Features
                     </h3>
 
-                    {loading ? (
-                        <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(212,175,55,0.5)' }}>
-                            Loading abilities...
-                        </div>
-                    ) : allSpells.length === 0 ? (
+                    {featuresByLevel.length === 0 ? (
                         <p style={{ color: 'rgba(244,232,208,0.5)', fontStyle: 'italic' }}>
-                            No specific spells found for this subclass.
+                            No features available.
                         </p>
                     ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            {allSpells.map((spell, idx) => (
-                                <div
-                                    key={idx}
-                                    style={{
-                                        padding: '1rem',
-                                        backgroundColor: 'rgba(212,175,55,0.05)',
-                                        border: '1px solid rgba(212,175,55,0.2)',
-                                        borderRadius: '0.5rem',
-                                    }}
-                                >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                        <h4 style={{
-                                            color: 'var(--color-gold)',
-                                            fontSize: '1rem',
-                                            fontWeight: '700',
-                                            margin: 0,
-                                        }}>
-                                            {spell.name}
-                                        </h4>
-                                        {spell.level !== undefined && (
-                                            <span style={{
-                                                backgroundColor: 'rgba(212,175,55,0.15)',
-                                                color: 'rgba(212,175,55,0.8)',
-                                                padding: '0.2rem 0.6rem',
-                                                borderRadius: '9999px',
-                                                fontSize: '0.75rem',
-                                                fontWeight: '700',
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            {featuresByLevel.map(({ level, features }) => (
+                                <div key={level}>
+                                    {features.map((feature, idx) => (
+                                        <div
+                                            key={idx}
+                                            style={{
+                                                padding: '1rem',
+                                                backgroundColor: 'rgba(212,175,55,0.05)',
+                                                border: '1px solid rgba(212,175,55,0.2)',
+                                                borderRadius: '0.5rem',
+                                                marginBottom: idx < features.length - 1 ? '0.75rem' : 0,
+                                            }}
+                                        >
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                                                <h4 style={{
+                                                    color: 'var(--color-gold)',
+                                                    fontSize: '1rem',
+                                                    fontWeight: '700',
+                                                    margin: 0,
+                                                }}>
+                                                    {feature.name}
+                                                </h4>
+                                                <span style={{
+                                                    backgroundColor: 'rgba(212,175,55,0.15)',
+                                                    color: 'rgba(212,175,55,0.8)',
+                                                    padding: '0.2rem 0.6rem',
+                                                    borderRadius: '9999px',
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: '700',
+                                                }}>
+                                                    Level {level}
+                                                </span>
+                                                {feature.actionType && (
+                                                    <span style={{
+                                                        backgroundColor: 'rgba(100,150,200,0.15)',
+                                                        color: '#93c5fd',
+                                                        padding: '0.2rem 0.6rem',
+                                                        borderRadius: '9999px',
+                                                        fontSize: '0.7rem',
+                                                        fontWeight: '600',
+                                                        textTransform: 'capitalize',
+                                                    }}>
+                                                        {feature.actionType}
+                                                    </span>
+                                                )}
+                                                {feature.usesPerRest && (
+                                                    <span style={{
+                                                        color: 'rgba(212,175,55,0.5)',
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: '600',
+                                                    }}>
+                                                        {feature.usesPerRest} / {feature.restType} rest
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p style={{
+                                                color: 'rgba(244,232,208,0.8)',
+                                                fontSize: '0.9rem',
+                                                lineHeight: '1.6',
+                                                margin: 0,
+                                                whiteSpace: 'pre-line',
                                             }}>
-                                                Level {spell.level}
-                                            </span>
-                                        )}
-                                        {spell.school && (
-                                            <span style={{
-                                                color: 'rgba(212,175,55,0.5)',
-                                                fontSize: '0.8rem',
-                                                textTransform: 'capitalize',
-                                            }}>
-                                                {spell.school}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <p style={{
-                                        color: 'rgba(244,232,208,0.7)',
-                                        fontSize: '0.9rem',
-                                        lineHeight: '1.5',
-                                        margin: 0,
-                                    }}>
-                                        {spell.description}
-                                    </p>
+                                                {feature.description}
+                                            </p>
+                                            {feature.damage && (
+                                                <p style={{
+                                                    color: '#fca5a5',
+                                                    fontSize: '0.85rem',
+                                                    fontWeight: '600',
+                                                    margin: '0.5rem 0 0',
+                                                }}>
+                                                    Damage: {feature.damage.dice} {feature.damage.type}
+                                                    {feature.damage.scaling && ` (${feature.damage.scaling})`}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
                             ))}
+                        </div>
+                    )}
+
+                    {/* Resources */}
+                    {subclass.resources && subclass.resources.length > 0 && (
+                        <div style={{ marginTop: '2rem' }}>
+                            <h3 style={{
+                                color: 'rgba(212,175,55,0.5)',
+                                fontSize: '0.7rem',
+                                fontWeight: '800',
+                                letterSpacing: '0.15em',
+                                textTransform: 'uppercase',
+                                margin: '0 0 1rem',
+                            }}>
+                                Resource Pools
+                            </h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                {subclass.resources.map((resource, idx) => (
+                                    <div key={idx} style={{
+                                        padding: '0.75rem',
+                                        backgroundColor: 'rgba(212,175,55,0.05)',
+                                        border: '1px solid rgba(212,175,55,0.15)',
+                                        borderRadius: '0.5rem',
+                                    }}>
+                                        <p style={{
+                                            color: 'var(--color-gold)',
+                                            fontSize: '0.9rem',
+                                            fontWeight: '700',
+                                            margin: '0 0 0.25rem',
+                                        }}>
+                                            {resource.name}
+                                        </p>
+                                        <p style={{
+                                            color: 'rgba(244,232,208,0.6)',
+                                            fontSize: '0.8rem',
+                                            margin: 0,
+                                        }}>
+                                            {resource.usesPerRest} / {resource.restType} rest · Gained at level {resource.levelGained}
+                                        </p>
+                                        {resource.description && (
+                                            <p style={{
+                                                color: 'rgba(244,232,208,0.7)',
+                                                fontSize: '0.85rem',
+                                                margin: '0.5rem 0 0',
+                                            }}>
+                                                {resource.description}
+                                            </p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>

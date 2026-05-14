@@ -531,6 +531,64 @@ export default function SummaryStep() {
                 {stats && baseStats && (
                     <section>
                         <SectionLabel>Ability Scores</SectionLabel>
+                        
+                        {/* Racial Bonuses Breakdown */}
+                        {(() => {
+                            const bonusesApplied = Object.entries(racialBonuses).filter(([_, bonus]) => bonus > 0);
+                            if (bonusesApplied.length > 0) {
+                                return (
+                                    <div style={{
+                                        marginBottom: '1rem',
+                                        padding: '0.75rem 1rem',
+                                        background: 'rgba(134,198,120,0.08)',
+                                        border: '1px solid rgba(134,198,120,0.25)',
+                                        borderRadius: '8px',
+                                    }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                                            <span style={{ fontSize: '0.9rem' }}>✨</span>
+                                            <p style={{
+                                                margin: 0,
+                                                fontSize: '0.7rem',
+                                                fontWeight: '800',
+                                                letterSpacing: '0.1em',
+                                                textTransform: 'uppercase',
+                                                color: 'rgba(134,198,120,0.8)',
+                                            }}>
+                                                Racial Bonuses Applied
+                                            </p>
+                                        </div>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                                            {bonusesApplied.map(([stat, bonus]) => {
+                                                const statLabel = STAT_DEFS.find(d => d.key === stat)?.label ?? stat.toUpperCase();
+                                                return (
+                                                    <span key={stat} style={{
+                                                        fontSize: '0.8rem',
+                                                        fontWeight: '700',
+                                                        color: 'rgba(134,198,120,0.9)',
+                                                        padding: '0.2rem 0.6rem',
+                                                        background: 'rgba(134,198,120,0.12)',
+                                                        border: '1px solid rgba(134,198,120,0.3)',
+                                                        borderRadius: '4px',
+                                                    }}>
+                                                        {statLabel} +{bonus}
+                                                    </span>
+                                                );
+                                            })}
+                                            <span style={{
+                                                fontSize: '0.75rem',
+                                                fontStyle: 'italic',
+                                                color: 'rgba(244,232,208,0.45)',
+                                                alignSelf: 'center',
+                                            }}>
+                                                from {subrace ? fmt(subrace) : ''}{subrace && race ? ' & ' : ''}{race ? fmt(race) : ''}
+                                            </span>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            return null;
+                        })()}
+                        
                         <div style={{
                             display:             'grid',
                             gridTemplateColumns: 'repeat(6, 1fr)',

@@ -4,7 +4,7 @@
  * Spell slots represent how many spells of each level a character can cast before resting.
  * Different classes have different progression rates:
  * - Full Casters: Bard, Cleric, Druid, Sorcerer, Wizard
- * - Half Casters: Paladin, Ranger
+ * - Half Casters: Artificer, Paladin, Ranger (Note: Artificer gets slots at level 1, others at level 2)
  * - Warlock: Uses Pact Magic (different system)
  * - Non-Casters: Barbarian, Fighter, Monk, Rogue
  */
@@ -45,9 +45,9 @@ const FULL_CASTER_SLOTS: Record<number, SpellSlots> = {
     20: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 2, 7: 2, 8: 1, 9: 1 },
 };
 
-// Half Caster Progression (Paladin, Ranger)
+// Half Caster Progression (Artificer, Paladin, Ranger)
 const HALF_CASTER_SLOTS: Record<number, SpellSlots> = {
-    1:  { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
+    1:  { 1: 2, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }, // Artificer gets spells at 1st, others at 2nd
     2:  { 1: 2, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
     3:  { 1: 3, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
     4:  { 1: 3, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
@@ -121,6 +121,7 @@ export function getSpellSlots(charClass: string, level: number): SpellSlots | Pa
             return FULL_CASTER_SLOTS[clampedLevel];
 
         // Half Casters
+        case 'artificer':
         case 'paladin':
         case 'ranger':
             return HALF_CASTER_SLOTS[clampedLevel];
@@ -146,7 +147,7 @@ export function getSpellSlots(charClass: string, level: number): SpellSlots | Pa
  */
 export function isSpellcaster(charClass: string): boolean {
     const normalizedClass = charClass.toLowerCase();
-    return ['bard', 'cleric', 'druid', 'sorcerer', 'wizard', 'paladin', 'ranger', 'warlock'].includes(normalizedClass);
+    return ['artificer', 'bard', 'cleric', 'druid', 'sorcerer', 'wizard', 'paladin', 'ranger', 'warlock'].includes(normalizedClass);
 }
 
 /**
@@ -164,6 +165,7 @@ export function getSpellcastingAbility(charClass: string): 'int' | 'wis' | 'cha'
     
     const spellcastingAbilities: Record<string, 'int' | 'wis' | 'cha'> = {
         wizard: 'int',
+        artificer: 'int',
         cleric: 'wis',
         druid: 'wis',
         ranger: 'wis',

@@ -3,6 +3,7 @@ import { ClassDetail } from '@/types';
 import clientPromise from '@/lib/mongo';
 
 const CLASS_DESCRIPTIONS: Record<string, string> = {
+    artificer: 'Master inventor fusing magic and technology, turning scrap into sentient guardians.',
     barbarian: 'Primal rage made flesh,   nearly impossible to kill and devastating up close.',
     bard:      'Magic through music and wit, inspiring allies and turning battles with words alone.',
     cleric:    'Divine power channeled through faith,   healer, warrior, and vessel of the gods.',

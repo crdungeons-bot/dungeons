@@ -495,7 +495,7 @@ function LoreTab({ char }: { char: CharacterData }) {
 
 // Spell/Magic Tab - Simplified read-only version
 const FULL_CASTERS = new Set(['wizard', 'sorcerer', 'cleric', 'druid', 'bard', 'warlock']);
-const HALF_CASTERS = new Set(['paladin', 'ranger']);
+const HALF_CASTERS = new Set(['paladin', 'ranger', 'artificer']);
 
 const FULL_SLOT_TABLE: Record<number, number> = {
     1: 1, 2: 1, 3: 2, 4: 2, 5: 3, 6: 3, 7: 4, 8: 4, 9: 5, 10: 5,

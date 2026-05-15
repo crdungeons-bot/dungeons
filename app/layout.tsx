@@ -2,8 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'DND Guru - D&D Character Manager',
-  description: 'Create, manage, and adventure with your D&D characters',
+  title: 'Tabletop Guru - 5E Character Manager',
+  description: 'Create, manage, and adventure with your Fifth Edition characters',
   icons: {
     icon: [
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },

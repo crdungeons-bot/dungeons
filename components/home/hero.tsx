@@ -88,8 +88,8 @@ export default function Hero() {
                     }}
                 >
                     <img 
-                        src="/dnd-guru-logo-transparent.png" 
-                        alt="DND Guru Logo" 
+                        src="/dnd-guru-logo-transparent.png"
+                        alt="Tabletop Guru Logo"
                         className="logo-shrink-move"
                         style={{ 
                             width: 'clamp(200px, 40vw, 350px)',

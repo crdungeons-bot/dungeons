@@ -5,7 +5,7 @@ if (process.env.SENDGRID_API_KEY) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || 'noreply@dndguru.com';
+const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || 'noreply@tabletopguru.com';
 
 export type EmailTemplate = 'password-reset' | 'party-invite' | 'welcome';
 
@@ -86,13 +86,13 @@ export function generatePasswordResetEmail(resetLink: string, firstName: string)
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Reset - DND Guru</title>
+    <title>Password Reset - Tabletop Guru</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #0a0806; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
     <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
         <!-- Header -->
         <div style="text-align: center; margin-bottom: 40px;">
-            <h1 style="color: #d4af37; font-size: 32px; margin: 0;">⚔️ DND Guru</h1>
+            <h1 style="color: #d4af37; font-size: 32px; margin: 0;">⚔️ Tabletop Guru</h1>
             <p style="color: #f4e8d0; opacity: 0.6; margin: 10px 0 0; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;">Password Reset Request</p>
         </div>
 
@@ -103,7 +103,7 @@ export function generatePasswordResetEmail(resetLink: string, firstName: string)
             </p>
             
             <p style="color: #f4e8d0; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
-                We received a request to reset your password for your DND Guru account. Click the button below to create a new password:
+                We received a request to reset your password for your Tabletop Guru account. Click the button below to create a new password:
             </p>
 
             <!-- Reset Button -->
@@ -126,7 +126,7 @@ export function generatePasswordResetEmail(resetLink: string, firstName: string)
         <!-- Footer -->
         <div style="text-align: center; margin-top: 30px;">
             <p style="color: rgba(244, 232, 208, 0.4); font-size: 12px; line-height: 1.5;">
-                DND Guru - Your D&D Character Manager<br>
+                Tabletop Guru - Your 5E Character Manager<br>
                 This is an automated message, please do not reply.
             </p>
         </div>
@@ -151,13 +151,13 @@ export function generatePartyInviteEmail(
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Party Invitation - DND Guru</title>
+    <title>Party Invitation - Tabletop Guru</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #0a0806; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
     <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
         <!-- Header -->
         <div style="text-align: center; margin-bottom: 40px;">
-            <h1 style="color: #d4af37; font-size: 32px; margin: 0;">⚔️ DND Guru</h1>
+            <h1 style="color: #d4af37; font-size: 32px; margin: 0;">⚔️ Tabletop Guru</h1>
             <p style="color: #f4e8d0; opacity: 0.6; margin: 10px 0 0; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;">Party Invitation</p>
         </div>
 
@@ -195,7 +195,7 @@ export function generatePartyInviteEmail(
         <!-- Footer -->
         <div style="text-align: center; margin-top: 30px;">
             <p style="color: rgba(244, 232, 208, 0.4); font-size: 12px; line-height: 1.5;">
-                DND Guru - Your D&D Character Manager<br>
+                Tabletop Guru - Your 5E Character Manager<br>
                 This is an automated message, please do not reply.
             </p>
         </div>

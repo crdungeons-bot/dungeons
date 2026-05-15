@@ -1,5 +1,462 @@
 export const CLASSES = [
   {
+    "index": "artificer",
+    "name": "Artificer",
+    "hit_die": 8,
+    "proficiency_choices": [
+      {
+        "desc": "Choose two from Arcana, History, Investigation, Medicine, Nature, Perception, and Sleight of Hand",
+        "choose": 2,
+        "type": "proficiencies",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-arcana",
+                "name": "Skill: Arcana",
+                "url": "/api/2014/proficiencies/skill-arcana"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-history",
+                "name": "Skill: History",
+                "url": "/api/2014/proficiencies/skill-history"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-investigation",
+                "name": "Skill: Investigation",
+                "url": "/api/2014/proficiencies/skill-investigation"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-medicine",
+                "name": "Skill: Medicine",
+                "url": "/api/2014/proficiencies/skill-medicine"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-nature",
+                "name": "Skill: Nature",
+                "url": "/api/2014/proficiencies/skill-nature"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-perception",
+                "name": "Skill: Perception",
+                "url": "/api/2014/proficiencies/skill-perception"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-sleight-of-hand",
+                "name": "Skill: Sleight of Hand",
+                "url": "/api/2014/proficiencies/skill-sleight-of-hand"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "desc": "Choose one type of artisan's tools",
+        "choose": 1,
+        "type": "proficiencies",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "alchemists-supplies",
+                "name": "Alchemist's Supplies",
+                "url": "/api/2014/proficiencies/alchemists-supplies"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "brewers-supplies",
+                "name": "Brewer's Supplies",
+                "url": "/api/2014/proficiencies/brewers-supplies"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "calligraphers-supplies",
+                "name": "Calligrapher's Supplies",
+                "url": "/api/2014/proficiencies/calligraphers-supplies"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "carpenters-tools",
+                "name": "Carpenter's Tools",
+                "url": "/api/2014/proficiencies/carpenters-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "cartographers-tools",
+                "name": "Cartographer's Tools",
+                "url": "/api/2014/proficiencies/cartographers-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "cobblers-tools",
+                "name": "Cobbler's Tools",
+                "url": "/api/2014/proficiencies/cobblers-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "cooks-utensils",
+                "name": "Cook's Utensils",
+                "url": "/api/2014/proficiencies/cooks-utensils"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "glassblowers-tools",
+                "name": "Glassblower's Tools",
+                "url": "/api/2014/proficiencies/glassblowers-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "jewelers-tools",
+                "name": "Jeweler's Tools",
+                "url": "/api/2014/proficiencies/jewelers-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "leatherworkers-tools",
+                "name": "Leatherworker's Tools",
+                "url": "/api/2014/proficiencies/leatherworkers-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "masons-tools",
+                "name": "Mason's Tools",
+                "url": "/api/2014/proficiencies/masons-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "painters-supplies",
+                "name": "Painter's Supplies",
+                "url": "/api/2014/proficiencies/painters-supplies"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "potters-tools",
+                "name": "Potter's Tools",
+                "url": "/api/2014/proficiencies/potters-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "smiths-tools",
+                "name": "Smith's Tools",
+                "url": "/api/2014/proficiencies/smiths-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "tinkers-tools",
+                "name": "Tinker's Tools",
+                "url": "/api/2014/proficiencies/tinkers-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "weavers-tools",
+                "name": "Weaver's Tools",
+                "url": "/api/2014/proficiencies/weavers-tools"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "woodcarvers-tools",
+                "name": "Woodcarver's Tools",
+                "url": "/api/2014/proficiencies/woodcarvers-tools"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "proficiencies": [
+      {
+        "index": "light-armor",
+        "name": "Light Armor",
+        "url": "/api/2014/proficiencies/light-armor"
+      },
+      {
+        "index": "medium-armor",
+        "name": "Medium Armor",
+        "url": "/api/2014/proficiencies/medium-armor"
+      },
+      {
+        "index": "shields",
+        "name": "Shields",
+        "url": "/api/2014/proficiencies/shields"
+      },
+      {
+        "index": "simple-weapons",
+        "name": "Simple Weapons",
+        "url": "/api/2014/proficiencies/simple-weapons"
+      },
+      {
+        "index": "thieves-tools",
+        "name": "Thieves' Tools",
+        "url": "/api/2014/proficiencies/thieves-tools"
+      },
+      {
+        "index": "tinkers-tools",
+        "name": "Tinker's Tools",
+        "url": "/api/2014/proficiencies/tinkers-tools"
+      },
+      {
+        "index": "saving-throw-con",
+        "name": "Saving Throw: CON",
+        "url": "/api/2014/proficiencies/saving-throw-con"
+      },
+      {
+        "index": "saving-throw-int",
+        "name": "Saving Throw: INT",
+        "url": "/api/2014/proficiencies/saving-throw-int"
+      }
+    ],
+    "saving_throws": [
+      {
+        "index": "con",
+        "name": "CON",
+        "url": "/api/2014/ability-scores/con"
+      },
+      {
+        "index": "int",
+        "name": "INT",
+        "url": "/api/2014/ability-scores/int"
+      }
+    ],
+    "starting_equipment": [
+      {
+        "equipment": {
+          "index": "studded-leather-armor",
+          "name": "Studded Leather Armor",
+          "url": "/api/2014/equipment/studded-leather-armor"
+        },
+        "quantity": 1
+      },
+      {
+        "equipment": {
+          "index": "dagger",
+          "name": "Dagger",
+          "url": "/api/2014/equipment/dagger"
+        },
+        "quantity": 2
+      },
+      {
+        "equipment": {
+          "index": "thieves-tools",
+          "name": "Thieves' Tools",
+          "url": "/api/2014/equipment/thieves-tools"
+        },
+        "quantity": 1
+      },
+      {
+        "equipment": {
+          "index": "dungeoneers-pack",
+          "name": "Dungeoneer's Pack",
+          "url": "/api/2014/equipment/dungeoneers-pack"
+        },
+        "quantity": 1
+      }
+    ],
+    "starting_equipment_options": [
+      {
+        "desc": "(a) any two simple weapons or (b) a light crossbow and 20 bolts",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "choice",
+              "choice": {
+                "desc": "Any two simple weapons",
+                "choose": 2,
+                "type": "equipment",
+                "from": {
+                  "option_set_type": "equipment_category",
+                  "equipment_category": {
+                    "index": "simple-weapons",
+                    "name": "Simple Weapons",
+                    "url": "/api/2014/equipment-categories/simple-weapons"
+                  }
+                }
+              }
+            },
+            {
+              "option_type": "multiple",
+              "items": [
+                {
+                  "option_type": "counted_reference",
+                  "count": 1,
+                  "of": {
+                    "index": "crossbow-light",
+                    "name": "Crossbow, light",
+                    "url": "/api/2014/equipment/crossbow-light"
+                  }
+                },
+                {
+                  "option_type": "counted_reference",
+                  "count": 20,
+                  "of": {
+                    "index": "crossbow-bolt",
+                    "name": "Crossbow bolt",
+                    "url": "/api/2014/equipment/crossbow-bolt"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "class_levels": "/api/2014/classes/artificer/levels",
+    "multi_classing": {
+      "prerequisite_options": {
+        "type": "ability-scores",
+        "choose": 1,
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "ability_score_minimum",
+              "ability_score": {
+                "index": "int",
+                "name": "INT",
+                "url": "/api/2014/ability-scores/int"
+              },
+              "minimum_score": 13
+            }
+          ]
+        }
+      },
+      "proficiencies": [
+        {
+          "index": "light-armor",
+          "name": "Light Armor",
+          "url": "/api/2014/proficiencies/light-armor"
+        },
+        {
+          "index": "medium-armor",
+          "name": "Medium Armor",
+          "url": "/api/2014/proficiencies/medium-armor"
+        },
+        {
+          "index": "shields",
+          "name": "Shields",
+          "url": "/api/2014/proficiencies/shields"
+        },
+        {
+          "index": "thieves-tools",
+          "name": "Thieves' Tools",
+          "url": "/api/2014/proficiencies/thieves-tools"
+        },
+        {
+          "index": "tinkers-tools",
+          "name": "Tinker's Tools",
+          "url": "/api/2014/proficiencies/tinkers-tools"
+        }
+      ]
+    },
+    "spellcasting": {
+      "level": 1,
+      "spellcasting_ability": {
+        "index": "int",
+        "name": "INT",
+        "url": "/api/2014/ability-scores/int"
+      },
+      "info": [
+        {
+          "name": "Spellcasting",
+          "desc": [
+            "You have studied the workings of magic and how to channel it through objects. As a result, you have gained the ability to cast spells. See chapter 10 for the general rules of spellcasting and chapter 3 for the artificer spell list.",
+            "Cantrips: You know two cantrips of your choice from the artificer spell list. At higher levels, you learn additional artificer cantrips of your choice, as shown in the Cantrips Known column of the Artificer table.",
+            "Preparing and Casting Spells: The Artificer table shows how many spell slots you have to cast your artificer spells. To cast one of your artificer spells of 1st level or higher, you must expend a slot of the spell's level or higher. You regain all expended spell slots when you finish a long rest.",
+            "You prepare the list of artificer spells that are available for you to cast, choosing from the artificer spell list. When you do so, choose a number of artificer spells equal to your Intelligence modifier + half your artificer level, rounded up (minimum of one spell). The spells must be of a level for which you have spell slots.",
+            "For example, if you are a 5th-level artificer, you have four 1st-level and two 2nd-level spell slots. With an Intelligence of 14, your list of prepared spells can include four spells of 1st or 2nd level, in any combination, chosen from the artificer spell list. If you prepare the 1st-level spell Cure Wounds, you can cast it using a 1st-level or a 2nd-level slot. Casting the spell doesn't remove it from your list of prepared spells.",
+            "You can change your list of prepared spells when you finish a long rest. Preparing a new list of artificer spells requires time spent in tinkering with your spellcasting focuses: at least 1 minute per spell level for each spell on your list."
+          ]
+        },
+        {
+          "name": "Spellcasting Focus",
+          "desc": [
+            "You can use an arcane focus or any of your infused items as a spellcasting focus for your artificer spells. In addition, you can use your tools (thieves' tools, tinker's tools, or any type of artisan's tools) as a spellcasting focus."
+          ]
+        }
+      ]
+    },
+    "spells": "/api/2014/classes/artificer/spells",
+    "subclasses": [
+      {
+        "index": "alchemist",
+        "name": "Alchemist",
+        "url": "/api/2014/subclasses/alchemist"
+      },
+      {
+        "index": "armorer",
+        "name": "Armorer",
+        "url": "/api/2014/subclasses/armorer"
+      },
+      {
+        "index": "artillerist",
+        "name": "Artillerist",
+        "url": "/api/2014/subclasses/artillerist"
+      },
+      {
+        "index": "battle-smith",
+        "name": "Battle Smith",
+        "url": "/api/2014/subclasses/battle-smith"
+      }
+    ],
+    "url": "/api/2014/classes/artificer"
+  },
+  {
     "index": "barbarian",
     "name": "Barbarian",
     "hit_die": 12,

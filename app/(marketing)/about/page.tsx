@@ -20,7 +20,7 @@ export default function About() {
                     fontWeight: 'bold',
                     textAlign: 'center'
                 }}>
-                    About DND Guru
+                    About Tabletop Guru
                 </h1>
 
                 <div style={{
@@ -37,18 +37,17 @@ export default function About() {
                         color: 'var(--color-gold)',
                         marginBottom: '1.5rem'
                     }}>
-                        What is DND Guru?
+                        What is Tabletop Guru?
                     </h2>
                     
                     <p style={{ marginBottom: '1.5rem' }}>
-                        DND Guru is a free toolset designed to help Dungeon Masters and players bring their campaigns to life. 
+                        Tabletop Guru is a free 5E-compatible toolset designed to help Dungeon Masters and players bring their campaigns to life. 
                         Whether you are rolling your first character or managing an epic adventure, this site provides everything 
-                        you need to dive into the world of Ashfall Concord and beyond.
+                        you need to dive into your fantasy world and beyond.
                     </p>
 
                     <p style={{ marginBottom: '1.5rem' }}>
-                        The world has been created. The lore is written. The stage is set. Now it is your turn to build your story 
-                        within it. Create memorable characters, track your progress, manage your party, and explore the rich tapestry 
+                        Create memorable characters, track your progress, manage your party, and explore the rich tapestry 
                         of races, classes, and abilities that make every adventure unique.
                     </p>
 
@@ -62,13 +61,13 @@ export default function About() {
                     </h2>
 
                     <p style={{ marginBottom: '1.5rem' }}>
-                        This project started as a passion project, a way to combine a love for D&D with the joy of building something 
+                        This project started as a passion project, a way to combine a love for tabletop RPGs with the joy of building something 
                         useful. There are no subscriptions, no hidden fees, and no paywalls. Just a set of tools to make your tabletop 
                         experience smoother and more enjoyable.
                     </p>
 
                     <p style={{ marginBottom: '1.5rem' }}>
-                        DND Guru is built for the community, by someone who understands the thrill of rolling dice and the satisfaction 
+                        Tabletop Guru is built for the community, by someone who understands the thrill of rolling dice and the satisfaction 
                         of a well-planned campaign. It is here to support your adventures, not to profit from them.
                     </p>
 
@@ -118,8 +117,35 @@ export default function About() {
 
                     <p style={{ marginBottom: '1.5rem' }}>
                         Ready to begin your adventure? Create an account, build your first character, and step into a world where 
-                        your choices shape the story. The realm of Ashfall Concord awaits.
+                        your choices shape the story.
                     </p>
+
+                    <div style={{
+                        fontSize: '0.875rem',
+                        color: 'rgba(244, 232, 208, 0.6)',
+                        borderTop: '1px solid rgba(212, 175, 55, 0.3)',
+                        paddingTop: '1.5rem',
+                        marginTop: '2rem'
+                    }}>
+                        <p style={{ marginBottom: '0.75rem' }}>
+                            This work includes material from the System Reference Document 5.2 ("SRD 5.2") by Wizards of the Coast LLC, 
+                            available at{' '}
+                            <a href="https://www.dndbeyond.com/srd" target="_blank" rel="noopener noreferrer" 
+                                style={{ color: 'var(--color-gold)', textDecoration: 'underline' }}>
+                                https://www.dndbeyond.com/srd
+                            </a>. 
+                            The SRD 5.2 is licensed under the Creative Commons Attribution 4.0 International License, 
+                            available at{' '}
+                            <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank" rel="noopener noreferrer"
+                                style={{ color: 'var(--color-gold)', textDecoration: 'underline' }}>
+                                https://creativecommons.org/licenses/by/4.0/legalcode
+                            </a>.
+                        </p>
+                        <p>
+                            This site is compatible with Fifth Edition. This site is not affiliated with, endorsed, sponsored, 
+                            or specifically approved by Wizards of the Coast LLC.
+                        </p>
+                    </div>
 
                     <div style={{
                         marginTop: '2rem',

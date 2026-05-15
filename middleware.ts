@@ -3,11 +3,11 @@ import type { NextRequest } from 'next/server';
 
 /**
  * MAINTENANCE MODE
- * 
- * Set MAINTENANCE_MODE to true to lock down the entire site.
- * Only the maintenance page will be accessible.
+ *
+ * Set `MAINTENANCE_MODE=true` in `.env.local` (or host env) to lock the site.
+ * Omit or set to anything other than `true` to serve the app normally.
  */
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = process.env.MAINTENANCE_MODE === 'true';
 
 export function middleware(request: NextRequest) {
     // If maintenance mode is enabled

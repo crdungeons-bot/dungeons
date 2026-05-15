@@ -4,7 +4,7 @@ export default function MaintenancePage() {
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <title>DND Guru - Under Construction</title>
+                <title>Tabletop Guru - Under Construction</title>
             </head>
             <body style={{ margin: 0, padding: 0 }}>
                 <div style={{
@@ -28,7 +28,7 @@ export default function MaintenancePage() {
                     }}>
                         <img
                             src="/dnd-guru-logo-512.png"
-                            alt="DND Guru Logo"
+                            alt="Tabletop Guru Logo"
                             style={{
                                 maxWidth: '100%',
                                 maxHeight: '100%',
@@ -58,7 +58,7 @@ export default function MaintenancePage() {
                             lineHeight: '1.7',
                             marginBottom: '2rem',
                         }}>
-                            We're making some important improvements to bring you the best D&D experience possible.
+                            We're making some important improvements to bring you the best 5E tabletop experience possible.
                         </p>
 
                         <div style={{

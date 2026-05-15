@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:spells": "tsx scripts/seed-resources.ts"
+    "seed:spells": "tsx scripts/seed-resources.ts",
+    "migrate:non-srd": "tsx scripts/migrate-non-srd-content.ts"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",

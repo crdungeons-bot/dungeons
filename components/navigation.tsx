@@ -63,7 +63,7 @@ export default function Navigation() {
                 <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
                     <img 
                         src="/dnd-guru-logo.svg" 
-                        alt="DND Guru Logo" 
+                        alt="Tabletop Guru Logo" 
                         style={{ 
                             height: '40px',
                             width: 'auto',

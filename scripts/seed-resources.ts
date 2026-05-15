@@ -142,8 +142,18 @@ async function seedRaces(db: ReturnType<MongoClient['db']>) {
 
     const collection = db.collection(col);
 
-    await collection.insertMany(RACES as object[]);
-    log(`Inserted ${RACES.length} races`);
+    // SRD 5.2 includes these 9 species (Note: using half-orc until full Orc data is added)
+    const SRD_RACES = ['dragonborn', 'dwarf', 'elf', 'gnome', 'goliath', 'halfling', 'human', 'orc', 'half-orc', 'tiefling'];
+    const srdRaces = RACES.filter((race: any) => {
+        const index = race.index || race.Index || '';
+        return SRD_RACES.includes(index.toLowerCase());
+    });
+
+    console.log(`  📊 Filtered ${RACES.length} → ${srdRaces.length} SRD races`);
+    console.log(`  📋 Selected: ${srdRaces.map((r: any) => r.name || r.index).join(', ')}`);
+    
+    const result = await collection.insertMany(srdRaces as object[]);
+    log(`Inserted ${result.insertedCount} races (SRD 5.2 compliant)`);
 
     await collection.createIndex({ index: 1 },                          { name: 'index', unique: true });
     await collection.createIndex({ name: 1 },                           { name: 'name' });

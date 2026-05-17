@@ -3,8 +3,6 @@ import { ClassDetail } from '@/types';
 import clientPromise from '@/lib/mongo';
 
 const CLASS_DESCRIPTIONS: Record<string, string> = {
-    artificer:
-        'Masters of invention who blur the line between magic and technology. Artificers forge the impossible, turning scrap metal into sentient steel guardians and imbuing ordinary objects with devastating arcane power. Where wizards study ancient tomes, artificers build the future,   one infusion at a time.',
     barbarian:
         'Primal fury incarnate. Barbarians charge headlong into battle, shrugging off wounds that would fell lesser warriors. Their rage is not mere anger,   it is a battle-trance that transforms pain into power, turning the tide of any fight through sheer unstoppable force.',
     bard:

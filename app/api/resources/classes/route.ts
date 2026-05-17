@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json(
             { results: classes, count: classes.length },
-            { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } },
+            { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } },
         );
     } catch (err) {
         console.error('[/api/resources/classes] Error:', err);

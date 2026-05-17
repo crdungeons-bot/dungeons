@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json(
             { results: races, count: races.length },
-            { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } },
+            { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } },
         );
     } catch (err) {
         console.error('[/api/resources/races] Error:', err);

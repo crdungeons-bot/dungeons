@@ -2,6 +2,9 @@ import { Navigation, Card } from "@/components";
 import { RaceDetail } from "@/types";
 import clientPromise from "@/lib/mongo";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function Races() {
     const client = await clientPromise;
     const collection = client.db('dnd-resources').collection('races');
